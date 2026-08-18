@@ -1,0 +1,14 @@
+{
+  "name": "training-site",
+  "private": true,
+  "description": "Static site generator for Aruba Campus Network Training reference pages",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node build.mjs --check",
+    "png": "node tools/png-export.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}

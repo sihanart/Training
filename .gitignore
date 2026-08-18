@@ -1,1 +1,7 @@
 Training-repo.zip
+
+# Playwright is a CI-only convenience for the PNG export — the site build itself
+# needs no dependencies. Neither the tree nor the lockfile belongs in the repo,
+# and the deploy workflow runs `git add -A`, so these must stay ignored.
+node_modules/
+package-lock.json

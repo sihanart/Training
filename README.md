@@ -107,7 +107,16 @@ build.mjs                       ตัว build
 
 > ตารางนี้เป็นสำเนาไว้อ่านเร็ว — ตัวจริงอยู่ใน `src/courses/campus-network.json`
 
-## ข้อจำกัดที่ยังเหลือ
+## PNG สำหรับสไลด์
 
-ไฟล์ `diagrams/*.png` (สำหรับแปะสไลด์) **ยัง export เองไม่ได้** เพราะต้องใช้ตัว render ภาพซึ่งจะพาลากเอา dependency เข้ามา
-ถ้าแก้ผังแล้วอยากได้ PNG ใหม่ ให้เปิดเว็บ » กด "ดาวน์โหลด SVG" » แปลงเป็น PNG เอง — ส่วน SVG ใน `diagrams/` อัปเดตอัตโนมัติทุก build
+`diagrams/*.png` (ความละเอียด 2x) **export อัตโนมัติใน GitHub Actions** ทุกครั้งที่ผังเปลี่ยน — แก้ `podsDrawn` แล้ว push ได้ PNG ใหม่กลับมาเอง ไม่ต้องแปลงมือ
+
+ใช้ Chromium render เพราะผังถูกออกแบบมาสำหรับเบราว์เซอร์ — CSS cascade และการจัดวางตัวอักษรไทยตรงกับหน้าเว็บจริง PNG จึงไม่มีทางเพี้ยนไปจากที่เห็นบนเว็บ
+
+รันเองในเครื่องก็ได้ (ไม่จำเป็น — CI ทำให้แล้ว):
+
+```bash
+npm install && npx playwright install chromium && npm run png
+```
+
+> `node build.mjs` **ไม่ต้องใช้ dependency ใด ๆ** Playwright จำเป็นเฉพาะตอน export PNG เท่านั้น จึงไม่ commit `node_modules/` และ lockfile ลง repo
