@@ -58,7 +58,10 @@ jobs:
 
       - name: Commit generated site
         run: |
-          if git diff --quiet; then
+          # --porcelain, not `git diff`: a brand-new event's diagrams are untracked,
+          # and `git diff` does not see untracked files — it would report "no
+          # changes" and silently drop them.
+          if [ -z "$(git status --porcelain)" ]; then
             echo "site already up to date — nothing to commit"
             exit 0
           fi
