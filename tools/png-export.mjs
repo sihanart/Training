@@ -12,7 +12,7 @@
 // live page, so the PNG cannot drift from what the site shows.
 
 import { readdir, readFile, writeFile } from 'node:fs/promises';
-import { join, dirname, basename } from 'node:path';
+import { join, dirname, basename, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -35,7 +35,11 @@ try {
   process.exit(1);
 }
 
-const files = (await readdir(DIAGRAMS)).filter((f) => f.endsWith('.svg')).sort();
+// Non-featured events export into diagrams/<slug>/, so walk one level down too.
+const files = (await readdir(DIAGRAMS, { withFileTypes: true, recursive: true }))
+  .filter((d) => d.isFile() && d.name.endsWith('.svg'))
+  .map((d) => relative(DIAGRAMS, join(d.parentPath ?? d.path, d.name)))
+  .sort();
 if (!files.length) {
   console.error('no SVG files in diagrams/ — run `node build.mjs` first');
   process.exit(1);
@@ -69,7 +73,7 @@ for (const file of files) {
     Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 8000))])
   );
 
-  const out = join(DIAGRAMS, `${basename(file, '.svg')}.png`);
+  const out = join(DIAGRAMS, `${file.slice(0, -4)}.png`);
   await writeFile(out, await page.screenshot({ type: 'png' }));
   await page.close();
 

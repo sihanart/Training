@@ -7,7 +7,23 @@
 // of each other, anything past the edge of the canvas, and stacked text lines
 // that overflow the box they belong to. Cheap to run and does not need a browser.
 
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
+import { join, relative } from 'node:path';
+
+/** Accept files or a directory to walk, so callers need no shell globbing. */
+async function expand(paths) {
+  const out = [];
+  for (const p of paths) {
+    if ((await stat(p)).isDirectory()) {
+      const found = await readdir(p, { withFileTypes: true, recursive: true });
+      out.push(...found.filter((d) => d.isFile() && d.name.endsWith('.svg'))
+        .map((d) => relative(process.cwd(), join(d.parentPath ?? d.path, d.name))));
+    } else {
+      out.push(p);
+    }
+  }
+  return out.sort();
+}
 
 const num = (attrs, key) => {
   const m = new RegExp(`\\b${key}="(-?[\\d.]+)"`).exec(attrs);
@@ -40,7 +56,7 @@ const fmt = (b) => `${b.x},${b.y} ${b.w}×${b.h}${b.cls ? ` .${b.cls}` : ''}`;
 
 let failed = 0;
 
-for (const file of process.argv.slice(2)) {
+for (const file of await expand(process.argv.slice(2))) {
   const svg = await readFile(file, 'utf8');
   const box = /viewBox="0 0 (\S+) (\S+)"/.exec(svg);
   const W = Number(box[1]), H = Number(box[2]);

@@ -92,11 +92,19 @@ git commit -am "RMUTT: 4 pods" && git push
 
 ผังสองชุดวาดคนละแบบเพราะสถาปัตยกรรมต่างกันจริง — `campus` มี Mobility Controller ที่ไซต์และ traffic วิ่งใน GRE tunnel ส่วน `cloud` ให้ Central ดูแลเฉพาะ config/auth แล้ว AP bridge traffic ลง VLAN ที่ไซต์เลย ฟิลด์ `diagramSet` ในไฟล์หลักสูตรเป็นตัวเลือกว่าใช้ชุดไหน
 
-### แบบร่าง (ยังไม่ขึ้นเว็บ)
+### สถานะของ event
 
-ใส่ `"draft": true` ในไฟล์ event แล้ว build จะข้ามไป — ใช้เตรียมหลักสูตรไว้ล่วงหน้าโดยที่ยังไม่รู้ลูกค้าหรือวันที่จริง ข้อมูล placeholder จะได้ไม่หลุดขึ้นเว็บสาธารณะ
+| ฟิลด์ | ผล |
+|---|---|
+| _(ไม่ใส่อะไร)_ | ขึ้นเว็บปกติ · อยู่ในหน้ารวม · ชิงเป็นหน้าแรกได้ถ้าวันที่ใกล้สุด |
+| `"unlisted": true` | ขึ้นเว็บที่ URL ตัวเอง แต่**ไม่มีลิงก์จากหน้าไหน** · ไม่อยู่ในหน้ารวม · ไม่เป็นหน้าแรก · ใส่ `noindex, nofollow` |
+| `"draft": true` | ไม่ build เลย (แต่ยังตรวจ format วันที่ให้) |
 
-พอได้งานจริง: แก้ `customer` / `attendees` / `partnerLine` / `venue` / `date` / `slug` แล้วลบบรรทัด `draft` ออก
+พอได้งานจริง: แก้ `customer` / `attendees` / `partnerLine` / `venue` / `date` / `slug` แล้วลบบรรทัด `unlisted` หรือ `draft` ออก
+
+> **`unlisted` ไม่ใช่ระบบความปลอดภัย** — repo นี้เป็น public ใครเปิด github.com/sihanart/Training ก็อ่านทั้งไฟล์ JSON และ HTML ที่ generate ออกมาได้
+>
+> มันกันได้แค่ **คนที่เดินเข้ามาทางหน้าเว็บกับ search engine** เท่านั้น ถ้าต้องการกันจริง ๆ ต้องเปลี่ยน repo เป็น private แล้วย้าย hosting ไป Cloudflare Pages / Netlify (free tier deploy จาก private repo ได้) และถ้าอยากได้ระดับ "ต้องล็อกอินก่อนถึงเปิดได้" ต้องใช้ Cloudflare Access ครอบอีกชั้น
 
 ## แก้หลักสูตร
 

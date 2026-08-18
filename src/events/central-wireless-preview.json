@@ -1,0 +1,17 @@
+{
+  "unlisted": true,
+
+  "_comment": "หน้าตัวอย่างหลักสูตร CNX — เผยแพร่แล้วแต่ไม่ลิงก์จากหน้าไหน และใส่ noindex ไว้ เมื่อได้ลูกค้าจริง: แก้ customer/attendees/partnerLine/venue/date/slug แล้วลบบรรทัด unlisted",
+
+  "slug": "central-wireless-preview",
+  "course": "central-wireless",
+  "date": "2026-12-01",
+
+  "organizer": "Commserv Siam",
+  "customer": "ตัวอย่าง",
+  "attendees": "ยังไม่ระบุ",
+  "partnerLine": "ตัวอย่าง × Commserv Siam",
+  "venue": "ยังไม่ระบุ",
+
+  "podsDrawn": 2
+}

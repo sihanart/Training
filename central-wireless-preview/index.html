@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HPE Aruba Networking Central (CNX) — Network Diagram | ตัวอย่าง × Commserv Siam</title>
+<meta name="description" content="แผนผังเครือข่ายสำหรับอบรม HPE Aruba Networking Central (New CNX) — สถาปัตยกรรม cloud-managed, Central NAC, Lab topology และแผน SSID/VLAN">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B1F2A; --panel:#102A38; --panel-2:#16394B;
+  --paper:#F1F4F3; --card:#FFFFFF; --line:#D6E0DC;
+  --text:#12242F; --muted:#5E7280;
+  --led:#38D39F; --amber:#FF8300; --blue:#1E6BB8;
+  --sans:"IBM Plex Sans Thai","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--paper);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.mono{font-family:var(--mono)}
+.wrap{width:min(1240px,92vw);margin-inline:auto}
+
+/* ---------- hero ---------- */
+header{background:var(--ink);color:#E7EFEC;padding:38px 0 0;background-image:linear-gradient(180deg,#0B1F2A,#0E2635)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--led)}
+h1{font-size:clamp(28px,4.4vw,50px);line-height:1.12;margin:12px 0 10px;font-weight:700;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--amber)}
+.lede{color:#9FB4BD;max-width:64ch;margin:0 0 24px}
+.meta{display:flex;flex-wrap:wrap;gap:10px 26px;padding:0 0 30px;font-family:var(--mono);font-size:12.5px;color:#8DA6B1}
+.meta b{color:#E7EFEC;font-weight:500}
+
+/* ---------- signature: switch faceplate nav ---------- */
+.faceplate{position:sticky;top:0;z-index:40;background:var(--panel);border-top:1px solid #1F4256;border-bottom:3px solid #071620;
+  box-shadow:0 10px 24px -18px rgba(0,0,0,.8)}
+.faceplate .wrap{display:flex;align-items:stretch;gap:0;overflow-x:auto;scrollbar-width:none}
+.faceplate .wrap::-webkit-scrollbar{display:none}
+.plate-label{display:flex;align-items:center;gap:8px;padding-right:20px;margin-right:8px;border-right:1px solid #23485C;
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:#6E8F9E;text-transform:uppercase;white-space:nowrap}
+.port{display:flex;flex-direction:column;gap:5px;padding:11px 16px 10px;text-decoration:none;color:#9FB4BD;
+  border-right:1px solid #1B3B4D;min-width:118px;transition:background .18s,color .18s}
+.port:hover{background:#174054;color:#fff}
+.port:focus-visible{outline:2px solid var(--led);outline-offset:-2px}
+.jack{position:relative;display:block;width:26px;height:17px;border:1.5px solid #4A768A;border-radius:2px;background:#0C2331}
+.jack::after{content:"";position:absolute;left:8px;top:-4px;width:9px;height:5px;border:1.5px solid #4A768A;border-bottom:none;border-radius:2px 2px 0 0;background:#0C2331}
+.jack i{position:absolute;bottom:2px;width:4px;height:4px;border-radius:50%;background:#28414E}
+.jack i:first-child{left:3px}.jack i:last-child{right:3px}
+.port.on .jack{border-color:var(--led)}
+.port.on .jack::after{border-color:var(--led)}
+.port.on .jack i:first-child{background:var(--led);box-shadow:0 0 7px var(--led)}
+.port.on .jack i:last-child{background:var(--amber)}
+.port.on{color:#fff;background:#174054}
+.pnum{font-size:10.5px;letter-spacing:.1em;color:#6E8F9E}
+.port.on .pnum{color:var(--led)}
+.pname{font-size:13px;white-space:nowrap}
+
+/* ---------- sections ---------- */
+section{padding:64px 0 8px}
+.sechead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.sechead .mono{font-size:12px;letter-spacing:.14em;color:var(--amber);text-transform:uppercase}
+h2{font-size:clamp(21px,2.5vw,30px);margin:0;font-weight:600;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:6px 0 22px;max-width:76ch}
+
+.figure{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.figbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 14px;border-bottom:1px solid var(--line);background:#FAFCFB}
+.figbar span{font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.06em}
+.figtools{display:flex;gap:8px}
+button.tool{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--text);background:#fff;border:1px solid var(--line);
+  border-radius:5px;padding:5px 11px;cursor:pointer;transition:border-color .15s,color .15s}
+button.tool:hover{border-color:var(--blue);color:var(--blue)}
+button.tool:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.figscroll{overflow-x:auto;padding:8px}
+.swipe{display:none;font-family:var(--mono);font-size:11px;color:var(--muted);padding:0 14px 10px}
+.figscroll svg{display:block;width:100%;height:auto;min-width:900px}
+.caption{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin:20px 0 0}
+.cap{border-left:3px solid var(--blue);padding:2px 0 2px 14px}
+.cap.amber{border-color:var(--amber)}
+.cap h4{margin:0 0 4px;font-size:14.5px;font-weight:600}
+.cap p{margin:0;font-size:13.5px;color:var(--muted)}
+
+/* ---------- table ---------- */
+.tablecard{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:auto}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);background:#FAFCFB}
+tr:last-child td{border-bottom:none}
+.vid{color:var(--blue);font-weight:600}
+td.note{color:var(--muted);font-size:13px}
+.hint{margin-top:12px;font-size:13.5px;color:var(--muted)}
+.hint code{font-family:var(--mono);background:#E7EDEB;border-radius:4px;padding:1px 6px;font-size:12.5px}
+
+/* ---------- agenda ---------- */
+ol.agenda{list-style:none;margin:0;padding:0;border-left:2px solid var(--line);max-width:760px}
+li.ag{position:relative;padding:0 0 24px 26px}
+li.ag::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--card);border:2px solid var(--blue)}
+li.ag-break::before{border-color:var(--line)}
+li.ag h4{margin:0;font-size:15.5px;font-weight:600}
+li.ag p{margin:3px 0 0;font-size:13.5px;color:var(--muted)}
+li.ag .time{display:block;font-size:12px;color:var(--amber);letter-spacing:.06em}
+li.ag-break h4{font-weight:400;color:var(--muted)}
+li.ag-break .time{color:var(--muted)}
+
+/* ---------- lightbox ---------- */
+.lb{position:fixed;inset:0;z-index:90;background:rgba(8,22,30,.94);display:none;flex-direction:column}
+.lb.open{display:flex}
+.lbbar{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;color:#9FB4BD;font-family:var(--mono);font-size:12px}
+.lbbar button{background:transparent;border:1px solid #33566A;color:#D8E4E1;border-radius:5px;padding:5px 12px;margin-left:6px;cursor:pointer;font-family:var(--mono);font-size:12px}
+.lbbar button:hover{border-color:var(--led);color:#fff}
+.lbstage{flex:1;overflow:hidden;cursor:grab;display:flex;align-items:center;justify-content:center}
+.lbstage.drag{cursor:grabbing}
+.lbstage>div{transform-origin:center center;will-change:transform}
+.lbstage svg{width:min(1600px,96vw);height:auto;background:#fff;border-radius:6px}
+
+footer{margin-top:64px;background:var(--ink);color:#8DA6B1;padding:30px 0;font-size:13.5px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px 30px;justify-content:space-between;align-items:center}
+footer b{color:#E7EFEC;font-weight:500}
+footer a{color:#9FB4BD}
+
+@media (max-width:640px){
+  .figscroll{padding:4px}
+  .swipe{display:block}
+  .figbar{flex-wrap:wrap}
+  .plate-label{display:none}
+  section{padding:44px 0 4px}
+}
+@media print{
+  .faceplate,.figtools,.lb,footer{display:none!important}
+  body{background:#fff}
+  .figscroll svg{min-width:0}
+  section{padding:18px 0;break-inside:avoid}
+  header{background:#fff;color:#000}
+  .lede,.meta{color:#333}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="eyebrow">Training reference · 1 ธ.ค. 2569</p>
+    <h1>HPE Aruba Networking Central (New CNX) — Wireless<br><em>Cloud Architecture &amp; Lab Topology</em></h1>
+    <p class="lede">แผนผังสำหรับใช้อ้างอิงระหว่างอบรม — สถาปัตยกรรมแบบ cloud-managed ที่ Central ทำหน้าที่ควบคุมและยืนยันตัวตน ส่วน traffic ของผู้ใช้ออก Internet ที่ไซต์โดยตรง พร้อมผัง Lab แยกตาม Pod เปิดจากมือถือได้ระหว่างทำแลบ</p>
+    <div class="meta">
+      <div>หลักสูตร <b>Aruba Central (New CNX) — Wireless</b></div>
+      <div>จัดโดย <b>Commserv Siam</b></div>
+      <div>ผู้เข้าอบรม <b>ยังไม่ระบุ</b></div>
+      <div>สถานที่ <b>ยังไม่ระบุ</b></div>
+    </div>
+  </div>
+</header>
+
+<nav class="faceplate" aria-label="สารบัญ">
+  <div class="wrap">
+    <div class="plate-label">Link status</div>
+    <a class="port" href="#overview" data-target="overview"><span class="jack"><i></i><i></i></span><span class="mono pnum">01</span><span class="pname">Architecture</span></a>
+    <a class="port" href="#lab" data-target="lab"><span class="jack"><i></i><i></i></span><span class="mono pnum">02</span><span class="pname">Lab topology</span></a>
+    <a class="port" href="#vlan" data-target="vlan"><span class="jack"><i></i><i></i></span><span class="mono pnum">03</span><span class="pname">SSID / VLAN</span></a>
+    <a class="port" href="#agenda" data-target="agenda"><span class="jack"><i></i><i></i></span><span class="mono pnum">04</span><span class="pname">Agenda</span></a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="overview">
+  <div class="sechead"><span class="mono">01</span><h2>สถาปัตยกรรม CNX</h2></div>
+  <p class="sub">Cloud-managed wireless — Central ดูแล config และ authentication ส่วน traffic ของผู้ใช้ออก Internet ที่ไซต์โดยตรง</p>
+  <figure class="figure" style="margin:0">
+    <div class="figbar">
+      <span>FIG.01 — CNX CLOUD ARCHITECTURE</span>
+      <div class="figtools">
+        <button class="tool" data-zoom="svg-overview">ขยายเต็มจอ</button>
+        <button class="tool" data-dl="svg-overview" data-name="01_Overview_CNX_Cloud_Architecture">ดาวน์โหลด SVG</button>
+      </div>
+    </div>
+    <div class="figscroll"><svg id="svg-overview" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900">
+<defs>
+<style>#svg-overview text{font-family:"IBM Plex Sans Thai","Sarabun","Loma","Noto Sans Thai","Sarabun","Segoe UI",sans-serif;fill:#0F1E2E}#svg-overview .h1{font-size:28px;font-weight:700}#svg-overview .sub{font-size:14px;fill:#5A6C7D}#svg-overview .lbl{font-size:15px;font-weight:700}#svg-overview .lbl2{font-size:13px;font-weight:700}#svg-overview .role{font-size:11.5px;fill:#41545F}#svg-overview .tiny{font-size:11px;fill:#5A6C7D}#svg-overview .tag{font-size:11px;font-weight:700;fill:#fff}#svg-overview .link{stroke:#4A6274;stroke-width:2.5;fill:none}#svg-overview .mgmt{stroke:#0E7C86;stroke-width:5;fill:none;stroke-linecap:round}#svg-overview .auth{stroke:#6B4EA8;stroke-width:2.5;stroke-dasharray:3 5;fill:none}#svg-overview .data{stroke:#1E6BB8;stroke-width:3;fill:none}#svg-overview .air{stroke:#14996B;stroke-width:2;fill:none;opacity:.75}#svg-overview .grp{fill:#FAFCFE;stroke:#C7D6E2;stroke-width:1.5;stroke-dasharray:6 5}#svg-overview .cloud{fill:#F7FAFE;stroke:#8FB3D9;stroke-width:2;stroke-dasharray:8 6}
+</style>
+<marker id="am-svg-overview" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M0 0 L10 5 L0 10 z" fill="#6B4EA8"/></marker>
+<marker id="ad-svg-overview" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M0 0 L10 5 L0 10 z" fill="#1E6BB8"/></marker>
+</defs>
+
+<rect width="1400" height="900" fill="#FFFFFF"/>
+<text class="h1" x="40" y="48">HPE Aruba Networking Central (CNX) — Cloud Architecture</text>
+<text class="sub" x="40" y="72">Cloud-managed wireless · Control plane บน cloud, data plane ที่ไซต์ — ตัวอย่าง / Commserv Siam · 1 ธ.ค. 2569</text>
+<line x1="40" y1="88" x2="1360" y2="88" stroke="#E1E9EF" stroke-width="2"/>
+
+<!-- ============ CLOUD ============ -->
+<rect class="cloud" x="350" y="104" width="740" height="226" rx="16"/>
+<text class="tiny" x="366" y="126" fill="#4C7BA8" font-weight="700">HPE ARUBA NETWORKING CENTRAL — CLOUD (SaaS)</text>
+
+<rect x="368" y="142" width="346" height="170" rx="10" fill="#E8F1F8" stroke="#1E6BB8" stroke-width="2.5"/>
+<rect x="368" y="142" width="346" height="26" rx="10" fill="#1E6BB8"/>
+<text class="tag" x="382" y="160">CENTRAL — CONFIG &amp; OPERATIONS</text>
+<text class="lbl2" x="382" y="188">New Central (CNX)</text>
+<text class="role" x="382" y="210">• Configuration Group · Site · Label</text>
+<text class="role" x="382" y="229">• Device onboarding + License assignment</text>
+<text class="role" x="382" y="248">• Firmware compliance</text>
+<text class="role" x="382" y="267">• Monitoring · Floorplan · Reporting</text>
+<text class="role" x="382" y="286">• WLAN tuning (AI Insights / RF)</text>
+
+<rect x="726" y="142" width="346" height="170" rx="10" fill="#F1ECFB" stroke="#6B4EA8" stroke-width="2.5"/>
+<rect x="726" y="142" width="346" height="26" rx="10" fill="#6B4EA8"/>
+<text class="tag" x="740" y="160">CENTRAL NAC / CENTRAL POLICY MANAGER</text>
+<text class="lbl2" x="740" y="188">Cloud NAC</text>
+<text class="role" x="740" y="210">• Cloud RADIUS — ไม่ต้องมี server ที่ไซต์</text>
+<text class="role" x="740" y="229">• 802.1X (EAP) · MAC Authentication</text>
+<text class="role" x="740" y="248">• Guest self-registration portal</text>
+<text class="role" x="740" y="267">• Role-based firewall policy</text>
+<text class="role" x="740" y="286">• Client Insights / device profiling</text>
+
+<!-- Identity provider, outside Central -->
+<rect x="1120" y="160" width="240" height="140" rx="10" fill="#EFF3F7" stroke="#5A6C7D" stroke-width="2"/>
+<text class="lbl2" x="1136" y="188">Microsoft Entra ID</text>
+<text class="role" x="1136" y="212">Identity provider</text>
+<text class="role" x="1136" y="231">User / Group</text>
+<text class="role" x="1136" y="250">» map เป็น Role</text>
+<text class="role" x="1136" y="269">บน Central NAC</text>
+<path class="auth" marker-end="url(#am-svg-overview)" d="M1072 230 H 1120"/>
+
+<!-- ============ INTERNET ============ -->
+<path d="M90 402 a30 30 0 0 1 30-30 h110 a30 30 0 0 1 0 60 h-110 a30 30 0 0 1-30-30z" fill="#EEF3F7" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl" x="140" y="398">Internet</text>
+<text class="tiny" x="115" y="416">WAN ของไซต์</text>
+
+<!-- site uplink to the cloud: management + auth ride the same physical path -->
+<path class="mgmt" d="M175 372 V 350 H 430 V 330"/>
+<path class="auth" d="M195 372 V 340 H 800 V 330"/>
+<text class="tiny" x="238" y="344" fill="#0B6068" font-weight="700">HTTPS / WSS 443</text>
+<text class="tiny" x="440" y="334" fill="#59418F" font-weight="700">RadSec TLS 2083</text>
+
+<!-- ============ FLOWS ============ -->
+<circle cx="660" cy="360" r="13" fill="#0E7C86"/><text class="tag" x="655" y="365">1</text>
+<text class="role" x="684" y="354" font-size="12">Management: AP » Switch » Firewall » Internet » Central</text>
+<text class="role" x="684" y="372" font-size="12">HTTPS / WSS 443 — onboarding, config, telemetry</text>
+
+<circle cx="660" cy="396" r="13" fill="#6B4EA8"/><text class="tag" x="655" y="401">2</text>
+<text class="role" x="684" y="390" font-size="12">Authentication: AP » RadSec (TLS 2083) » Central NAC</text>
+<text class="role" x="684" y="408" font-size="12">802.1X ส่งต่อไป Entra ID · MAC Auth ตัดสินใจใน cloud</text>
+
+<circle cx="660" cy="432" r="13" fill="#1E6BB8"/><text class="tag" x="655" y="437">3</text>
+<text class="role" x="684" y="426" font-size="12">User data (Bridge mode): Client » AP » VLAN ที่ไซต์</text>
+<text class="role" x="684" y="444" font-size="12">» Firewall ที่ไซต์ » Internet — ไม่วิ่งผ่าน Central</text>
+
+<!-- ============ SITE ============ -->
+<rect class="grp" x="40" y="456" width="1320" height="296" rx="12"/>
+<text class="tiny" x="56" y="476">ON-PREM SITE — อุปกรณ์ที่ไซต์ลูกค้า</text>
+
+<rect x="70" y="492" width="190" height="64" rx="9" fill="#FDECEC" stroke="#C0504D" stroke-width="2"/>
+<text class="lbl2" x="86" y="518">Firewall / NAT Router</text>
+<text class="role" x="86" y="538">ขาออก TCP 443 ถึง Central</text>
+<line class="link" x1="165" y1="492" x2="165" y2="432"/>
+
+<rect x="330" y="492" width="280" height="80" rx="9" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
+<text class="lbl2" x="346" y="516">Access Switch (PoE+)</text>
+<text class="role" x="346" y="536">จ่ายไฟ AP · Trunk VLAN ผู้ใช้</text>
+<text class="role" x="346" y="554">ไม่ต้อง config อะไรเป็นพิเศษ</text>
+<line class="link" x1="260" y1="524" x2="330" y2="524"/>
+
+<rect x="330" y="616" width="130" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl2" x="346" y="642">AP #1</text>
+<text class="role" x="346" y="662">PoE+ · Wi-Fi 6/6E</text>
+<line class="link" x1="395" y1="572" x2="395" y2="616"/>
+<path class="air" d="M360 608 a35 35 0 0 1 50 0"/>
+<rect x="480" y="616" width="130" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl2" x="496" y="642">AP #2</text>
+<text class="role" x="496" y="662">PoE+ · Roaming</text>
+<line class="link" x1="545" y1="572" x2="545" y2="616"/>
+<path class="air" d="M510 608 a35 35 0 0 1 50 0"/>
+<text class="tiny" x="400" y="598">PoE+</text>
+
+<rect x="680" y="616" width="200" height="66" rx="9" fill="#E8F1F8" stroke="#1E6BB8" stroke-width="2"/>
+<text class="lbl2" x="696" y="642">Employee</text>
+<text class="role" x="696" y="662">802.1X » Entra ID</text>
+<rect x="910" y="616" width="200" height="66" rx="9" fill="#FFF3E6" stroke="#FF8300" stroke-width="2"/>
+<text class="lbl2" x="926" y="642">Guest</text>
+<text class="role" x="926" y="662">Self-registration portal</text>
+<rect x="1140" y="616" width="200" height="66" rx="9" fill="#EFF6F1" stroke="#4B8F6E" stroke-width="2"/>
+<text class="lbl2" x="1156" y="642">IoT / Device</text>
+<text class="role" x="1156" y="662">PSK + MAC Auth</text>
+<path class="air" d="M614 649 H 674" stroke-dasharray="4 4"/>
+
+<!-- data path stays on site -->
+<path class="data" marker-end="url(#ad-svg-overview)" d="M700 700 H 400 V 690" />
+<text class="role" x="712" y="704" font-size="12" fill="#1A5C9E" font-weight="700">» Firewall ที่ไซต์ » Internet — ไม่วิ่งผ่าน Central</text>
+<line class="link" x1="470" y1="682" x2="470" y2="700" stroke-dasharray="4 4"/>
+
+<!-- ============ CALLOUT + LEGEND ============ -->
+<rect x="40" y="768" width="830" height="112" rx="10" fill="#FFF8EC" stroke="#E8C88A" stroke-width="1.5"/>
+<text class="lbl2" x="58" y="792" fill="#8A5A12">ต่างจาก AOS-8 Controller ตรงไหน</text>
+<text class="role" x="58" y="814">AOS-8: traffic ผู้ใช้วิ่งใน GRE tunnel ขึ้น Mobility Controller ก่อนออก Internet</text>
+<text class="role" x="58" y="834">CNX: AP bridge ลง VLAN ที่ไซต์เลย cloud เห็นแค่ config / auth / telemetry</text>
+<text class="role" x="58" y="854">» Central ล่ม = client ที่ต่ออยู่ยังใช้เน็ตได้ แต่ auth ใหม่และแก้ config จะทำไม่ได้</text>
+
+<rect x="890" y="768" width="470" height="112" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<path class="mgmt" d="M910 792 H 958"/><text class="tiny" x="968" y="796">Management · HTTPS/WSS 443</text>
+<path class="auth" d="M910 818 H 958"/><text class="tiny" x="968" y="822">Authentication · RadSec / RADIUS</text>
+<path class="data" d="M910 844 H 958"/><text class="tiny" x="968" y="848">User data · bridge ลง VLAN ที่ไซต์</text>
+<path class="air" d="M914 872 a24 24 0 0 1 40 0"/><text class="tiny" x="968" y="872">Wireless (SSID broadcast)</text>
+</svg></div>
+    <p class="swipe">เลื่อนซ้าย–ขวาเพื่อดูทั้งผัง · แตะที่ผังเพื่อขยาย</p>
+  </figure>
+  <div class="caption">
+    <div class="cap"><h4>① Control plane อยู่บน cloud</h4><p>Config, firmware, monitoring, floorplan และ report ทำจาก Central ทั้งหมด ไม่มีตัวจัดการที่ไซต์</p></div>
+    <div class="cap amber"><h4>② NAC ก็อยู่บน cloud</h4><p>Central NAC เป็น RADIUS ให้เลย — MAC Auth, Guest portal และ 802.1X ที่ผูกกับ Entra ID โดยไม่ต้องตั้ง ClearPass ที่ไซต์</p></div>
+    <div class="cap"><h4>③ Data plane อยู่ที่ไซต์</h4><p>AP bridge traffic ลง VLAN ที่ไซต์แล้วออก Internet ที่นั่น — เป็นจุดต่างสำคัญจากสถาปัตยกรรม controller แบบเดิม</p></div>
+  </div>
+</section>
+
+<section id="lab">
+  <div class="sechead"><span class="mono">02</span><h2>Lab topology (แบ่งตาม Pod)</h2></div>
+  <p class="sub">Pod ละ 2–3 คน แต่ละ Pod ได้ Configuration Group + Site ของตัวเองบน Central และ SSID คนละชุด เพื่อให้ config ทับกันไม่ได้</p>
+  <figure class="figure" style="margin:0">
+    <div class="figbar">
+      <span>FIG.02 — LAB TOPOLOGY</span>
+      <div class="figtools">
+        <button class="tool" data-zoom="svg-lab">ขยายเต็มจอ</button>
+        <button class="tool" data-dl="svg-lab" data-name="02_Lab_Topology_CNX">ดาวน์โหลด SVG</button>
+      </div>
+    </div>
+    <div class="figscroll"><svg id="svg-lab" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1130">
+<defs>
+<style>#svg-lab text{font-family:"IBM Plex Sans Thai","Sarabun","Loma","Noto Sans Thai","Sarabun","Segoe UI",sans-serif;fill:#0F1E2E}#svg-lab .h1{font-size:28px;font-weight:700}#svg-lab .sub{font-size:14px;fill:#5A6C7D}#svg-lab .lbl{font-size:15px;font-weight:700}#svg-lab .lbl2{font-size:13px;font-weight:700}#svg-lab .role{font-size:11.5px;fill:#41545F}#svg-lab .tiny{font-size:11px;fill:#5A6C7D}#svg-lab .tag{font-size:11px;font-weight:700;fill:#fff}#svg-lab .th{font-size:11.5px;font-weight:700;fill:#1E6BB8}#svg-lab .td{font-size:11.5px;fill:#33454F}#svg-lab .link{stroke:#4A6274;stroke-width:2.5;fill:none}#svg-lab .link10{stroke:#0E7C86;stroke-width:5;fill:none;stroke-linecap:round}#svg-lab .auth{stroke:#6B4EA8;stroke-width:2.5;stroke-dasharray:3 5;fill:none}#svg-lab .air{stroke:#14996B;stroke-width:2;fill:none;opacity:.75}#svg-lab .grp{fill:#FAFCFE;stroke:#C7D6E2;stroke-width:1.5;stroke-dasharray:6 5}#svg-lab .cloud{fill:#F7FAFE;stroke:#8FB3D9;stroke-width:2;stroke-dasharray:8 6}
+</style>
+<marker id="am-svg-lab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M0 0 L10 5 L0 10 z" fill="#6B4EA8"/></marker>
+</defs>
+
+<rect width="1440" height="1130" fill="#FFFFFF"/>
+<text class="h1" x="40" y="48">Aruba Central (CNX) Wireless Training — Lab Topology</text>
+<text class="sub" x="40" y="74">ตัวอย่าง × Commserv Siam · 1 ธ.ค. 2569 · Lab 0–2: Onboarding &amp; Group — Lab 3: WLAN &amp; Auth — Lab 4–7: Monitor, Floorplan, Report</text>
+<line x1="40" y1="90" x2="1400" y2="90" stroke="#E1E9EF" stroke-width="2"/>
+
+<!-- Internet + edge -->
+<path d="M75 148 a30 30 0 0 1 30-30 h110 a30 30 0 0 1 0 60 h-110 a30 30 0 0 1-30-30z" fill="#EEF3F7" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl" x="128" y="143">Internet</text>
+<text class="tiny" x="95" y="160">Venue WAN / 4G Router</text>
+<rect x="75" y="215" width="180" height="58" rx="8" fill="#FDECEC" stroke="#C0504D" stroke-width="2"/>
+<text class="lbl2" x="90" y="240">NAT Router / Firewall</text>
+<text class="role" x="90" y="259">VLAN 100 · 192.168.100.254</text>
+<line class="link" x1="165" y1="178" x2="165" y2="215"/>
+<line class="link" x1="255" y1="244" x2="330" y2="244"/>
+
+<!-- Shared PoE switch -->
+<rect x="330" y="185" width="470" height="122" rx="10" fill="#E8F1F8" stroke="#1E6BB8" stroke-width="2.5"/>
+<rect x="330" y="185" width="470" height="26" rx="10" fill="#1E6BB8"/>
+<text class="tag" x="344" y="203">SWITCH กลาง (ใช้ร่วมกันทุก Pod) — PoE+</text>
+<text class="role" x="344" y="233">• จ่ายไฟ PoE+ ให้ AP ทุก Pod</text>
+<text class="role" x="344" y="252">• Trunk VLAN n1–n4 ของทุก Pod ลงพอร์ตที่ต่อ AP</text>
+<text class="role" x="344" y="271">• DHCP ที่ไซต์แจก IP ให้ AP และ client</text>
+<text class="role" x="344" y="290">• ขาออก TCP 443 ต้องเปิดถึง Central (ไม่ต้องเปิด inbound)</text>
+
+<!-- Cloud column -->
+<rect class="cloud" x="986" y="104" width="428" height="248" rx="16"/>
+
+<rect x="1000" y="126" width="400" height="104" rx="10" fill="#E8F1F8" stroke="#1E6BB8" stroke-width="2.5"/>
+<rect x="1000" y="126" width="400" height="26" rx="10" fill="#1E6BB8"/>
+<text class="tag" x="1014" y="144">HPE ARUBA NETWORKING CENTRAL (CNX) — CLOUD</text>
+<text class="role" x="1014" y="174">• Configuration Group + Site แยกต่อ Pod</text>
+<text class="role" x="1014" y="193">• License assignment · Firmware compliance</text>
+<text class="role" x="1014" y="212">• Monitoring · Floorplan · Reporting</text>
+
+<rect x="1000" y="244" width="400" height="90" rx="10" fill="#F1ECFB" stroke="#6B4EA8" stroke-width="2.5"/>
+<text class="lbl2" x="1014" y="268">Central NAC / Policy Manager (Cloud)</text>
+<text class="role" x="1014" y="288">• Cloud RADIUS — MAC Auth (Lab 3.1)</text>
+<text class="role" x="1014" y="307">• Guest self-registration (Lab 3.2)</text>
+<text class="role" x="1014" y="326">• 802.1X + Role-based firewall (Lab 3.3)</text>
+
+<rect x="1000" y="372" width="400" height="58" rx="10" fill="#EFF3F7" stroke="#5A6C7D" stroke-width="2"/>
+<text class="lbl2" x="1014" y="396">Microsoft Entra ID — Identity</text>
+<text class="role" x="1014" y="416">User / Group » Role บน Central NAC</text>
+<path class="auth" marker-end="url(#am-svg-lab)" d="M1200 334 V 372"/>
+
+<!-- site uplink: management to Central, auth to Central NAC -->
+<path class="link10" d="M800 180 H 1000"/>
+<text class="tiny" x="812" y="170">HTTPS / WSS 443 — config, firmware, telemetry</text>
+<path class="auth" d="M1000 289 H 860 V 307"/>
+<text class="tiny" x="812" y="283" fill="#59418F">RadSec 2083 — 802.1X / MAC Auth</text>
+
+<path class="link10" d="M150 512 L 424 307"/>
+<path class="link10" d="M410 512 L 518 307"/>
+<path class="link10" d="M610 512 L 612 307"/>
+<path class="link10" d="M870 512 L 706 307"/>
+<text class="tiny" x="74" y="446">Trunk (VLAN n1–n4) + PoE+ จาก Switch กลาง</text>
+
+<!-- ============ POD 1 ============ -->
+<rect class="grp" x="60" y="470" width="440" height="420" rx="12"/>
+<rect x="60" y="470" width="130" height="28" rx="10" fill="#1E6BB8"/>
+<text class="tag" x="76" y="489">POD 1 (2–3 คน)</text>
+
+<rect x="82" y="512" width="396" height="56" rx="9" fill="#F2F7FB" stroke="#1E6BB8" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text class="lbl2" x="96" y="534">Trunk (VLAN n1–n4) + PoE+ จาก Switch กลาง</text>
+<text class="role" x="96" y="554">VLAN 11–14 · DHCP ที่ไซต์</text>
+
+<rect x="88" y="600" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl2" x="102" y="626">AP #1</text>
+<text class="role" x="102" y="646">PoE+ · Wi-Fi 6/6E</text>
+<rect x="222" y="600" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl2" x="236" y="626">AP #2</text>
+<text class="role" x="236" y="646">PoE+ · ใช้สาธิต roaming</text>
+<rect x="356" y="600" width="122" height="66" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl2" x="370" y="626">Notebook</text>
+<text class="role" x="370" y="646">เข้า Central + ทดสอบ 802.1X</text>
+<line class="link" x1="147" y1="568" x2="147" y2="600"/>
+<line class="link" x1="281" y1="568" x2="281" y2="600"/>
+<line class="link" x1="417" y1="568" x2="417" y2="600"/>
+<text class="tiny" x="152" y="590">PoE+</text>
+
+<path class="air" d="M118 692 a38 38 0 0 1 56 0"/>
+<path class="air" d="M252 692 a38 38 0 0 1 56 0"/>
+<rect x="88" y="714" width="252" height="58" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl2" x="102" y="736">มือถือ / IoT client</text>
+<text class="role" x="102" y="756">ทดสอบ Guest portal + MAC Auth</text>
+<line class="link" x1="214" y1="666" x2="214" y2="714" stroke-dasharray="4 4"/>
+
+<text class="role" x="88" y="806">SSID: POD1-IOT (PSK + MAC) · POD1-GUEST (Self-Reg) · POD1-EMP (802.1X)</text>
+<text class="role" x="88" y="828" fill="#4C7BA8">Central: Group POD-1 · Site POD-1</text>
+
+<!-- ============ POD 2 ============ -->
+<rect class="grp" x="520" y="470" width="440" height="420" rx="12"/>
+<rect x="520" y="470" width="130" height="28" rx="10" fill="#1E6BB8"/>
+<text class="tag" x="536" y="489">POD 2 (2–3 คน)</text>
+
+<rect x="542" y="512" width="396" height="56" rx="9" fill="#F2F7FB" stroke="#1E6BB8" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text class="lbl2" x="556" y="534">Trunk (VLAN n1–n4) + PoE+ จาก Switch กลาง</text>
+<text class="role" x="556" y="554">VLAN 21–24 · DHCP ที่ไซต์</text>
+
+<rect x="548" y="600" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl2" x="562" y="626">AP #1</text>
+<text class="role" x="562" y="646">PoE+ · Wi-Fi 6/6E</text>
+<rect x="682" y="600" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl2" x="696" y="626">AP #2</text>
+<text class="role" x="696" y="646">PoE+ · ใช้สาธิต roaming</text>
+<rect x="816" y="600" width="122" height="66" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl2" x="830" y="626">Notebook</text>
+<text class="role" x="830" y="646">เข้า Central + ทดสอบ 802.1X</text>
+<line class="link" x1="607" y1="568" x2="607" y2="600"/>
+<line class="link" x1="741" y1="568" x2="741" y2="600"/>
+<line class="link" x1="877" y1="568" x2="877" y2="600"/>
+
+<path class="air" d="M578 692 a38 38 0 0 1 56 0"/>
+<path class="air" d="M712 692 a38 38 0 0 1 56 0"/>
+<rect x="548" y="714" width="252" height="58" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl2" x="562" y="736">มือถือ / IoT client</text>
+<text class="role" x="562" y="756">ทดสอบ Guest portal + MAC Auth</text>
+<line class="link" x1="674" y1="666" x2="674" y2="714" stroke-dasharray="4 4"/>
+
+<text class="role" x="548" y="806">SSID: POD2-IOT (PSK + MAC) · POD2-GUEST (Self-Reg) · POD2-EMP (802.1X)</text>
+<text class="role" x="548" y="828" fill="#4C7BA8">Central: Group POD-2 · Site POD-2</text>
+
+<!-- ============ POD n note ============ -->
+<rect class="grp" x="1000" y="470" width="400" height="420" rx="12"/>
+<rect x="1000" y="470" width="150" height="28" rx="10" fill="#7A8C99"/>
+<text class="tag" x="1016" y="489">POD 3 ... POD n</text>
+<text class="role" x="1016" y="524">• อุปกรณ์และการต่อสายเหมือน Pod 1 ทุกประการ</text>
+<text class="role" x="1016" y="546">• เปลี่ยนเฉพาะ Group / Site / VLAN / ชื่อ SSID</text>
+<text class="role" x="1016" y="568">• แนะนำ 2–3 คน/Pod เพื่อให้ทุกคนได้ลงมือ config</text>
+
+<line x1="1016" y1="588" x2="1384" y2="588" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="1016" y="612">ถ้าอุปกรณ์ไม่พอ (ปรับได้)</text>
+<text class="role" x="1016" y="634">• AP: อย่างน้อย 1 ตัว/Pod (2 ตัว จะสาธิต roaming ได้)</text>
+<text class="role" x="1016" y="656">• Switch: ใช้ตัวเดียวร่วมกันได้ แยก VLAN ต่อ Pod</text>
+<text class="role" x="1016" y="678">• Central: 1 tenant ใช้ร่วม — แยกด้วย Group + Site ต่อ Pod</text>
+<text class="role" x="1016" y="700">• Entra ID: ใช้ tenant ทดสอบร่วมกัน แยก user group ต่อ Pod</text>
+<text class="role" x="1016" y="722">• License: ต้องมี AP license ครบตามจำนวน AP ที่ onboard</text>
+
+<line x1="1016" y1="742" x2="1384" y2="742" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="1016" y="766">สิ่งที่ต้องเตรียมก่อนวันอบรม</text>
+<text class="role" x="1016" y="788">• Notebook + เบราว์เซอร์ (ไม่ต้องลงโปรแกรม console)</text>
+<text class="role" x="1016" y="810">• บัญชี Central ที่มีสิทธิ์ระดับ admin ของ Group ตัวเอง</text>
+<text class="role" x="1016" y="832">• มือถือ 1 เครื่อง สำหรับทดสอบ Guest portal + MAC Auth</text>
+<text class="role" x="1016" y="854">• Internet ที่ไซต์เปิด TCP 443 ขาออก (และ UDP 123 NTP)</text>
+<text class="role" x="1016" y="876">* AP ต้องออกเน็ตได้และเวลาตรงก่อน ถึงจะ onboard เข้า Central สำเร็จ</text>
+
+<!-- ============ bottom band ============ -->
+<rect x="60" y="912" width="440" height="192" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="78" y="938">Legend</text>
+<line class="link" x1="80" y1="966" x2="128" y2="966"/><text class="tiny" x="138" y="970">Copper / PoE+ (AP, Notebook)</text>
+<path class="link10" d="M80 998 H 128"/><text class="tiny" x="138" y="1002">Trunk uplink · ขึ้น Cloud (443)</text>
+<path class="auth" d="M80 1030 H 128"/><text class="tiny" x="138" y="1034">Authentication · RadSec / Identity</text>
+<path class="air" d="M84 1062 a24 24 0 0 1 40 0"/><text class="tiny" x="138" y="1062">Wireless (SSID broadcast)</text>
+<text class="tiny" x="80" y="1094" fill="#4C7BA8">ไม่มี tunnel ขึ้น cloud — data ออกที่ไซต์</text>
+
+<rect x="520" y="912" width="440" height="192" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="538" y="938">SSID / VLAN Plan (n = หมายเลข Pod)</text>
+<text class="th" x="538" y="960">VLAN</text><text class="th" x="596" y="960">ชื่อ / การใช้งาน</text><text class="th" x="812" y="960">Subnet</text>
+<line x1="538" y1="966" x2="942" y2="966" stroke="#DCE6ED"/>
+<text class="td" x="538" y="986">n1</text><text class="td" x="596" y="986">MGMT — AP / Switch</text><text class="td" x="812" y="986">10.n.1.0/24</text>
+<text class="td" x="538" y="1005">n2</text><text class="td" x="596" y="1005">WLAN Employee — 802.1X</text><text class="td" x="812" y="1005">10.n.2.0/24</text>
+<text class="td" x="538" y="1024">n3</text><text class="td" x="596" y="1024">WLAN Guest — Self-registration</text><text class="td" x="812" y="1024">10.n.3.0/24</text>
+<text class="td" x="538" y="1043">n4</text><text class="td" x="596" y="1043">WLAN IoT — PSK + MAC Auth</text><text class="td" x="812" y="1043">10.n.4.0/24</text>
+<text class="td" x="538" y="1062">100</text><text class="td" x="596" y="1062">Transit / Internet uplink</text><text class="td" x="812" y="1062">192.168.100.0/24</text>
+<text class="td" x="538" y="1081">200</text><text class="td" x="596" y="1081">Services: DHCP / DNS / NTP</text><text class="td" x="812" y="1081">192.168.200.0/24</text>
+
+<rect x="1000" y="912" width="400" height="192" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="1018" y="938">หัวข้อ Lab » ทำที่ไหนในผัง</text>
+<text class="td" x="1018" y="962">Lab 0–1 Add Device / License / Group » Central (cloud)</text>
+<text class="td" x="1018" y="983">Lab 2 Connect Device · Site · Firmware » Central » AP</text>
+<text class="td" x="1018" y="1004">Lab 3.1 WLAN PSK + MAC Auth » AP + Central NAC</text>
+<text class="td" x="1018" y="1025">Lab 3.2 Guest Self-Registration » Portal บน Central NAC</text>
+<text class="td" x="1018" y="1046">Lab 3.3 802.1X + Role-based FW » Central NAC » Entra ID</text>
+<text class="td" x="1018" y="1067">Lab 4–5 Monitoring · Floorplan » Central (cloud)</text>
+<text class="td" x="1018" y="1088">Lab 6–7 Reporting · WLAN Tuning » Central (cloud)</text>
+</svg></div>
+    <p class="swipe">เลื่อนซ้าย–ขวาเพื่อดูทั้งผัง · แตะที่ผังเพื่อขยาย</p>
+  </figure>
+  <div class="caption">
+    <div class="cap"><h4>Lab 0–2 — ทำบน Central ล้วน</h4><p>เพิ่มอุปกรณ์, ผูก license, สร้าง Configuration Group และ Site, ตรวจ firmware compliance — ยังไม่ต้องแตะ CLI ของ AP เลย</p></div>
+    <div class="cap amber"><h4>Lab 3 — WLAN + Authentication</h4><p>สร้าง 3 SSID ต่อ Pod: PSK + MAC Auth, Guest self-registration และ 802.1X ที่ผูกกับ Entra ID พร้อม role-based firewall</p></div>
+    <div class="cap"><h4>Lab 4–7 — Day-2 operations</h4><p>Monitoring, Floorplan, Reporting และ WLAN tuning ทำจาก Central ทั้งหมด ใช้ข้อมูล telemetry ที่ AP ส่งขึ้น cloud</p></div>
+  </div>
+</section>
+
+<section id="vlan">
+  <div class="sechead"><span class="mono">03</span><h2>แผน SSID / VLAN</h2></div>
+  <p class="sub">n คือหมายเลข Pod — Pod 1 ใช้ VLAN 11–14 กับ 10.1.x.0/24, Pod 2 ใช้ VLAN 21–24 กับ 10.2.x.0/24 ไล่ไปเรื่อยๆ</p>
+  <div class="tablecard">
+    <table>
+      <thead><tr><th>VLAN</th><th>ชื่อ / การใช้งาน</th><th>Subnet</th><th>หมายเหตุ</th></tr></thead>
+      <tbody>
+<tr><td class="mono vid">n1</td><td>MGMT — AP / Switch</td><td class="mono">10.n.1.0/24</td><td class="note">AP รับ IP แล้วโทรออกหา Central เอง</td></tr>
+<tr><td class="mono vid">n2</td><td>WLAN Employee — 802.1X</td><td class="mono">10.n.2.0/24</td><td class="note">SSID PODn-EMP · Cloud NAC + Entra ID (Lab 3.3)</td></tr>
+<tr><td class="mono vid">n3</td><td>WLAN Guest — Self-registration</td><td class="mono">10.n.3.0/24</td><td class="note">SSID PODn-GUEST · Portal โฮสต์บน Central (Lab 3.2)</td></tr>
+<tr><td class="mono vid">n4</td><td>WLAN IoT — PSK + MAC Auth</td><td class="mono">10.n.4.0/24</td><td class="note">SSID PODn-IOT · ใช้สอน MAC Authentication (Lab 3.1)</td></tr>
+<tr><td class="mono vid">100</td><td>Transit / Internet uplink</td><td class="mono">192.168.100.0/24</td><td class="note">Default route → 192.168.100.254</td></tr>
+<tr><td class="mono vid">200</td><td>Services</td><td class="mono">192.168.200.0/24</td><td class="note">DHCP/DNS 192.168.200.30 — ไม่ต้องมี NAC on-prem</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="hint">ทุก SSID เป็น **Bridge mode** — client ได้ IP จาก DHCP ที่ไซต์และออก Internet ผ่าน gateway ที่ไซต์ ไม่มี tunnel ขึ้น cloud ดังนั้น VLAN ต้อง trunk มาถึงพอร์ตที่ต่อ AP</p>
+</section>
+
+<section id="agenda">
+  <div class="sechead"><span class="mono">04</span><h2>กำหนดการอบรม</h2></div>
+  <p class="sub">อังคารที่ 1 ธันวาคม 2569 — ช่วงที่มี LAB ให้เปิดหน้า Lab topology คู่กัน</p>
+  <ol class="agenda">
+<li class="ag"><span class="mono time">09:00</span><div><h4>Introduction to New Aruba Central</h4><p>ภาพรวม CNX · โครงสร้าง Group / Site / Label · ต่างจาก Central เดิมและจาก AOS-8 อย่างไร</p></div></li>
+<li class="ag"><span class="mono time">09:40</span><div><h4>Central NAC &amp; Central Policy Manager</h4><p>Cloud RADIUS · Role-based policy · การผูก identity provider</p></div></li>
+<li class="ag ag-break"><span class="mono time">10:10</span><div><h4>Break</h4></div></li>
+<li class="ag"><span class="mono time">10:25</span><div><h4>Lab 0–1 : Add Device, License &amp; Configuration Group</h4><p>เพิ่มอุปกรณ์เข้า tenant · ผูก license · สร้าง Configuration Group</p></div></li>
+<li class="ag"><span class="mono time">11:00</span><div><h4>Lab 2 : Connect Devices, Site &amp; Firmware Compliance</h4><p>AP onboard เข้า Central · สร้าง Site · ตรวจและบังคับ firmware compliance</p></div></li>
+<li class="ag ag-break"><span class="mono time">12:00</span><div><h4>พักกลางวัน</h4></div></li>
+<li class="ag"><span class="mono time">13:00</span><div><h4>Lab 3.1 : WLAN PSK + MAC Authentication</h4><p>สร้าง SSID PODn-IOT · MAC Auth ผ่าน Central NAC</p></div></li>
+<li class="ag"><span class="mono time">13:45</span><div><h4>Lab 3.2 : Guest Self-Registration</h4><p>SSID PODn-GUEST · Captive portal และหน้าลงทะเบียนที่โฮสต์บน cloud</p></div></li>
+<li class="ag ag-break"><span class="mono time">14:30</span><div><h4>Break</h4></div></li>
+<li class="ag"><span class="mono time">14:45</span><div><h4>Lab 3.3 : WLAN 802.1X + Role-based Firewall</h4><p>SSID PODn-EMP · Cloud NAC ผูกกับ Entra ID · แปลง user group เป็น role และ firewall policy</p></div></li>
+<li class="ag"><span class="mono time">15:55</span><div><h4>Lab 4–5 : Monitoring &amp; Floorplan</h4><p>Dashboard · Client / AP insights · อัปโหลดผังพื้นและวาง AP</p></div></li>
+<li class="ag"><span class="mono time">16:20</span><div><h4>Lab 6–7 : Reporting &amp; WLAN Tuning</h4><p>สร้างรายงาน · ปรับจูน RF และ WLAN จากข้อมูลที่ Central เก็บ</p></div></li>
+<li class="ag ag-break"><span class="mono time">16:45</span><div><h4>Q&amp;A / สรุป</h4></div></li>
+  </ol>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>HPE Aruba Networking Central (New CNX) — Wireless · <b>ตัวอย่าง × Commserv Siam</b> · 1 ธ.ค. 2569</div>
+    <div>กด <b>Ctrl/Cmd + P</b> เพื่อพิมพ์หรือบันทึกเป็น PDF</div>
+  </div>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="ดูแผนผังแบบเต็มจอ">
+  <div class="lbbar">
+    <span id="lbtitle" class="mono"></span>
+    <div>
+      <span class="mono" id="lbzoom">100%</span>
+      <button data-lb="out">−</button>
+      <button data-lb="in">+</button>
+      <button data-lb="reset">รีเซ็ต</button>
+      <button data-lb="close">ปิด (Esc)</button>
+    </div>
+  </div>
+  <div class="lbstage" id="lbstage"><div id="lbinner"></div></div>
+</div>
+
+<script>
+(function(){
+  // --- faceplate link status: light the port for the section in view ---
+  var ports = [].slice.call(document.querySelectorAll('.port'));
+  var map = {};
+  ports.forEach(function(p){ map[p.dataset.target] = p; });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        ports.forEach(function(p){ p.classList.remove('on'); });
+        if(map[e.target.id]) map[e.target.id].classList.add('on');
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px'});
+  document.querySelectorAll('main section').forEach(function(s){ io.observe(s); });
+  if(ports[0]) ports[0].classList.add('on');
+
+  // --- download the inline diagram as an SVG file ---
+  document.querySelectorAll('[data-dl]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var svg = document.getElementById(btn.dataset.dl).cloneNode(true);
+      var blob = new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n' + svg.outerHTML],
+        {type:'image/svg+xml;charset=utf-8'});
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = btn.dataset.name + '.svg';
+      a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+    });
+  });
+
+  // --- zoom viewer: wheel to zoom, drag to pan ---
+  var lb = document.getElementById('lb'), stage = document.getElementById('lbstage'),
+      inner = document.getElementById('lbinner'), zlabel = document.getElementById('lbzoom'),
+      title = document.getElementById('lbtitle');
+  var scale = 1, tx = 0, ty = 0, dragging = false, sx = 0, sy = 0;
+
+  function apply(){
+    inner.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+    zlabel.textContent = Math.round(scale * 100) + '%';
+  }
+  var moved = null, anchor = null;
+  function open(id, label){
+    if(moved) close();
+    var svg = document.getElementById(id);
+    anchor = document.createComment('slot');       // keep the spot on the page
+    svg.parentNode.insertBefore(anchor, svg);
+    moved = svg;
+    inner.appendChild(svg);                        // move, don't clone: keeps styles + markers
+    title.textContent = label;
+    scale = 1; tx = 0; ty = 0; apply();
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function close(){
+    if(moved && anchor){ anchor.parentNode.replaceChild(moved, anchor); }
+    moved = null; anchor = null;
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('[data-zoom]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      open(btn.dataset.zoom, btn.closest('.figbar').querySelector('span').textContent);
+    });
+  });
+  document.querySelectorAll('.figscroll svg').forEach(function(svg){
+    svg.style.cursor = 'zoom-in';
+    svg.addEventListener('click', function(){
+      open(svg.id, svg.closest('.figure').querySelector('.figbar span').textContent);
+    });
+  });
+  document.querySelectorAll('[data-lb]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var a = b.dataset.lb;
+      if(a === 'in') scale = Math.min(scale * 1.25, 8);
+      if(a === 'out') scale = Math.max(scale / 1.25, 0.4);
+      if(a === 'reset'){ scale = 1; tx = 0; ty = 0; }
+      if(a === 'close'){ close(); return; }
+      apply();
+    });
+  });
+  stage.addEventListener('wheel', function(e){
+    if(!lb.classList.contains('open')) return;
+    e.preventDefault();
+    scale = Math.min(Math.max(scale * (e.deltaY < 0 ? 1.12 : 0.89), 0.4), 8);
+    apply();
+  }, {passive:false});
+  stage.addEventListener('pointerdown', function(e){
+    dragging = true; sx = e.clientX - tx; sy = e.clientY - ty;
+    stage.classList.add('drag'); stage.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener('pointermove', function(e){
+    if(!dragging) return;
+    tx = e.clientX - sx; ty = e.clientY - sy; apply();
+  });
+  ['pointerup','pointercancel'].forEach(function(ev){
+    stage.addEventListener(ev, function(){ dragging = false; stage.classList.remove('drag'); });
+  });
+  stage.addEventListener('click', function(e){ if(e.target === stage) close(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && lb.classList.contains('open')) close();
+  });
+})();
+</script>
+</body>
+</html>

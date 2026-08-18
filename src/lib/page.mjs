@@ -15,6 +15,13 @@ const DIAGRAM_SETS = {
   cloud: { overview: cloudOverviewSvg, lab: cloudLabSvg },
 };
 
+/** The drawing pair a course uses. Also used by the build for standalone exports. */
+export function diagramsFor(course) {
+  const set = DIAGRAM_SETS[course.diagramSet ?? 'campus'];
+  if (!set) throw new Error(`course "${course.id}": unknown diagramSet "${course.diagramSet}"`);
+  return set;
+}
+
 const STYLE = `:root{
   --ink:#0B1F2A; --panel:#102A38; --panel-2:#16394B;
   --paper:#F1F4F3; --card:#FFFFFF; --line:#D6E0DC;
@@ -269,8 +276,7 @@ export function renderPage({ course, event, vars, siblings = [] }) {
   const inf = course.infra;
   const order = ['overview', 'lab', 'vlan', 'agenda'];
 
-  const draw = DIAGRAM_SETS[course.diagramSet ?? 'campus'];
-  if (!draw) throw new Error(`course "${course.id}": unknown diagramSet "${course.diagramSet}"`);
+  const draw = diagramsFor(course);
 
   const vlanRows = [
     ...course.vlanPlan.map((r) => [r.vid, r.name, r.subnet, r.note]),
@@ -288,7 +294,8 @@ export function renderPage({ course, event, vars, siblings = [] }) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${t(course.docTitle, vars)} | ${esc(event.partnerLine)}</title>
-<meta name="description" content="${t(course.description, vars)}">
+<meta name="description" content="${t(course.description, vars)}">${event.unlisted ? `
+<meta name="robots" content="noindex, nofollow">` : ''}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">

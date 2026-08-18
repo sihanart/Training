@@ -13,9 +13,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { thaiDate } from './src/lib/util.mjs';
-import { renderPage, renderIndex } from './src/lib/page.mjs';
-import { overviewSvg } from './src/lib/svg-overview.mjs';
-import { labSvg } from './src/lib/svg-lab.mjs';
+import { renderPage, renderIndex, diagramsFor } from './src/lib/page.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const SRC = join(ROOT, 'src');
@@ -86,27 +84,43 @@ async function main() {
   const dupe = slugs.find((s, i) => slugs.indexOf(s) !== i);
   if (dupe) throw new Error(`duplicate slug "${dupe}" — each event needs its own`);
 
-  // The root page is the next event that has not happened yet; once every event is
-  // in the past it falls back to the most recent one, so / is never a dead link.
+  // Unlisted events are published at their own URL but kept out of the listing,
+  // the footer link and the root page — reachable only by someone given the link.
+  const listed = entries.filter((e) => !e.event.unlisted);
+  const unlisted = entries.filter((e) => e.event.unlisted);
+  if (!listed.length) throw new Error('every event is unlisted — nothing would be published at /');
+
+  // The root page is the next listed event that has not happened yet; once every
+  // event is in the past it falls back to the most recent, so / is never a dead link.
   const todayKey = Date.parse(new Date().toISOString().slice(0, 10));
-  const upcoming = entries.filter((e) => e.date.sortKey >= todayKey).sort((a, b) => a.date.sortKey - b.date.sortKey);
-  const featured = upcoming[0] ?? [...entries].sort((a, b) => b.date.sortKey - a.date.sortKey)[0];
+  const upcoming = listed.filter((e) => e.date.sortKey >= todayKey).sort((a, b) => a.date.sortKey - b.date.sortKey);
+  const featured = upcoming[0] ?? [...listed].sort((a, b) => b.date.sortKey - a.date.sortKey)[0];
 
   const files = new Map();
   for (const e of entries) {
-    const siblings = entries.filter((o) => o !== e);
-    const page = renderPage({ ...e, siblings, vars: { ...e.vars, rootPath: '../' } });
-    files.set(join(e.slug, 'index.html'), page);
+    // Only listed events count as siblings — an unlisted page must not advertise
+    // itself, and must not gain a link back into the public listing either.
+    const siblings = e.event.unlisted ? [] : listed.filter((o) => o !== e);
+    files.set(join(e.slug, 'index.html'), renderPage({ ...e, siblings, vars: { ...e.vars, rootPath: '../' } }));
 
+    const draw = diagramsFor(e.course);
+    const svgs = [
+      [e.course.overview.fileName, draw.overview(e.course, e.vars)],
+      [e.course.lab.fileName, draw.lab(e.course, e.vars, e.event.podsDrawn)],
+    ];
     if (e === featured) {
       files.set('index.html', renderPage({ ...e, siblings, vars: { ...e.vars, rootPath: '' } }));
-      files.set(join('diagrams', `${e.course.overview.fileName}.svg`), svgFile(overviewSvg(e.course, e.vars)));
-      files.set(join('diagrams', `${e.course.lab.fileName}.svg`),
-        svgFile(labSvg(e.course, e.vars, e.event.podsDrawn)));
+      // The featured event keeps the flat diagrams/ path its PNGs already use.
+      for (const [name, svg] of svgs) files.set(join('diagrams', `${name}.svg`), svgFile(svg));
+    } else {
+      for (const [name, svg] of svgs) files.set(join('diagrams', e.slug, `${name}.svg`), svgFile(svg));
     }
   }
-  if (entries.length > 1) {
-    files.set('events.html', renderIndex([...entries].sort((a, b) => b.date.sortKey - a.date.sortKey)));
+  if (listed.length > 1) {
+    files.set('events.html', renderIndex([...listed].sort((a, b) => b.date.sortKey - a.date.sortKey)));
+  }
+  if (unlisted.length) {
+    console.log(`  (unlisted, reachable only by link: ${unlisted.map((e) => `/${e.slug}/`).join(', ')})`);
   }
 
   if (CHECK) {
