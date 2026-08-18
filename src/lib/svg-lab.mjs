@@ -35,22 +35,38 @@ const roles = (list, x, y, step, vars) =>
 // single-pod lab keeps the two-pod canvas and just carries extra whitespace.
 const MIN_COL_X = 1000;
 
+// Boxes hold a fixed amount of text, so past a point stretching them with the
+// canvas just adds dead space. Both cap out and centre on what they describe.
+const CORE_MAX_W = 900;
+const PLAN_W = 440;
+
 /** Geometry derived from the pod count. */
 export function labGeometry(pods) {
   const podsRight = POD_X0 + pods * POD_PITCH - 20;
   const colX = Math.max(POD_X0 + pods * POD_PITCH + 20, MIN_COL_X); // server column + notes panel
   const width = colX + COL_W + 40;
-  const coreRight = colX - 200;
+
+  // The core spans the pods it serves, up to the width its own text needs.
+  const coreW = Math.min(colX - 200 - CORE_X, CORE_MAX_W);
+  const coreX = Math.max(CORE_X, (POD_X0 + podsRight) / 2 - coreW / 2);
+
+  // Bottom band: legend (fixed, left) | VLAN plan | topic map (fixed, under the
+  // server column). The plan sits centred in whatever gap the other two leave.
+  const legendRight = POD_X0 + 440;
+  const planX = colX <= MIN_COL_X ? 520 : legendRight + (colX - legendRight - PLAN_W) / 2;
+
   return {
     pods,
     podsRight,
     colX,
     width,
-    coreX: CORE_X,
+    coreX,
     coreY: CORE_Y,
-    coreW: coreRight - CORE_X,
-    coreRight,
+    coreW,
+    coreRight: coreX + coreW,
     coreBottom: CORE_Y + CORE_H,
+    planX,
+    planW: PLAN_W,
   };
 }
 
@@ -125,9 +141,7 @@ export function labSvg(course, vars, pods) {
   const inf = course.infra;
   const subhead = `${vars.partnerLine} · ${vars.dateShort} · ${l.subheadTail}`;
 
-  // Bottom band: legend | VLAN plan (stretches) | topic map (aligned to the right column)
-  const planX = 520;
-  const planW = g.colX - planX - 40;
+  const { planX, planW } = g;
 
   const vlanRows = [
     ...course.vlanPlan.map((r) => [r.vid, r.name, r.subnet]),
