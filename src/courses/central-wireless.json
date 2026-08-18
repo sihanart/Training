@@ -1,0 +1,237 @@
+{
+  "id": "central-wireless",
+  "diagramSet": "cloud",
+  "title": "HPE Aruba Networking Central (New CNX) — Wireless",
+  "subtitle": "Cloud Architecture & Lab Topology",
+  "docTitle": "HPE Aruba Networking Central (CNX) — Network Diagram",
+  "courseName": "Aruba Central (New CNX) — Wireless",
+  "description": "แผนผังเครือข่ายสำหรับอบรม HPE Aruba Networking Central (New CNX) — สถาปัตยกรรม cloud-managed, Central NAC, Lab topology และแผน SSID/VLAN",
+  "lede": "แผนผังสำหรับใช้อ้างอิงระหว่างอบรม — สถาปัตยกรรมแบบ cloud-managed ที่ Central ทำหน้าที่ควบคุมและยืนยันตัวตน ส่วน traffic ของผู้ใช้ออก Internet ที่ไซต์โดยตรง พร้อมผัง Lab แยกตาม Pod เปิดจากมือถือได้ระหว่างทำแลบ",
+
+  "infra": {
+    "transitVlan": "100",
+    "transitName": "Transit / Internet uplink",
+    "transitSubnet": "192.168.100.0/24",
+    "transitNote": "Default route → {{gateway}}",
+    "gateway": "192.168.100.254",
+    "serverVlan": "200",
+    "serverName": "Services",
+    "serverNameShort": "Services: DHCP / DNS / NTP",
+    "serverSubnet": "192.168.200.0/24",
+    "serverNote": "DHCP/DNS {{services}} — ไม่ต้องมี NAC on-prem",
+    "services": "192.168.200.30",
+    "mc": "—",
+    "cppm": "—"
+  },
+
+  "vlanPlan": [
+    { "vid": "n1", "name": "MGMT — AP / Switch", "subnet": "10.n.1.0/24", "note": "AP รับ IP แล้วโทรออกหา Central เอง" },
+    { "vid": "n2", "name": "WLAN Employee — 802.1X", "subnet": "10.n.2.0/24", "note": "SSID PODn-EMP · Cloud NAC + Entra ID (Lab 3.3)" },
+    { "vid": "n3", "name": "WLAN Guest — Self-registration", "subnet": "10.n.3.0/24", "note": "SSID PODn-GUEST · Portal โฮสต์บน Central (Lab 3.2)" },
+    { "vid": "n4", "name": "WLAN IoT — PSK + MAC Auth", "subnet": "10.n.4.0/24", "note": "SSID PODn-IOT · ใช้สอน MAC Authentication (Lab 3.1)" }
+  ],
+
+  "vlanHint": "ทุก SSID เป็น **Bridge mode** — client ได้ IP จาก DHCP ที่ไซต์และออก Internet ผ่าน gateway ที่ไซต์ ไม่มี tunnel ขึ้น cloud ดังนั้น VLAN ต้อง trunk มาถึงพอร์ตที่ต่อ AP",
+
+  "pod": {
+    "size": "2–3 คน",
+    "wiredVlanIndex": 1,
+    "groupNote": "Configuration Group + Site แยกต่อ Pod",
+    "aps": [
+      { "model": "AP #1", "note": "PoE+ · Wi-Fi 6/6E" },
+      { "model": "AP #2", "note": "PoE+ · ใช้สาธิต roaming" }
+    ],
+    "client": { "label": "Notebook", "note": "เข้า Central + ทดสอบ 802.1X" },
+    "clients": { "label": "มือถือ / IoT client", "note": "ทดสอบ Guest portal + MAC Auth" },
+    "ssids": [
+      { "suffix": "IOT", "auth": "PSK + MAC" },
+      { "suffix": "GUEST", "auth": "Self-Reg" },
+      { "suffix": "EMP", "auth": "802.1X" }
+    ],
+    "uplinkNote": "Trunk (VLAN n1–n4) + PoE+ จาก Switch กลาง"
+  },
+
+  "overview": {
+    "figLabel": "FIG.01 — CNX CLOUD ARCHITECTURE",
+    "fileName": "01_Overview_CNX_Cloud_Architecture",
+    "heading": "HPE Aruba Networking Central (CNX) — Cloud Architecture",
+    "subhead": "Cloud-managed wireless · Control plane บน cloud, data plane ที่ไซต์",
+
+    "cloudLabel": "HPE ARUBA NETWORKING CENTRAL — CLOUD (SaaS)",
+    "central": {
+      "tag": "CENTRAL — CONFIG & OPERATIONS",
+      "label": "New Central (CNX)",
+      "roles": [
+        "• Configuration Group · Site · Label",
+        "• Device onboarding + License assignment",
+        "• Firmware compliance",
+        "• Monitoring · Floorplan · Reporting",
+        "• WLAN tuning (AI Insights / RF)"
+      ]
+    },
+    "nac": {
+      "tag": "CENTRAL NAC / CENTRAL POLICY MANAGER",
+      "label": "Cloud NAC",
+      "roles": [
+        "• Cloud RADIUS — ไม่ต้องมี server ที่ไซต์",
+        "• 802.1X (EAP) · MAC Authentication",
+        "• Guest self-registration portal",
+        "• Role-based firewall policy",
+        "• Client Insights / device profiling"
+      ]
+    },
+    "idp": {
+      "label": "Microsoft Entra ID",
+      "roles": [
+        "Identity provider",
+        "User / Group",
+        "» map เป็น Role",
+        "บน Central NAC"
+      ]
+    },
+
+    "edge": { "label": "Internet", "note": "WAN ของไซต์" },
+    "siteLabel": "ON-PREM SITE — อุปกรณ์ที่ไซต์ลูกค้า",
+    "firewall": { "label": "Firewall / NAT Router", "note": "ขาออก TCP 443 ถึง Central" },
+    "switch": {
+      "label": "Access Switch (PoE+)",
+      "roles": ["จ่ายไฟ AP · Trunk VLAN ผู้ใช้", "ไม่ต้อง config อะไรเป็นพิเศษ"]
+    },
+    "aps": [
+      { "label": "AP #1", "note": "PoE+ · Wi-Fi 6/6E" },
+      { "label": "AP #2", "note": "PoE+ · Roaming" }
+    ],
+    "clients": [
+      { "label": "Employee", "note": "802.1X » Entra ID", "color": "#E8F1F8", "stroke": "#1E6BB8" },
+      { "label": "Guest", "note": "Self-registration portal", "color": "#FFF3E6", "stroke": "#FF8300" },
+      { "label": "IoT / Device", "note": "PSK + MAC Auth", "color": "#EFF6F1", "stroke": "#4B8F6E" }
+    ],
+
+    "flows": [
+      { "n": "1", "color": "#0E7C86", "lines": ["Management: AP » Switch » Firewall » Internet » Central", "HTTPS / WSS 443 — onboarding, config, telemetry"] },
+      { "n": "2", "color": "#6B4EA8", "lines": ["Authentication: AP » RadSec (TLS 2083) » Central NAC", "802.1X ส่งต่อไป Entra ID · MAC Auth ตัดสินใจใน cloud"] },
+      { "n": "3", "color": "#1E6BB8", "lines": ["User data (Bridge mode): Client » AP » VLAN ที่ไซต์", "» Firewall ที่ไซต์ » Internet — ไม่วิ่งผ่าน Central"] }
+    ],
+
+    "callout": {
+      "title": "ต่างจาก AOS-8 Controller ตรงไหน",
+      "lines": [
+        "AOS-8: traffic ผู้ใช้วิ่งใน GRE tunnel ขึ้น Mobility Controller ก่อนออก Internet",
+        "CNX: AP bridge ลง VLAN ที่ไซต์เลย cloud เห็นแค่ config / auth / telemetry",
+        "» Central ล่ม = client ที่ต่ออยู่ยังใช้เน็ตได้ แต่ auth ใหม่และแก้ config จะทำไม่ได้"
+      ]
+    },
+
+    "captions": [
+      { "title": "① Control plane อยู่บน cloud", "body": "Config, firmware, monitoring, floorplan และ report ทำจาก Central ทั้งหมด ไม่มีตัวจัดการที่ไซต์" },
+      { "title": "② NAC ก็อยู่บน cloud", "body": "Central NAC เป็น RADIUS ให้เลย — MAC Auth, Guest portal และ 802.1X ที่ผูกกับ Entra ID โดยไม่ต้องตั้ง ClearPass ที่ไซต์", "accent": true },
+      { "title": "③ Data plane อยู่ที่ไซต์", "body": "AP bridge traffic ลง VLAN ที่ไซต์แล้วออก Internet ที่นั่น — เป็นจุดต่างสำคัญจากสถาปัตยกรรม controller แบบเดิม" }
+    ]
+  },
+
+  "lab": {
+    "figLabel": "FIG.02 — LAB TOPOLOGY",
+    "fileName": "02_Lab_Topology_CNX",
+    "heading": "Aruba Central (CNX) Wireless Training — Lab Topology",
+    "subheadTail": "Lab 0–2: Onboarding & Group — Lab 3: WLAN & Auth — Lab 4–7: Monitor, Floorplan, Report",
+
+    "edge": { "label": "Internet", "note": "Venue WAN / 4G Router" },
+    "firewall": { "label": "NAT Router / Firewall" },
+    "core": {
+      "tag": "SWITCH กลาง (ใช้ร่วมกันทุก Pod) — PoE+",
+      "roles": [
+        "• จ่ายไฟ PoE+ ให้ AP ทุก Pod",
+        "• Trunk VLAN n1–n4 ของทุก Pod ลงพอร์ตที่ต่อ AP",
+        "• DHCP ที่ไซต์แจก IP ให้ AP และ client",
+        "• ขาออก TCP 443 ต้องเปิดถึง Central (ไม่ต้องเปิด inbound)"
+      ]
+    },
+    "cloud": {
+      "tag": "HPE ARUBA NETWORKING CENTRAL (CNX) — CLOUD",
+      "roles": [
+        "• Configuration Group + Site แยกต่อ Pod",
+        "• License assignment · Firmware compliance",
+        "• Monitoring · Floorplan · Reporting"
+      ]
+    },
+    "nac": {
+      "label": "Central NAC / Policy Manager (Cloud)",
+      "roles": [
+        "• Cloud RADIUS — MAC Auth (Lab 3.1)",
+        "• Guest self-registration (Lab 3.2)",
+        "• 802.1X + Role-based firewall (Lab 3.3)"
+      ]
+    },
+    "idp": {
+      "label": "Microsoft Entra ID — Identity",
+      "note": "User / Group » Role บน Central NAC"
+    },
+
+    "notesPanel": {
+      "title": "POD {{nextPod}} ... POD n",
+      "intro": [
+        "• อุปกรณ์และการต่อสายเหมือน Pod 1 ทุกประการ",
+        "• เปลี่ยนเฉพาะ Group / Site / VLAN / ชื่อ SSID",
+        "• แนะนำ {{podSize}}/Pod เพื่อให้ทุกคนได้ลงมือ config"
+      ],
+      "fallbackTitle": "ถ้าอุปกรณ์ไม่พอ (ปรับได้)",
+      "fallback": [
+        "• AP: อย่างน้อย 1 ตัว/Pod (2 ตัว จะสาธิต roaming ได้)",
+        "• Switch: ใช้ตัวเดียวร่วมกันได้ แยก VLAN ต่อ Pod",
+        "• Central: 1 tenant ใช้ร่วม — แยกด้วย Group + Site ต่อ Pod",
+        "• Entra ID: ใช้ tenant ทดสอบร่วมกัน แยก user group ต่อ Pod",
+        "• License: ต้องมี AP license ครบตามจำนวน AP ที่ onboard"
+      ],
+      "prepTitle": "สิ่งที่ต้องเตรียมก่อนวันอบรม",
+      "prep": [
+        "• Notebook + เบราว์เซอร์ (ไม่ต้องลงโปรแกรม console)",
+        "• บัญชี Central ที่มีสิทธิ์ระดับ admin ของ Group ตัวเอง",
+        "• มือถือ 1 เครื่อง สำหรับทดสอบ Guest portal + MAC Auth",
+        "• Internet ที่ไซต์เปิด TCP 443 ขาออก (และ UDP 123 NTP)"
+      ],
+      "footnote": "* AP ต้องออกเน็ตได้และเวลาตรงก่อน ถึงจะ onboard เข้า Central สำเร็จ"
+    },
+
+    "topicMap": {
+      "title": "หัวข้อ Lab » ทำที่ไหนในผัง",
+      "rows": [
+        "Lab 0–1 Add Device / License / Group » Central (cloud)",
+        "Lab 2 Connect Device · Site · Firmware » Central » AP",
+        "Lab 3.1 WLAN PSK + MAC Auth » AP + Central NAC",
+        "Lab 3.2 Guest Self-Registration » Portal บน Central NAC",
+        "Lab 3.3 802.1X + Role-based FW » Central NAC » Entra ID",
+        "Lab 4–5 Monitoring · Floorplan » Central (cloud)",
+        "Lab 6–7 Reporting · WLAN Tuning » Central (cloud)"
+      ]
+    },
+
+    "captions": [
+      { "title": "Lab 0–2 — ทำบน Central ล้วน", "body": "เพิ่มอุปกรณ์, ผูก license, สร้าง Configuration Group และ Site, ตรวจ firmware compliance — ยังไม่ต้องแตะ CLI ของ AP เลย" },
+      { "title": "Lab 3 — WLAN + Authentication", "body": "สร้าง 3 SSID ต่อ Pod: PSK + MAC Auth, Guest self-registration และ 802.1X ที่ผูกกับ Entra ID พร้อม role-based firewall", "accent": true },
+      { "title": "Lab 4–7 — Day-2 operations", "body": "Monitoring, Floorplan, Reporting และ WLAN tuning ทำจาก Central ทั้งหมด ใช้ข้อมูล telemetry ที่ AP ส่งขึ้น cloud" }
+    ]
+  },
+
+  "sections": {
+    "overview": { "num": "01", "nav": "Architecture", "title": "สถาปัตยกรรม CNX", "sub": "Cloud-managed wireless — Central ดูแล config และ authentication ส่วน traffic ของผู้ใช้ออก Internet ที่ไซต์โดยตรง" },
+    "lab": { "num": "02", "nav": "Lab topology", "title": "Lab topology (แบ่งตาม Pod)", "sub": "Pod ละ {{podSize}} แต่ละ Pod ได้ Configuration Group + Site ของตัวเองบน Central และ SSID คนละชุด เพื่อให้ config ทับกันไม่ได้" },
+    "vlan": { "num": "03", "nav": "SSID / VLAN", "title": "แผน SSID / VLAN", "sub": "n คือหมายเลข Pod — Pod 1 ใช้ VLAN 11–14 กับ 10.1.x.0/24, Pod 2 ใช้ VLAN 21–24 กับ 10.2.x.0/24 ไล่ไปเรื่อยๆ" },
+    "agenda": { "num": "04", "nav": "Agenda", "title": "กำหนดการอบรม", "sub": "{{dateLong}} — ช่วงที่มี LAB ให้เปิดหน้า Lab topology คู่กัน" }
+  },
+
+  "agenda": [
+    { "time": "09:00", "title": "Introduction to New Aruba Central", "detail": "ภาพรวม CNX · โครงสร้าง Group / Site / Label · ต่างจาก Central เดิมและจาก AOS-8 อย่างไร" },
+    { "time": "09:40", "title": "Central NAC & Central Policy Manager", "detail": "Cloud RADIUS · Role-based policy · การผูก identity provider" },
+    { "time": "10:10", "title": "Break", "break": true },
+    { "time": "10:25", "title": "Lab 0–1 : Add Device, License & Configuration Group", "detail": "เพิ่มอุปกรณ์เข้า tenant · ผูก license · สร้าง Configuration Group" },
+    { "time": "11:00", "title": "Lab 2 : Connect Devices, Site & Firmware Compliance", "detail": "AP onboard เข้า Central · สร้าง Site · ตรวจและบังคับ firmware compliance" },
+    { "time": "12:00", "title": "พักกลางวัน", "break": true },
+    { "time": "13:00", "title": "Lab 3.1 : WLAN PSK + MAC Authentication", "detail": "สร้าง SSID PODn-IOT · MAC Auth ผ่าน Central NAC" },
+    { "time": "13:45", "title": "Lab 3.2 : Guest Self-Registration", "detail": "SSID PODn-GUEST · Captive portal และหน้าลงทะเบียนที่โฮสต์บน cloud" },
+    { "time": "14:30", "title": "Break", "break": true },
+    { "time": "14:45", "title": "Lab 3.3 : WLAN 802.1X + Role-based Firewall", "detail": "SSID PODn-EMP · Cloud NAC ผูกกับ Entra ID · แปลง user group เป็น role และ firewall policy" },
+    { "time": "15:55", "title": "Lab 4–5 : Monitoring & Floorplan", "detail": "Dashboard · Client / AP insights · อัปโหลดผังพื้นและวาง AP" },
+    { "time": "16:20", "title": "Lab 6–7 : Reporting & WLAN Tuning", "detail": "สร้างรายงาน · ปรับจูน RF และ WLAN จากข้อมูลที่ Central เก็บ" },
+    { "time": "16:45", "title": "Q&A / สรุป", "break": true }
+  ]
+}

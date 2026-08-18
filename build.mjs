@@ -66,13 +66,21 @@ async function main() {
   if (!eventFiles.length) throw new Error('no events found in src/events/');
 
   const entries = [];
+  const drafts = [];
   for (const f of eventFiles) {
     const event = await readJson(join(SRC, 'events', f));
     const course = courses.get(event.course);
     validate(event, course, `src/events/${f}`);
-    const date = thaiDate(event.date);
+    const date = thaiDate(event.date); // checked even for drafts, so a bad date fails now
+    // Drafts are validated like any other event but never published — a booking
+    // with a placeholder customer or date must not reach a public page.
+    if (event.draft) {
+      drafts.push(f);
+      continue;
+    }
     entries.push({ slug: event.slug, event, course, date, vars: buildVars(course, event, date) });
   }
+  if (drafts.length) console.log(`  (skipped ${drafts.length} draft: ${drafts.join(', ')})`);
 
   const slugs = entries.map((e) => e.slug);
   const dupe = slugs.find((s, i) => slugs.indexOf(s) !== i);

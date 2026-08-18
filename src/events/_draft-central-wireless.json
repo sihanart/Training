@@ -1,0 +1,17 @@
+{
+  "draft": true,
+
+  "_comment": "แบบร่าง — ยังไม่ขึ้นเว็บ เพราะยังไม่รู้ลูกค้า/วันที่จริง เมื่อได้งานแล้ว: แก้ 6 ฟิลด์ด้านล่าง ลบบรรทัด draft แล้ว push",
+
+  "slug": "central-wireless-draft",
+  "course": "central-wireless",
+  "date": "2026-12-01",
+
+  "organizer": "Commserv Siam",
+  "customer": "ยังไม่ระบุ",
+  "attendees": "ยังไม่ระบุ",
+  "partnerLine": "ยังไม่ระบุ × Commserv Siam",
+  "venue": "ยังไม่ระบุ",
+
+  "podsDrawn": 2
+}

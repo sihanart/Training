@@ -6,69 +6,14 @@
 // coordinate below reproduces the original hand-drawn diagram exactly.
 
 import { esc, t } from './util.mjs';
+import {
+  POD_X0, POD_PITCH, POD_W, POD_Y, POD_H, COL_W, HUB_H, CANVAS_H, BAND_Y, BAND_H,
+  n2, roles, labGeometry, uplinks,
+} from './lab-layout.mjs';
 
 const ID = 'svg-lab';
 
-// --- layout constants ---------------------------------------------------
-const POD_X0 = 60;      // left edge of the first pod
-const POD_PITCH = 460;  // pod-to-pod horizontal step
-const POD_W = 440;
-const POD_Y = 470;      // top edge of the pod row
-const POD_H = 420;
-const COL_W = 400;      // right-hand column (servers + notes panel)
-const CORE_X = 330;
-const CORE_Y = 185;
-const CORE_H = 122;
-const CANVAS_H = 1130;
-const BAND_Y = 912;     // bottom band (legend / VLAN plan / topic map)
-const BAND_H = 192;
-
 const CSS = `#${ID} text{font-family:"IBM Plex Sans Thai","Sarabun","Loma","Noto Sans Thai","Sarabun","Segoe UI",sans-serif;fill:#0F1E2E}#${ID} .h1{font-size:28px;font-weight:700}#${ID} .sub{font-size:14px;fill:#5A6C7D}#${ID} .lbl{font-size:15px;font-weight:700}#${ID} .lbl2{font-size:13px;font-weight:700}#${ID} .role{font-size:11.5px;fill:#41545F}#${ID} .tiny{font-size:11px;fill:#5A6C7D}#${ID} .tag{font-size:11px;font-weight:700;fill:#fff}#${ID} .th{font-size:11.5px;font-weight:700;fill:#1E6BB8}#${ID} .td{font-size:11.5px;fill:#33454F}#${ID} .link{stroke:#4A6274;stroke-width:2.5;fill:none}#${ID} .link10{stroke:#0E7C86;stroke-width:5;fill:none;stroke-linecap:round}#${ID} .stackl{stroke:#0E7C86;stroke-width:7;fill:none;stroke-linecap:round}#${ID} .tunnel{stroke:#FF8300;stroke-width:3;stroke-dasharray:9 6;fill:none}#${ID} .radius{stroke:#6B4EA8;stroke-width:2.5;stroke-dasharray:3 5;fill:none}#${ID} .air{stroke:#14996B;stroke-width:2;fill:none;opacity:.75}#${ID} .grp{fill:#FAFCFE;stroke:#C7D6E2;stroke-width:1.5;stroke-dasharray:6 5}`;
-
-/** Round to 2dp and drop a trailing ".00" so N=2 emits the original integers. */
-const n2 = (v) => String(Math.round(v * 100) / 100);
-
-const roles = (list, x, y, step, vars) =>
-  list.map((line, i) => `<text class="role" x="${x}" y="${n2(y + i * step)}">${t(line, vars)}</text>`).join('\n');
-
-// Below this the core box and the bottom VLAN panel collapse to nothing, so a
-// single-pod lab keeps the two-pod canvas and just carries extra whitespace.
-const MIN_COL_X = 1000;
-
-// Boxes hold a fixed amount of text, so past a point stretching them with the
-// canvas just adds dead space. Both cap out and centre on what they describe.
-const CORE_MAX_W = 900;
-const PLAN_W = 440;
-
-/** Geometry derived from the pod count. */
-export function labGeometry(pods) {
-  const podsRight = POD_X0 + pods * POD_PITCH - 20;
-  const colX = Math.max(POD_X0 + pods * POD_PITCH + 20, MIN_COL_X); // server column + notes panel
-  const width = colX + COL_W + 40;
-
-  // The core spans the pods it serves, up to the width its own text needs.
-  const coreW = Math.min(colX - 200 - CORE_X, CORE_MAX_W);
-  const coreX = Math.max(CORE_X, (POD_X0 + podsRight) / 2 - coreW / 2);
-
-  // Bottom band: legend (fixed, left) | VLAN plan | topic map (fixed, under the
-  // server column). The plan sits centred in whatever gap the other two leave.
-  const legendRight = POD_X0 + 440;
-  const planX = colX <= MIN_COL_X ? 520 : legendRight + (colX - legendRight - PLAN_W) / 2;
-
-  return {
-    pods,
-    podsRight,
-    colX,
-    width,
-    coreX,
-    coreY: CORE_Y,
-    coreW,
-    coreRight: coreX + coreW,
-    coreBottom: CORE_Y + CORE_H,
-    planX,
-    planW: PLAN_W,
-  };
-}
 
 /** One pod group: stack, APs, wired PC, wireless clients, SSID line. */
 function podGroup(i, course, vars) {
@@ -120,21 +65,6 @@ function podGroup(i, course, vars) {
 <text class="role" x="${x + 28}" y="874">SSID: ${esc(ssids)}</text>`;
 }
 
-/** Two 10G uplinks per pod, fanning out onto the bottom edge of the core box. */
-function uplinks(g) {
-  const slots = 2 * g.pods + 1;
-  const out = [];
-  for (let i = 0; i < g.pods; i++) {
-    const x = POD_X0 + i * POD_PITCH;
-    for (const k of [2 * i, 2 * i + 1]) {
-      const from = x + (k % 2 === 0 ? 90 : 350);
-      const to = g.coreX + (g.coreW * (k + 1)) / slots;
-      out.push(`<path class="link10" d="M${n2(from)} 512 L ${n2(to)} ${g.coreBottom}"/>`);
-    }
-  }
-  return out.join('\n');
-}
-
 export function labSvg(course, vars, pods) {
   const l = course.lab;
   const g = labGeometry(pods);
@@ -173,7 +103,7 @@ export function labSvg(course, vars, pods) {
 <line class="link" x1="255" y1="244" x2="${g.coreX}" y2="244"/>
 
 <!-- Core -->
-<rect x="${g.coreX}" y="${g.coreY}" width="${n2(g.coreW)}" height="${CORE_H}" rx="10" fill="#E8F1F8" stroke="#1E6BB8" stroke-width="2.5"/>
+<rect x="${g.coreX}" y="${g.coreY}" width="${n2(g.coreW)}" height="${HUB_H}" rx="10" fill="#E8F1F8" stroke="#1E6BB8" stroke-width="2.5"/>
 <rect x="${g.coreX}" y="${g.coreY}" width="${n2(g.coreW)}" height="26" rx="10" fill="#1E6BB8"/>
 <text class="tag" x="${g.coreX + 14}" y="203">${t(l.core.tag, vars)}</text>
 ${roles(l.core.roles, g.coreX + 14, 233, 19, vars)}

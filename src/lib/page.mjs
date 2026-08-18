@@ -4,6 +4,16 @@
 import { esc, t, inlineCode } from './util.mjs';
 import { overviewSvg } from './svg-overview.mjs';
 import { labSvg } from './svg-lab.mjs';
+import { cloudOverviewSvg } from './svg-cloud-overview.mjs';
+import { cloudLabSvg } from './svg-cloud-lab.mjs';
+
+// A course picks its diagram pair with `diagramSet`. Architectures differ too
+// much between courses to parameterise one drawing — an on-prem controller
+// topology and a cloud-managed one share geometry, not shapes.
+const DIAGRAM_SETS = {
+  campus: { overview: overviewSvg, lab: labSvg },
+  cloud: { overview: cloudOverviewSvg, lab: cloudLabSvg },
+};
 
 const STYLE = `:root{
   --ink:#0B1F2A; --panel:#102A38; --panel-2:#16394B;
@@ -259,6 +269,9 @@ export function renderPage({ course, event, vars, siblings = [] }) {
   const inf = course.infra;
   const order = ['overview', 'lab', 'vlan', 'agenda'];
 
+  const draw = DIAGRAM_SETS[course.diagramSet ?? 'campus'];
+  if (!draw) throw new Error(`course "${course.id}": unknown diagramSet "${course.diagramSet}"`);
+
   const vlanRows = [
     ...course.vlanPlan.map((r) => [r.vid, r.name, r.subnet, r.note]),
     [inf.transitVlan, inf.transitName, inf.transitSubnet, inf.transitNote],
@@ -310,13 +323,13 @@ ${order.map((key, i) => `    <a class="port" href="#${key}" data-target="${key}"
 
 <section id="overview">
 ${sechead(s.overview, vars)}
-${figure(course.overview.figLabel, 'svg-overview', course.overview.fileName, overviewSvg(course, vars))}
+${figure(course.overview.figLabel, 'svg-overview', course.overview.fileName, draw.overview(course, vars))}
 ${captions(course.overview.captions, vars)}
 </section>
 
 <section id="lab">
 ${sechead(s.lab, vars)}
-${figure(course.lab.figLabel, 'svg-lab', course.lab.fileName, labSvg(course, vars, event.podsDrawn))}
+${figure(course.lab.figLabel, 'svg-lab', course.lab.fileName, draw.lab(course, vars, event.podsDrawn))}
 ${captions(course.lab.captions, vars)}
 </section>
 

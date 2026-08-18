@@ -38,6 +38,11 @@ jobs:
       - name: Build site
         run: node build.mjs
 
+      # Cheap geometry check — catches boxes drawn over each other or past the
+      # canvas edge, which a byte-diff of the SVG would happily let through.
+      - name: Check diagram layout
+        run: node tools/check-layout.mjs diagrams/*.svg
+
       # Thai fallback faces, in case fonts.googleapis.com is unreachable while the
       # PNGs render. Without them a font failure would silently ship tofu boxes.
       - name: Install Thai fonts

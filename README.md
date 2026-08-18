@@ -83,6 +83,21 @@ git commit -am "RMUTT: 4 pods" && git push
 - **1 กับ 2 Pod ได้ผืนผ้าใบเท่ากัน** เพราะ 1 Pod ถ้าย่อตามจริงกล่อง Core จะแคบจนใส่ข้อความไม่ลง เลยตรึงขนาดขั้นต่ำไว้ — 1 Pod จึงมีที่ว่างเหลือด้านขวา ไม่ใช่บั๊ก
 - **ตั้งแต่ 3 Pod ขึ้นไป** กล่อง Core กับตาราง VLAN ด้านล่างจะหยุดขยายที่ความกว้างสูงสุดของตัวเอง แล้วจัดกึ่งกลางแทน ถ้าปล่อยให้ยืดเต็มผืนผ้าใบจะกลายเป็นกล่องโล่งที่มีข้อความกระจุกอยู่มุมเดียว
 
+## หลักสูตรที่มี
+
+| `course` | หลักสูตร | ชุดผัง |
+|---|---|---|
+| `campus-network` | Aruba Campus Network (Switch + Controller + AP) | `campus` |
+| `central-wireless` | HPE Aruba Networking Central (New CNX) — Wireless | `cloud` |
+
+ผังสองชุดวาดคนละแบบเพราะสถาปัตยกรรมต่างกันจริง — `campus` มี Mobility Controller ที่ไซต์และ traffic วิ่งใน GRE tunnel ส่วน `cloud` ให้ Central ดูแลเฉพาะ config/auth แล้ว AP bridge traffic ลง VLAN ที่ไซต์เลย ฟิลด์ `diagramSet` ในไฟล์หลักสูตรเป็นตัวเลือกว่าใช้ชุดไหน
+
+### แบบร่าง (ยังไม่ขึ้นเว็บ)
+
+ใส่ `"draft": true` ในไฟล์ event แล้ว build จะข้ามไป — ใช้เตรียมหลักสูตรไว้ล่วงหน้าโดยที่ยังไม่รู้ลูกค้าหรือวันที่จริง ข้อมูล placeholder จะได้ไม่หลุดขึ้นเว็บสาธารณะ
+
+พอได้งานจริง: แก้ `customer` / `attendees` / `partnerLine` / `venue` / `date` / `slug` แล้วลบบรรทัด `draft` ออก
+
 ## แก้หลักสูตร
 
 `src/courses/campus-network.json` — โมดูล, ตาราง VLAN, กำหนดการ, ข้อความในผังทั้งสองใบ, สเปกอุปกรณ์ต่อ Pod
