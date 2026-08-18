@@ -61,11 +61,13 @@ ${roles(o.idp.roles, 1136, 212, 19, vars)}
 <text class="lbl" x="140" y="398">${t(o.edge.label, vars)}</text>
 <text class="tiny" x="115" y="416">${t(o.edge.note, vars)}</text>
 
-<!-- site uplink to the cloud: management + auth ride the same physical path -->
-<path class="mgmt" d="M175 372 V 350 H 430 V 330"/>
-<path class="auth" d="M195 372 V 340 H 800 V 330"/>
-<text class="tiny" x="238" y="344" fill="#0B6068" font-weight="700">HTTPS / WSS 443</text>
-<text class="tiny" x="440" y="334" fill="#59418F" font-weight="700">RadSec TLS 2083</text>
+<!-- Site uplink to the cloud: management and auth ride the same physical path but
+     terminate in different boxes. Labels sit in the clear band below both runs —
+     on the lines they were unreadable against the stroke. -->
+<path class="mgmt" d="M175 372 V 348 H 430 V 312"/>
+<path class="auth" d="M205 372 V 340 H 800 V 312"/>
+<text class="tiny" x="270" y="366" fill="#0B6068" font-weight="700">HTTPS / WSS 443</text>
+<text class="tiny" x="420" y="366" fill="#59418F" font-weight="700">RadSec TLS 2083</text>
 
 <!-- ============ FLOWS ============ -->
 ${o.flows.map((f, i) => {
