@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aruba Campus Network Training — Network Diagram | RMUTT × Commserv Siam</title>
+<meta name="description" content="แผนผังเครือข่ายสำหรับอบรม Aruba Campus Network — ภาพรวมสถาปัตยกรรม, Lab topology, แผน VLAN/IP และกำหนดการ">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B1F2A; --panel:#102A38; --panel-2:#16394B;
+  --paper:#F1F4F3; --card:#FFFFFF; --line:#D6E0DC;
+  --text:#12242F; --muted:#5E7280;
+  --led:#38D39F; --amber:#FF8300; --blue:#1E6BB8;
+  --sans:"IBM Plex Sans Thai","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--paper);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.mono{font-family:var(--mono)}
+.wrap{width:min(1240px,92vw);margin-inline:auto}
+
+/* ---------- hero ---------- */
+header{background:var(--ink);color:#E7EFEC;padding:38px 0 0;background-image:linear-gradient(180deg,#0B1F2A,#0E2635)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--led)}
+h1{font-size:clamp(28px,4.4vw,50px);line-height:1.12;margin:12px 0 10px;font-weight:700;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--amber)}
+.lede{color:#9FB4BD;max-width:64ch;margin:0 0 24px}
+.meta{display:flex;flex-wrap:wrap;gap:10px 26px;padding:0 0 30px;font-family:var(--mono);font-size:12.5px;color:#8DA6B1}
+.meta b{color:#E7EFEC;font-weight:500}
+
+/* ---------- signature: switch faceplate nav ---------- */
+.faceplate{position:sticky;top:0;z-index:40;background:var(--panel);border-top:1px solid #1F4256;border-bottom:3px solid #071620;
+  box-shadow:0 10px 24px -18px rgba(0,0,0,.8)}
+.faceplate .wrap{display:flex;align-items:stretch;gap:0;overflow-x:auto;scrollbar-width:none}
+.faceplate .wrap::-webkit-scrollbar{display:none}
+.plate-label{display:flex;align-items:center;gap:8px;padding-right:20px;margin-right:8px;border-right:1px solid #23485C;
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:#6E8F9E;text-transform:uppercase;white-space:nowrap}
+.port{display:flex;flex-direction:column;gap:5px;padding:11px 16px 10px;text-decoration:none;color:#9FB4BD;
+  border-right:1px solid #1B3B4D;min-width:118px;transition:background .18s,color .18s}
+.port:hover{background:#174054;color:#fff}
+.port:focus-visible{outline:2px solid var(--led);outline-offset:-2px}
+.jack{position:relative;display:block;width:26px;height:17px;border:1.5px solid #4A768A;border-radius:2px;background:#0C2331}
+.jack::after{content:"";position:absolute;left:8px;top:-4px;width:9px;height:5px;border:1.5px solid #4A768A;border-bottom:none;border-radius:2px 2px 0 0;background:#0C2331}
+.jack i{position:absolute;bottom:2px;width:4px;height:4px;border-radius:50%;background:#28414E}
+.jack i:first-child{left:3px}.jack i:last-child{right:3px}
+.port.on .jack{border-color:var(--led)}
+.port.on .jack::after{border-color:var(--led)}
+.port.on .jack i:first-child{background:var(--led);box-shadow:0 0 7px var(--led)}
+.port.on .jack i:last-child{background:var(--amber)}
+.port.on{color:#fff;background:#174054}
+.pnum{font-size:10.5px;letter-spacing:.1em;color:#6E8F9E}
+.port.on .pnum{color:var(--led)}
+.pname{font-size:13px;white-space:nowrap}
+
+/* ---------- sections ---------- */
+section{padding:64px 0 8px}
+.sechead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.sechead .mono{font-size:12px;letter-spacing:.14em;color:var(--amber);text-transform:uppercase}
+h2{font-size:clamp(21px,2.5vw,30px);margin:0;font-weight:600;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:6px 0 22px;max-width:76ch}
+
+.figure{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.figbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 14px;border-bottom:1px solid var(--line);background:#FAFCFB}
+.figbar span{font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.06em}
+.figtools{display:flex;gap:8px}
+button.tool{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--text);background:#fff;border:1px solid var(--line);
+  border-radius:5px;padding:5px 11px;cursor:pointer;transition:border-color .15s,color .15s}
+button.tool:hover{border-color:var(--blue);color:var(--blue)}
+button.tool:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.figscroll{overflow-x:auto;padding:8px}
+.swipe{display:none;font-family:var(--mono);font-size:11px;color:var(--muted);padding:0 14px 10px}
+.figscroll svg{display:block;width:100%;height:auto;min-width:900px}
+.caption{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin:20px 0 0}
+.cap{border-left:3px solid var(--blue);padding:2px 0 2px 14px}
+.cap.amber{border-color:var(--amber)}
+.cap h4{margin:0 0 4px;font-size:14.5px;font-weight:600}
+.cap p{margin:0;font-size:13.5px;color:var(--muted)}
+
+/* ---------- table ---------- */
+.tablecard{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:auto}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);background:#FAFCFB}
+tr:last-child td{border-bottom:none}
+.vid{color:var(--blue);font-weight:600}
+td.note{color:var(--muted);font-size:13px}
+.hint{margin-top:12px;font-size:13.5px;color:var(--muted)}
+.hint code{font-family:var(--mono);background:#E7EDEB;border-radius:4px;padding:1px 6px;font-size:12.5px}
+
+/* ---------- agenda ---------- */
+ol.agenda{list-style:none;margin:0;padding:0;border-left:2px solid var(--line);max-width:760px}
+li.ag{position:relative;padding:0 0 24px 26px}
+li.ag::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--card);border:2px solid var(--blue)}
+li.ag-break::before{border-color:var(--line)}
+li.ag h4{margin:0;font-size:15.5px;font-weight:600}
+li.ag p{margin:3px 0 0;font-size:13.5px;color:var(--muted)}
+li.ag .time{display:block;font-size:12px;color:var(--amber);letter-spacing:.06em}
+li.ag-break h4{font-weight:400;color:var(--muted)}
+li.ag-break .time{color:var(--muted)}
+
+/* ---------- lightbox ---------- */
+.lb{position:fixed;inset:0;z-index:90;background:rgba(8,22,30,.94);display:none;flex-direction:column}
+.lb.open{display:flex}
+.lbbar{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;color:#9FB4BD;font-family:var(--mono);font-size:12px}
+.lbbar button{background:transparent;border:1px solid #33566A;color:#D8E4E1;border-radius:5px;padding:5px 12px;margin-left:6px;cursor:pointer;font-family:var(--mono);font-size:12px}
+.lbbar button:hover{border-color:var(--led);color:#fff}
+.lbstage{flex:1;overflow:hidden;cursor:grab;display:flex;align-items:center;justify-content:center}
+.lbstage.drag{cursor:grabbing}
+.lbstage>div{transform-origin:center center;will-change:transform}
+.lbstage svg{width:min(1600px,96vw);height:auto;background:#fff;border-radius:6px}
+
+footer{margin-top:64px;background:var(--ink);color:#8DA6B1;padding:30px 0;font-size:13.5px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px 30px;justify-content:space-between;align-items:center}
+footer b{color:#E7EFEC;font-weight:500}
+
+@media (max-width:640px){
+  .figscroll{padding:4px}
+  .swipe{display:block}
+  .figbar{flex-wrap:wrap}
+  .plate-label{display:none}
+  section{padding:44px 0 4px}
+}
+@media print{
+  .faceplate,.figtools,.lb,footer{display:none!important}
+  body{background:#fff}
+  .figscroll svg{min-width:0}
+  section{padding:18px 0;break-inside:avoid}
+  header{background:#fff;color:#000}
+  .lede,.meta{color:#333}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="eyebrow">Training reference · 26 ส.ค. 2569</p>
+    <h1>Aruba Campus Network Training<br><em>Network Diagram &amp; Lab Topology</em></h1>
+    <p class="lede">แผนผังสำหรับใช้อ้างอิงระหว่างอบรม — ภาพรวมสถาปัตยกรรมของ Campus network, ผัง Lab ที่แบ่งตาม Pod และแผน VLAN/IP ที่ใช้จริงในห้องแลบ เปิดจากมือถือได้ระหว่างทำแลบ</p>
+    <div class="meta">
+      <div>หลักสูตร <b>Aruba Campus Network</b></div>
+      <div>จัดโดย <b>Commserv Siam</b></div>
+      <div>ผู้เข้าอบรม <b>คณะวิศวกรรมศาสตร์ RMUTT</b></div>
+      <div>สถานที่ <b>Royal Hills Golf Resort &amp; Spa</b></div>
+    </div>
+  </div>
+</header>
+
+<nav class="faceplate" aria-label="สารบัญ">
+  <div class="wrap">
+    <div class="plate-label">Link status</div>
+    <a class="port" href="#overview" data-target="overview"><span class="jack"><i></i><i></i></span><span class="mono pnum">01</span><span class="pname">Overview</span></a>
+<a class="port" href="#lab" data-target="lab"><span class="jack"><i></i><i></i></span><span class="mono pnum">02</span><span class="pname">Lab topology</span></a>
+<a class="port" href="#vlan" data-target="vlan"><span class="jack"><i></i><i></i></span><span class="mono pnum">03</span><span class="pname">VLAN / IP</span></a>
+<a class="port" href="#agenda" data-target="agenda"><span class="jack"><i></i><i></i></span><span class="mono pnum">04</span><span class="pname">Agenda</span></a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="overview">
+  <div class="sechead"><span class="mono">01</span><h2>ภาพรวมสถาปัตยกรรม</h2></div>
+  <p class="sub">ใช้คู่กับหัวข้อ Overview Aruba Solution — อธิบายบทบาทของอุปกรณ์แต่ละชั้น และเส้นทางเดินของ traffic ทั้งฝั่ง wired และ wireless</p>
+  <figure class="figure" style="margin:0">
+    <div class="figbar">
+      <span>FIG.01 — CAMPUS ARCHITECTURE</span>
+      <div class="figtools">
+        <button class="tool" data-zoom="svg-overview">ขยายเต็มจอ</button>
+        <button class="tool" data-dl="svg-overview" data-name="01_Overview_Campus_Architecture">ดาวน์โหลด SVG</button>
+      </div>
+    </div>
+    <div class="figscroll"><svg id="svg-overview" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 830">
+<defs>
+<style>#svg-overview text{font-family:"IBM Plex Sans Thai","Sarabun","Loma","Noto Sans Thai","Sarabun","Segoe UI",sans-serif;fill:#0F1E2E}#svg-overview .h1{font-size:28px;font-weight:700}#svg-overview .sub{font-size:14px;fill:#5A6C7D}#svg-overview .lbl{font-size:15px;font-weight:700}#svg-overview .role{font-size:11.5px;fill:#41545F}#svg-overview .tiny{font-size:11px;fill:#5A6C7D}#svg-overview .tag{font-size:11px;font-weight:700;fill:#fff}#svg-overview .link{stroke:#4A6274;stroke-width:2.5;fill:none}#svg-overview .link10{stroke:#0E7C86;stroke-width:5;fill:none;stroke-linecap:round}#svg-overview .tunnel{stroke:#FF8300;stroke-width:3;stroke-dasharray:9 6;fill:none}#svg-overview .radius{stroke:#6B4EA8;stroke-width:2.5;stroke-dasharray:3 5;fill:none}#svg-overview .air{stroke:#14996B;stroke-width:2;fill:none;opacity:.75}#svg-overview .grp{fill:#FAFCFE;stroke:#C7D6E2;stroke-width:1.5;stroke-dasharray:6 5}
+</style>
+<marker id="ar-svg-overview" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M0 0 L10 5 L0 10 z" fill="#FF8300"/></marker>
+<marker id="arb-svg-overview" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M0 0 L10 5 L0 10 z" fill="#1E6BB8"/></marker>
+</defs>
+
+<rect width="1400" height="830" fill="#FFFFFF"/>
+<text class="h1" x="40" y="48">Aruba Campus Architecture — Overview</text>
+<text class="sub" x="40" y="72">Switch + Controller + AP · Device roles &amp; traffic flow — RMUTT / Commserv Siam · 26 ส.ค. 2569</text>
+<line x1="40" y1="88" x2="1360" y2="88" stroke="#E1E9EF" stroke-width="2"/>
+
+<!-- Internet -->
+<path d="M120 150 a34 34 0 0 1 34-34 h96 a34 34 0 0 1 0 68 h-96 a34 34 0 0 1-34-34z" fill="#EEF3F7" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl" x="175" y="145">Internet</text>
+<text class="tiny" x="150" y="163">WAN / ISP</text>
+
+<!-- Firewall -->
+<rect x="120" y="230" width="170" height="62" rx="8" fill="#FDECEC" stroke="#C0504D" stroke-width="2"/>
+<text class="lbl" x="140" y="256">Firewall / Edge</text>
+<text class="role" x="140" y="276">NAT · Security policy</text>
+<line class="link" x1="205" y1="184" x2="205" y2="230"/>
+
+<!-- Core -->
+<rect x="430" y="205" width="360" height="126" rx="10" fill="#E8F1F8" stroke="#1E6BB8" stroke-width="2.5"/>
+<rect x="430" y="205" width="360" height="26" rx="10" fill="#1E6BB8"/>
+<text class="tag" x="444" y="223">CORE / DISTRIBUTION LAYER</text>
+<text class="lbl" x="444" y="253">Aruba CX 8325 / CX 6300M</text>
+<text class="role" x="444" y="275">บทบาท: Inter-VLAN routing (SVI) · Static / OSPF</text>
+<text class="role" x="444" y="295">DHCP relay (ip helper) · Default route ออก Internet</text>
+<text class="role" x="444" y="315">10/25GbE uplink · LAG · QoS</text>
+<line class="link" x1="290" y1="261" x2="430" y2="261"/>
+
+<!-- Mobility Controller -->
+<rect x="950" y="180" width="400" height="118" rx="10" fill="#FFF3E6" stroke="#FF8300" stroke-width="2.5"/>
+<rect x="950" y="180" width="400" height="26" rx="10" fill="#FF8300"/>
+<text class="tag" x="964" y="198">WLAN CONTROL PLANE + DATA PLANE</text>
+<text class="lbl" x="964" y="228">Mobility Controller (AOS-8) — Aruba 7010 / VMC</text>
+<text class="role" x="964" y="248">บทบาท: AP termination (GRE tunnel) · SSID/WLAN &amp; VLAN</text>
+<text class="role" x="964" y="266">User Role &amp; Policy (Firewall/AppRF) · Captive portal</text>
+<text class="role" x="964" y="284">Centralized management + Dashboard</text>
+<path class="link10" d="M790 250 H 950"/>
+<text class="tiny" x="812" y="240">LAG 2x10G</text>
+
+<!-- ClearPass -->
+<rect x="950" y="330" width="400" height="86" rx="10" fill="#F1ECFB" stroke="#6B4EA8" stroke-width="2.5"/>
+<text class="lbl" x="964" y="358">ClearPass Policy Manager (RADIUS)</text>
+<text class="role" x="964" y="378">802.1X (wired + wireless) · MAC Authentication</text>
+<text class="role" x="964" y="396">Guest / Captive portal · Role assignment (VLAN, ACL)</text>
+<path class="radius" d="M950 373 H 830 V 331"/>
+<text class="tiny" x="836" y="366">RADIUS</text>
+
+<!-- Services -->
+<rect x="950" y="446" width="400" height="72" rx="10" fill="#EFF6F1" stroke="#4B8F6E" stroke-width="2"/>
+<text class="lbl" x="964" y="472">Core Services</text>
+<text class="role" x="964" y="492">DHCP · DNS · NTP · CA (Certificate) · Syslog</text>
+<path class="link" d="M950 482 H 880 V 331"/>
+
+<!-- Access layer group -->
+<rect class="grp" x="180" y="390" width="640" height="130" rx="12"/>
+<text class="tiny" x="196" y="410">ACCESS LAYER</text>
+
+<rect x="230" y="420" width="250" height="80" rx="9" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
+<text class="lbl" x="246" y="446">Aruba CX 6300F (Stack)</text>
+<text class="role" x="246" y="466">PoE+ · 10GbE uplink · VSF Stacking</text>
+<text class="role" x="246" y="484">VLAN · LAG · 802.1X port-based</text>
+
+<rect x="520" y="420" width="250" height="80" rx="9" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
+<text class="lbl" x="536" y="446">Aruba CX 6200F</text>
+<text class="role" x="536" y="466">PoE+ · Edge port สำหรับ user</text>
+<text class="role" x="536" y="484">VLAN · 802.1X / MAC Auth</text>
+
+<path class="link10" d="M540 331 L 380 420"/>
+<path class="link10" d="M660 331 L 645 420"/>
+<text class="tiny" x="344" y="372">Uplink 10G / LAG</text>
+
+<!-- APs -->
+<rect x="230" y="580" width="120" height="62" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl" x="248" y="606">AP-515</text>
+<text class="role" x="248" y="626">PoE+ · Wi-Fi 6</text>
+<rect x="380" y="580" width="120" height="62" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl" x="398" y="606">AP-505</text>
+<text class="role" x="398" y="626">PoE+ · Wi-Fi 6</text>
+<line class="link" x1="290" y1="500" x2="290" y2="580"/>
+<line class="link" x1="440" y1="500" x2="440" y2="580"/>
+<text class="tiny" x="298" y="546">PoE+</text>
+
+<!-- wireless clients -->
+<path class="air" d="M300 572 a44 44 0 0 1 60 0"/>
+<path class="air" d="M312 560 a30 30 0 0 1 36 0"/>
+<rect x="250" y="690" width="230" height="58" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl" x="266" y="714">Wireless Clients</text>
+<text class="role" x="266" y="734">Notebook / Smartphone / IoT</text>
+<line class="link" x1="365" y1="642" x2="365" y2="690" stroke-dasharray="4 4"/>
+
+<!-- wired client -->
+<rect x="620" y="580" width="180" height="62" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl" x="636" y="606">Wired Client / PC</text>
+<text class="role" x="636" y="626">802.1X supplicant, DHCP</text>
+<line class="link" x1="690" y1="500" x2="690" y2="580"/>
+
+<!-- Traffic flows -->
+<circle cx="880" cy="600" r="13" fill="#1E6BB8"/><text class="tag" x="875" y="605">1</text>
+<text class="role" x="900" y="592" font-size="12.5">Wired flow: PC » Access SW (VLAN/802.1X)</text>
+<text class="role" x="900" y="610" font-size="12.5"> » Core (routing, DHCP relay) » Firewall » Internet</text>
+
+<circle cx="880" cy="656" r="13" fill="#FF8300"/><text class="tag" x="875" y="661">2</text>
+<text class="role" x="900" y="648" font-size="12.5">Wireless flow (Tunnel mode): Client » AP » GRE tunnel</text>
+<text class="role" x="900" y="666" font-size="12.5">ผ่าน Switch/Core » Mobility Controller » ปล่อยลง VLAN » Internet</text>
+
+<path class="tunnel" marker-end="url(#ar-svg-overview)" d="M500 612 C 700 604 850 500 952 306"/>
+<text class="tiny" x="516" y="552" fill="#C4620A" font-size="12.5" font-weight="700">GRE Tunnel: AP » Mobility Controller</text>
+
+<!-- legend -->
+<rect x="40" y="770" width="1320" height="44" rx="8" fill="#F7FAFC" stroke="#E1E9EF"/>
+<line class="link" x1="60" y1="792" x2="110" y2="792"/><text class="tiny" x="118" y="796">Copper 1G</text>
+<line class="link10" x1="210" y1="792" x2="260" y2="792"/><text class="tiny" x="268" y="796">10G / LAG (Fiber)</text>
+<path class="tunnel" d="M400 792 H 450"/><text class="tiny" x="458" y="796">GRE Tunnel (AP — MC)</text>
+<path class="radius" d="M620 792 H 670"/><text class="tiny" x="678" y="796">RADIUS (802.1X / MAC Auth)</text>
+<path class="air" d="M840 796 a26 26 0 0 1 34 0"/><text class="tiny" x="884" y="796">Wireless (SSID)</text>
+<text class="tiny" x="1010" y="796">หัวข้อ: Campus architecture · Traffic flow &amp; device roles (10:30 น.)</text>
+</svg></div>
+    <p class="swipe">เลื่อนซ้าย–ขวาเพื่อดูทั้งผัง · แตะที่ผังเพื่อขยาย</p>
+  </figure>
+  <div class="caption">
+    <div class="cap"><h4>① Wired flow</h4><p>PC » Access switch (VLAN / 802.1X) » Core (routing, DHCP relay) » Firewall » Internet</p></div>
+    <div class="cap amber"><h4>② Wireless flow — Tunnel mode</h4><p>Client » AP » GRE tunnel ผ่าน switch/core » Mobility Controller » ปล่อยลง VLAN » Internet</p></div>
+    <div class="cap"><h4>Device roles</h4><p>Switch = ต่อ/จ่ายไฟ · Core = routing + DHCP relay · Controller = SSID, role, policy · ClearPass = ตัดสินใจตัวตน</p></div>
+  </div>
+</section>
+
+<section id="lab">
+  <div class="sechead"><span class="mono">02</span><h2>Lab topology (แบ่งตาม Pod)</h2></div>
+  <p class="sub">Pod ละ 2–3 คน แต่ละ Pod ได้อุปกรณ์ชุดเดียวกัน แยก VLAN และ SSID กันคนละชุด เพื่อให้ config ทับกันไม่ได้ — ครอบทุกหัวข้อของ Module 1 และ Module 2</p>
+  <figure class="figure" style="margin:0">
+    <div class="figbar">
+      <span>FIG.02 — LAB TOPOLOGY</span>
+      <div class="figtools">
+        <button class="tool" data-zoom="svg-lab">ขยายเต็มจอ</button>
+        <button class="tool" data-dl="svg-lab" data-name="02_Lab_Topology">ดาวน์โหลด SVG</button>
+      </div>
+    </div>
+    <div class="figscroll"><svg id="svg-lab" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1130">
+<defs>
+<style>#svg-lab text{font-family:"IBM Plex Sans Thai","Sarabun","Loma","Noto Sans Thai","Sarabun","Segoe UI",sans-serif;fill:#0F1E2E}#svg-lab .h1{font-size:28px;font-weight:700}#svg-lab .sub{font-size:14px;fill:#5A6C7D}#svg-lab .lbl{font-size:15px;font-weight:700}#svg-lab .lbl2{font-size:13px;font-weight:700}#svg-lab .role{font-size:11.5px;fill:#41545F}#svg-lab .tiny{font-size:11px;fill:#5A6C7D}#svg-lab .tag{font-size:11px;font-weight:700;fill:#fff}#svg-lab .th{font-size:11.5px;font-weight:700;fill:#1E6BB8}#svg-lab .td{font-size:11.5px;fill:#33454F}#svg-lab .link{stroke:#4A6274;stroke-width:2.5;fill:none}#svg-lab .link10{stroke:#0E7C86;stroke-width:5;fill:none;stroke-linecap:round}#svg-lab .stackl{stroke:#0E7C86;stroke-width:7;fill:none;stroke-linecap:round}#svg-lab .tunnel{stroke:#FF8300;stroke-width:3;stroke-dasharray:9 6;fill:none}#svg-lab .radius{stroke:#6B4EA8;stroke-width:2.5;stroke-dasharray:3 5;fill:none}#svg-lab .air{stroke:#14996B;stroke-width:2;fill:none;opacity:.75}#svg-lab .grp{fill:#FAFCFE;stroke:#C7D6E2;stroke-width:1.5;stroke-dasharray:6 5}
+</style>
+<marker id="ar-svg-lab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M0 0 L10 5 L0 10 z" fill="#FF8300"/></marker>
+</defs>
+
+<rect width="1440" height="1130" fill="#FFFFFF"/>
+<text class="h1" x="40" y="48">Aruba Campus Network Training — Lab Topology</text>
+<text class="sub" x="40" y="74">RMUTT × Commserv Siam · 26 ส.ค. 2569 · Module 1: Aruba Switch (CX) — Module 2: Mobility Controller + Access Point</text>
+<line x1="40" y1="90" x2="1400" y2="90" stroke="#E1E9EF" stroke-width="2"/>
+
+<!-- Internet + edge -->
+<path d="M75 148 a30 30 0 0 1 30-30 h110 a30 30 0 0 1 0 60 h-110 a30 30 0 0 1-30-30z" fill="#EEF3F7" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl" x="128" y="143">Internet</text>
+<text class="tiny" x="95" y="160">Venue WAN / 4G Router</text>
+<rect x="75" y="215" width="180" height="58" rx="8" fill="#FDECEC" stroke="#C0504D" stroke-width="2"/>
+<text class="lbl2" x="90" y="240">NAT Router / Firewall</text>
+<text class="role" x="90" y="259">VLAN 100 · 192.168.100.254</text>
+<line class="link" x1="165" y1="178" x2="165" y2="215"/>
+<line class="link" x1="255" y1="244" x2="330" y2="244"/>
+
+<!-- Core -->
+<rect x="330" y="185" width="470" height="122" rx="10" fill="#E8F1F8" stroke="#1E6BB8" stroke-width="2.5"/>
+<rect x="330" y="185" width="470" height="26" rx="10" fill="#1E6BB8"/>
+<text class="tag" x="344" y="203">CORE (ใช้ร่วมกันทุก Pod) — Aruba CX 8325 / CX 6300M</text>
+<text class="role" x="344" y="233">• SVI ทุก VLAN ของทุก Pod + Inter-VLAN routing</text>
+<text class="role" x="344" y="252">• DHCP relay (ip helper-address » Services VM) หรือ DHCP pool บน Core</text>
+<text class="role" x="344" y="271">• Default route 0.0.0.0/0 » 192.168.100.254</text>
+<text class="role" x="344" y="290">• Uplink 10G + LAG ลงทุก Pod / ขึ้น Controller</text>
+
+<!-- Mobility Controller -->
+<rect x="1000" y="118" width="400" height="122" rx="10" fill="#FFF3E6" stroke="#FF8300" stroke-width="2.5"/>
+<rect x="1000" y="118" width="400" height="26" rx="10" fill="#FF8300"/>
+<text class="tag" x="1014" y="136">MOBILITY CONTROLLER (AOS-8) — 7010 / VMC</text>
+<text class="role" x="1014" y="166">• AP onboarding + GRE tunnel termination</text>
+<text class="role" x="1014" y="185">• WLAN/SSID, VLAN, AAA profile, User Role</text>
+<text class="role" x="1014" y="204">• Captive portal, Application Control (AppRF)</text>
+<text class="role" x="1014" y="223">• Dashboard / Monitoring — MGMT 192.168.200.10</text>
+<path class="link10" d="M800 200 H 1000"/>
+<text class="tiny" x="812" y="190">LAG 2x10G (VLAN 200 + user VLANs)</text>
+
+<!-- ClearPass -->
+<rect x="1000" y="262" width="400" height="96" rx="10" fill="#F1ECFB" stroke="#6B4EA8" stroke-width="2.5"/>
+<text class="lbl2" x="1014" y="288">ClearPass Policy Manager (VM) — RADIUS</text>
+<text class="role" x="1014" y="308">• 802.1X: wired (Module 1) + wireless (Module 2)</text>
+<text class="role" x="1014" y="327">• MAC Authentication (IoT) · Guest self-register</text>
+<text class="role" x="1014" y="346">• 192.168.200.20 — shared secret ต่อ Pod</text>
+<path class="radius" d="M1000 300 H 880 V 307"/>
+
+<!-- Services -->
+<rect x="1000" y="378" width="400" height="66" rx="10" fill="#EFF6F1" stroke="#4B8F6E" stroke-width="2"/>
+<text class="lbl2" x="1014" y="402">Services VM — DHCP / DNS / NTP / CA / Syslog</text>
+<text class="role" x="1014" y="424">192.168.200.30 · ปลายทางของ DHCP relay</text>
+<path class="link" d="M1000 410 H 850 V 307"/>
+
+<!-- Tunnel indication -->
+<path class="tunnel" marker-end="url(#ar-svg-lab)" d="M700 330 C 820 380 900 330 985 250" />
+<text class="tiny" x="622" y="398" fill="#C4620A" font-size="12" font-weight="700">GRE Tunnel: AP » MC</text>
+
+<!-- ============ POD 1 ============ -->
+<rect class="grp" x="60" y="470" width="440" height="420" rx="12"/>
+<rect x="60" y="470" width="120" height="28" rx="10" fill="#1E6BB8"/>
+<text class="tag" x="76" y="489">POD 1 (2–3 คน)</text>
+
+<rect x="82" y="512" width="396" height="106" rx="9" fill="#F2F7FB" stroke="#1E6BB8" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text class="lbl2" x="96" y="534">Access Stack — 2x Aruba CX 6300F 24G PoE+ (VSF)</text>
+<rect x="96" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
+<text class="lbl2" x="110" y="568">SW1-POD1</text>
+<text class="role" x="110" y="588">Commander · Mbr 1</text>
+<rect x="296" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
+<text class="lbl2" x="310" y="568">SW2-POD1</text>
+<text class="role" x="310" y="588">Standby · Mbr 2</text>
+<path class="stackl" d="M266 575 H 296"/>
+<text class="tiny" x="238" y="640">VSF stack link</text>
+
+<path class="link10" d="M150 512 L 420 307"/>
+<path class="link10" d="M410 512 L 520 307"/>
+<text class="tiny" x="74" y="446">LAG 2x10G (SFP+) ขึ้น Core</text>
+
+<rect x="88" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl2" x="102" y="700">AP-515</text>
+<text class="role" x="102" y="720">PoE+ · port 1/1/1</text>
+<rect x="222" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl2" x="236" y="700">AP-505</text>
+<text class="role" x="236" y="720">PoE+ · port 2/1/1</text>
+<rect x="356" y="676" width="122" height="66" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl2" x="370" y="700">PC (wired)</text>
+<text class="role" x="370" y="720">802.1X + DHCP test</text>
+<line class="link" x1="147" y1="604" x2="147" y2="676"/>
+<line class="link" x1="281" y1="604" x2="281" y2="676"/>
+<line class="link" x1="417" y1="604" x2="417" y2="676"/>
+<text class="tiny" x="152" y="646">PoE+</text>
+<text class="tiny" x="422" y="646">VLAN 12</text>
+
+<path class="air" d="M118 668 a38 38 0 0 1 56 0"/>
+<path class="air" d="M252 668 a38 38 0 0 1 56 0"/>
+<rect x="88" y="790" width="252" height="62" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl2" x="102" y="813">Wireless clients</text>
+<text class="role" x="102" y="832">Notebook / Mobile / IoT</text>
+<line class="link" x1="214" y1="742" x2="214" y2="790" stroke-dasharray="4 4"/>
+<text class="role" x="88" y="874">SSID: POD1-EMP (802.1X) · POD1-GUEST (Portal) · POD1-IOT (PSK/MAC)</text>
+
+<!-- ============ POD 2 ============ -->
+<rect class="grp" x="520" y="470" width="440" height="420" rx="12"/>
+<rect x="520" y="470" width="120" height="28" rx="10" fill="#1E6BB8"/>
+<text class="tag" x="536" y="489">POD 2 (2–3 คน)</text>
+
+<rect x="542" y="512" width="396" height="106" rx="9" fill="#F2F7FB" stroke="#1E6BB8" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text class="lbl2" x="556" y="534">Access Stack — 2x Aruba CX 6300F 24G PoE+ (VSF)</text>
+<rect x="556" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
+<text class="lbl2" x="570" y="568">SW1-POD2</text>
+<text class="role" x="570" y="588">Commander · Mbr 1</text>
+<rect x="756" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
+<text class="lbl2" x="770" y="568">SW2-POD2</text>
+<text class="role" x="770" y="588">Standby · Mbr 2</text>
+<path class="stackl" d="M726 575 H 756"/>
+
+<path class="link10" d="M610 512 L 600 307"/>
+<path class="link10" d="M870 512 L 690 307"/>
+
+<rect x="548" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl2" x="562" y="700">AP-515</text>
+<text class="role" x="562" y="720">PoE+ · port 1/1/1</text>
+<rect x="682" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl2" x="696" y="700">AP-505</text>
+<text class="role" x="696" y="720">PoE+ · port 2/1/1</text>
+<rect x="816" y="676" width="122" height="66" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl2" x="830" y="700">PC (wired)</text>
+<text class="role" x="830" y="720">802.1X + DHCP test</text>
+<line class="link" x1="607" y1="604" x2="607" y2="676"/>
+<line class="link" x1="741" y1="604" x2="741" y2="676"/>
+<line class="link" x1="877" y1="604" x2="877" y2="676"/>
+<text class="tiny" x="882" y="646">VLAN 22</text>
+
+<path class="air" d="M578 668 a38 38 0 0 1 56 0"/>
+<path class="air" d="M712 668 a38 38 0 0 1 56 0"/>
+<rect x="548" y="790" width="252" height="62" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl2" x="562" y="813">Wireless clients</text>
+<text class="role" x="562" y="832">Notebook / Mobile / IoT</text>
+<line class="link" x1="674" y1="742" x2="674" y2="790" stroke-dasharray="4 4"/>
+<text class="role" x="548" y="874">SSID: POD2-EMP (802.1X) · POD2-GUEST (Portal) · POD2-IOT (PSK/MAC)</text>
+
+<!-- ============ POD n note ============ -->
+<rect class="grp" x="1000" y="470" width="400" height="420" rx="12"/>
+<rect x="1000" y="470" width="150" height="28" rx="10" fill="#7A8C99"/>
+<text class="tag" x="1016" y="489">POD 3 ... POD n</text>
+<text class="role" x="1016" y="524">• อุปกรณ์และการต่อสายเหมือน Pod 1 ทุกประการ</text>
+<text class="role" x="1016" y="546">• เปลี่ยนเฉพาะ VLAN ID / Subnet / ชื่อ SSID ตามตารางด้านล่าง</text>
+<text class="role" x="1016" y="568">• แนะนำ 2–3 คน/Pod เพื่อให้ทุกคนได้ลงมือ config</text>
+
+<line x1="1016" y1="588" x2="1384" y2="588" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="1016" y="612">ถ้าอุปกรณ์ไม่พอ (ปรับได้)</text>
+<text class="role" x="1016" y="634">• Stack: ถ้ามีสวิตช์ตัวเดียว/Pod » สอน VSF แบบ demo รวม</text>
+<text class="role" x="1016" y="656">• Controller: ใช้ MC ตัวเดียวร่วมกันได้ แยก SSID + VLAN ต่อ Pod</text>
+<text class="role" x="1016" y="678">  (แต่ละ Pod สร้าง WLAN/AAA profile ของตัวเอง ไม่ทับกัน)</text>
+<text class="role" x="1016" y="700">• ClearPass: 1 VM ใช้ร่วม — เพิ่ม NAD ทุก Pod, Service แยกตาม NAD</text>
+<text class="role" x="1016" y="722">• AP: อย่างน้อย 1 ตัว/Pod (2 ตัว จะสาธิต roaming ได้)</text>
+
+<line x1="1016" y1="742" x2="1384" y2="742" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="1016" y="766">อุปกรณ์ที่ผู้เข้าอบรมต้องเตรียม</text>
+<text class="role" x="1016" y="788">• Notebook 1 เครื่อง (มี LAN port หรือ USB-LAN) + สาย Console/USB-C</text>
+<text class="role" x="1016" y="810">• PuTTY / SecureCRT, Wi-Fi adapter, มือถือสำหรับทดสอบ Guest portal</text>
+<text class="role" x="1016" y="832">• Switch MGMT: 192.168.200.x/24 (VLAN 200) เข้าถึง MC/CPPM ได้</text>
+<text class="role" x="1016" y="862">* ตรวจสอบว่า Venue อนุญาตให้ตั้ง SSID เพิ่มได้ และไม่ชนช่องสัญญาณ</text>
+
+<!-- ============ bottom band ============ -->
+<rect x="60" y="912" width="440" height="192" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="78" y="938">Legend</text>
+<line class="link" x1="80" y1="962" x2="128" y2="962"/><text class="tiny" x="138" y="966">Copper 1G (AP / PC)</text>
+<line class="link10" x1="80" y1="988" x2="128" y2="988"/><text class="tiny" x="138" y="992">10G Fiber / LAG uplink</text>
+<path class="stackl" d="M80 1014 H 128"/><text class="tiny" x="138" y="1018">VSF Stack link</text>
+<path class="tunnel" d="M80 1040 H 128"/><text class="tiny" x="138" y="1044">GRE Tunnel (AP — Controller)</text>
+<path class="radius" d="M80 1066 H 128"/><text class="tiny" x="138" y="1070">RADIUS (802.1X / MAC Auth)</text>
+<path class="air" d="M84 1094 a24 24 0 0 1 40 0"/><text class="tiny" x="138" y="1094">Wireless (SSID broadcast)</text>
+
+<rect x="520" y="912" width="440" height="192" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="538" y="938">VLAN / IP Plan (n = หมายเลข Pod)</text>
+<text class="th" x="538" y="960">VLAN</text><text class="th" x="596" y="960">ชื่อ / การใช้งาน</text><text class="th" x="812" y="960">Subnet</text>
+<line x1="538" y1="966" x2="942" y2="966" stroke="#DCE6ED"/>
+<text class="td" x="538" y="984">n1</text><text class="td" x="596" y="984">MGMT (Switch / AP)</text><text class="td" x="812" y="984">10.n.1.0/24</text>
+<text class="td" x="538" y="1002">n2</text><text class="td" x="596" y="1002">Wired Users — 802.1X</text><text class="td" x="812" y="1002">10.n.2.0/24</text>
+<text class="td" x="538" y="1020">n3</text><text class="td" x="596" y="1020">WLAN Employee — 802.1X</text><text class="td" x="812" y="1020">10.n.3.0/24</text>
+<text class="td" x="538" y="1038">n4</text><text class="td" x="596" y="1038">WLAN Guest — Captive portal</text><text class="td" x="812" y="1038">10.n.4.0/24</text>
+<text class="td" x="538" y="1056">n5</text><text class="td" x="596" y="1056">WLAN IoT — PSK + MAC Auth</text><text class="td" x="812" y="1056">10.n.5.0/24</text>
+<text class="td" x="538" y="1074">100</text><text class="td" x="596" y="1074">Transit / Internet uplink</text><text class="td" x="812" y="1074">192.168.100.0/24</text>
+<text class="td" x="538" y="1092">200</text><text class="td" x="596" y="1092">Servers: MC / CPPM / DHCP</text><text class="td" x="812" y="1092">192.168.200.0/24</text>
+
+<rect x="1000" y="912" width="400" height="192" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="1018" y="938">หัวข้อในหลักสูตร » ทำที่ไหนในแลบ</text>
+<text class="td" x="1018" y="960">M1 Stacking / LAG / 10G uplink » SW1+SW2 — Core</text>
+<text class="td" x="1018" y="979">M1 PoE budget / Redundant PSU » พอร์ตที่ต่อ AP</text>
+<text class="td" x="1018" y="998">M1 VLAN » VLAN n1–n5 บน Access + Core</text>
+<text class="td" x="1018" y="1017">M1 Routing / DHCP relay » SVI + ip helper บน Core</text>
+<text class="td" x="1018" y="1036">M1 802.1X (wired) » PC » SW » ClearPass</text>
+<text class="td" x="1018" y="1055">M2 AP onboarding / WLAN » AP — MC (GRE)</text>
+<text class="td" x="1018" y="1074">M2 PSK / Portal / 802.1X / MAC » 3 SSID ต่อ Pod</text>
+<text class="td" x="1018" y="1093">M2 AppRF policy + Dashboard » User Role บน MC</text>
+</svg></div>
+    <p class="swipe">เลื่อนซ้าย–ขวาเพื่อดูทั้งผัง · แตะที่ผังเพื่อขยาย</p>
+  </figure>
+  <div class="caption">
+    <div class="cap"><h4>Module 1 — ทำที่สวิตช์</h4><p>VSF stack, LAG 2x10G ขึ้น core, PoE+ จ่ายไฟ AP, VLAN, SVI + routing, DHCP relay, 802.1X ฝั่ง wired</p></div>
+    <div class="cap amber"><h4>Module 2 — ทำที่ Controller + AP</h4><p>AP onboarding ผ่าน GRE tunnel, สร้าง 3 SSID ต่อ Pod (PSK / Captive portal / 802.1X / MAC auth), User role + AppRF policy, Dashboard</p></div>
+    <div class="cap"><h4>ถ้าอุปกรณ์ไม่พอ</h4><p>ใช้ Mobility Controller ตัวเดียวร่วมกันได้ โดยแยก WLAN/AAA profile ต่อ Pod · ClearPass 1 VM เพิ่ม NAD ทุก Pod</p></div>
+  </div>
+</section>
+
+<section id="vlan">
+  <div class="sechead"><span class="mono">03</span><h2>แผน VLAN / IP</h2></div>
+  <p class="sub">n คือหมายเลข Pod — Pod 1 ใช้ VLAN 11–15 กับ 10.1.x.0/24, Pod 2 ใช้ VLAN 21–25 กับ 10.2.x.0/24 ไล่ไปเรื่อยๆ</p>
+  <div class="tablecard">
+    <table>
+      <thead><tr><th>VLAN</th><th>ชื่อ / การใช้งาน</th><th>Subnet</th><th>หมายเหตุ</th></tr></thead>
+      <tbody>
+<tr><td class="mono vid">n1</td><td>MGMT (Switch / AP)</td><td class="mono">10.n.1.0/24</td><td class="note">จัดการอุปกรณ์ — ไม่ปนกับ user</td></tr>
+<tr><td class="mono vid">n2</td><td>Wired Users — 802.1X</td><td class="mono">10.n.2.0/24</td><td class="note">ทดสอบ 802.1X ฝั่ง wired (Module 1)</td></tr>
+<tr><td class="mono vid">n3</td><td>WLAN Employee — 802.1X</td><td class="mono">10.n.3.0/24</td><td class="note">SSID PODn-EMP · EAP-PEAP / EAP-TLS</td></tr>
+<tr><td class="mono vid">n4</td><td>WLAN Guest — Captive portal</td><td class="mono">10.n.4.0/24</td><td class="note">SSID PODn-GUEST · Guest role จำกัดสิทธิ์</td></tr>
+<tr><td class="mono vid">n5</td><td>WLAN IoT — PSK + MAC Auth</td><td class="mono">10.n.5.0/24</td><td class="note">SSID PODn-IOT · ใช้สอน MAC Authentication</td></tr>
+<tr><td class="mono vid">100</td><td>Transit / Internet uplink</td><td class="mono">192.168.100.0/24</td><td class="note">Default route → 192.168.100.254</td></tr>
+<tr><td class="mono vid">200</td><td>Servers</td><td class="mono">192.168.200.0/24</td><td class="note">MC 192.168.200.10 · CPPM .20 · DHCP/DNS .30</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="hint">Gateway ของทุก VLAN อยู่บน core (<code>ip address 10.n.x.1/24</code>) และชี้ DHCP ด้วย <code>ip helper-address 192.168.200.30</code></p>
+</section>
+
+<section id="agenda">
+  <div class="sechead"><span class="mono">04</span><h2>กำหนดการอบรม</h2></div>
+  <p class="sub">อังคารที่ 26 สิงหาคม 2569 — ช่วงที่มี LAB ให้เปิดหน้า Lab topology คู่กัน</p>
+  <ol class="agenda">
+<li class="ag"><span class="mono time">10:30</span><div><h4>Overview Aruba Solution</h4><p>Campus architecture: Switch + Controller + AP · Traffic flow &amp; device roles</p></div></li>
+<li class="ag"><span class="mono time">10:30</span><div><h4>Module 1 : Aruba Switch (1/2)</h4><p>Switch series · Stacking, 10GbE uplink · PoE/PoE+ budget, Redundant PSU · Device &amp; stack config · LAG · VLAN + LAB</p></div></li>
+<li class="ag ag-break"><span class="mono time">12:00</span><div><h4>Lunch</h4></div></li>
+<li class="ag"><span class="mono time">13:00</span><div><h4>Module 1 : Aruba Switch (2/2)</h4><p>Routing · DHCP relay · 802.1X Authentication + LAB</p></div></li>
+<li class="ag"><span class="mono time">13:00</span><div><h4>Module 2 : Controller + AP (1/2)</h4><p>Controller overview &amp; AP onboarding · Configure WLANs · Authentication: PSK, Captive portal + LAB</p></div></li>
+<li class="ag ag-break"><span class="mono time">15:00</span><div><h4>Break</h4></div></li>
+<li class="ag"><span class="mono time">15:15</span><div><h4>Module 2 : Controller + AP (2/2)</h4><p>Authentication: 802.1X, MAC Address · Application Control (Policy) · Dashboard overview + LAB</p></div></li>
+<li class="ag ag-break"><span class="mono time">16:00</span><div><h4>Q &amp; A</h4></div></li>
+<li class="ag ag-break"><span class="mono time">16:30</span><div><h4>เสร็จสิ้นการอบรม</h4></div></li>
+  </ol>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>Aruba Campus Network Training · <b>RMUTT × Commserv Siam</b> · 26 ส.ค. 2569</div>
+    <div>กด <b>Ctrl/Cmd + P</b> เพื่อพิมพ์หรือบันทึกเป็น PDF</div>
+  </div>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="ดูแผนผังแบบเต็มจอ">
+  <div class="lbbar">
+    <span id="lbtitle" class="mono"></span>
+    <div>
+      <span class="mono" id="lbzoom">100%</span>
+      <button data-lb="out">−</button>
+      <button data-lb="in">+</button>
+      <button data-lb="reset">รีเซ็ต</button>
+      <button data-lb="close">ปิด (Esc)</button>
+    </div>
+  </div>
+  <div class="lbstage" id="lbstage"><div id="lbinner"></div></div>
+</div>
+
+<script>
+(function(){
+  // --- faceplate link status: light the port for the section in view ---
+  var ports = [].slice.call(document.querySelectorAll('.port'));
+  var map = {};
+  ports.forEach(function(p){ map[p.dataset.target] = p; });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        ports.forEach(function(p){ p.classList.remove('on'); });
+        if(map[e.target.id]) map[e.target.id].classList.add('on');
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px'});
+  document.querySelectorAll('main section').forEach(function(s){ io.observe(s); });
+  if(ports[0]) ports[0].classList.add('on');
+
+  // --- download the inline diagram as an SVG file ---
+  document.querySelectorAll('[data-dl]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var svg = document.getElementById(btn.dataset.dl).cloneNode(true);
+      var blob = new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n' + svg.outerHTML],
+        {type:'image/svg+xml;charset=utf-8'});
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = btn.dataset.name + '.svg';
+      a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+    });
+  });
+
+  // --- zoom viewer: wheel to zoom, drag to pan ---
+  var lb = document.getElementById('lb'), stage = document.getElementById('lbstage'),
+      inner = document.getElementById('lbinner'), zlabel = document.getElementById('lbzoom'),
+      title = document.getElementById('lbtitle');
+  var scale = 1, tx = 0, ty = 0, dragging = false, sx = 0, sy = 0;
+
+  function apply(){
+    inner.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+    zlabel.textContent = Math.round(scale * 100) + '%';
+  }
+  var moved = null, anchor = null;
+  function open(id, label){
+    if(moved) close();
+    var svg = document.getElementById(id);
+    anchor = document.createComment('slot');       // keep the spot on the page
+    svg.parentNode.insertBefore(anchor, svg);
+    moved = svg;
+    inner.appendChild(svg);                        // move, don't clone: keeps styles + markers
+    title.textContent = label;
+    scale = 1; tx = 0; ty = 0; apply();
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function close(){
+    if(moved && anchor){ anchor.parentNode.replaceChild(moved, anchor); }
+    moved = null; anchor = null;
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('[data-zoom]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      open(btn.dataset.zoom, btn.closest('.figbar').querySelector('span').textContent);
+    });
+  });
+  document.querySelectorAll('.figscroll svg').forEach(function(svg){
+    svg.style.cursor = 'zoom-in';
+    svg.addEventListener('click', function(){
+      open(svg.id, svg.closest('.figure').querySelector('.figbar span').textContent);
+    });
+  });
+  document.querySelectorAll('[data-lb]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var a = b.dataset.lb;
+      if(a === 'in') scale = Math.min(scale * 1.25, 8);
+      if(a === 'out') scale = Math.max(scale / 1.25, 0.4);
+      if(a === 'reset'){ scale = 1; tx = 0; ty = 0; }
+      if(a === 'close'){ close(); return; }
+      apply();
+    });
+  });
+  stage.addEventListener('wheel', function(e){
+    if(!lb.classList.contains('open')) return;
+    e.preventDefault();
+    scale = Math.min(Math.max(scale * (e.deltaY < 0 ? 1.12 : 0.89), 0.4), 8);
+    apply();
+  }, {passive:false});
+  stage.addEventListener('pointerdown', function(e){
+    dragging = true; sx = e.clientX - tx; sy = e.clientY - ty;
+    stage.classList.add('drag'); stage.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener('pointermove', function(e){
+    if(!dragging) return;
+    tx = e.clientX - sx; ty = e.clientY - sy; apply();
+  });
+  ['pointerup','pointercancel'].forEach(function(ev){
+    stage.addEventListener(ev, function(){ dragging = false; stage.classList.remove('drag'); });
+  });
+  stage.addEventListener('click', function(e){ if(e.target === stage) close(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && lb.classList.contains('open')) close();
+  });
+})();
+</script>
+</body>
+</html>
