@@ -1,23 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 830" width="1400" height="830">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1400" height="830" id="svg-overview" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 830">
 <defs>
-<style>
-text{font-family:"Loma","Noto Sans Thai","Sarabun","Segoe UI",sans-serif;fill:#0F1E2E}
-.h1{font-size:28px;font-weight:700}
-.sub{font-size:14px;fill:#5A6C7D}
-.lbl{font-size:15px;font-weight:700}
-.role{font-size:11.5px;fill:#41545F}
-.tiny{font-size:11px;fill:#5A6C7D}
-.tag{font-size:11px;font-weight:700;fill:#fff}
-.link{stroke:#4A6274;stroke-width:2.5;fill:none}
-.link10{stroke:#0E7C86;stroke-width:5;fill:none;stroke-linecap:round}
-.tunnel{stroke:#FF8300;stroke-width:3;stroke-dasharray:9 6;fill:none}
-.radius{stroke:#6B4EA8;stroke-width:2.5;stroke-dasharray:3 5;fill:none}
-.air{stroke:#14996B;stroke-width:2;fill:none;opacity:.75}
-.grp{fill:#FAFCFE;stroke:#C7D6E2;stroke-width:1.5;stroke-dasharray:6 5}
+<style>#svg-overview text{font-family:"IBM Plex Sans Thai","Sarabun","Loma","Noto Sans Thai","Sarabun","Segoe UI",sans-serif;fill:#0F1E2E}#svg-overview .h1{font-size:28px;font-weight:700}#svg-overview .sub{font-size:14px;fill:#5A6C7D}#svg-overview .lbl{font-size:15px;font-weight:700}#svg-overview .role{font-size:11.5px;fill:#41545F}#svg-overview .tiny{font-size:11px;fill:#5A6C7D}#svg-overview .tag{font-size:11px;font-weight:700;fill:#fff}#svg-overview .link{stroke:#4A6274;stroke-width:2.5;fill:none}#svg-overview .link10{stroke:#0E7C86;stroke-width:5;fill:none;stroke-linecap:round}#svg-overview .tunnel{stroke:#FF8300;stroke-width:3;stroke-dasharray:9 6;fill:none}#svg-overview .radius{stroke:#6B4EA8;stroke-width:2.5;stroke-dasharray:3 5;fill:none}#svg-overview .air{stroke:#14996B;stroke-width:2;fill:none;opacity:.75}#svg-overview .grp{fill:#FAFCFE;stroke:#C7D6E2;stroke-width:1.5;stroke-dasharray:6 5}
 </style>
-<marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<marker id="ar-svg-overview" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
 <path d="M0 0 L10 5 L0 10 z" fill="#FF8300"/></marker>
-<marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<marker id="arb-svg-overview" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
 <path d="M0 0 L10 5 L0 10 z" fill="#1E6BB8"/></marker>
 </defs>
 
@@ -80,7 +68,6 @@ text{font-family:"Loma","Noto Sans Thai","Sarabun","Segoe UI",sans-serif;fill:#0
 <text class="lbl" x="246" y="446">Aruba CX 6300F (Stack)</text>
 <text class="role" x="246" y="466">PoE+ · 10GbE uplink · VSF Stacking</text>
 <text class="role" x="246" y="484">VLAN · LAG · 802.1X port-based</text>
-
 <rect x="520" y="420" width="250" height="80" rx="9" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
 <text class="lbl" x="536" y="446">Aruba CX 6200F</text>
 <text class="role" x="536" y="466">PoE+ · Edge port สำหรับ user</text>
@@ -124,7 +111,7 @@ text{font-family:"Loma","Noto Sans Thai","Sarabun","Segoe UI",sans-serif;fill:#0
 <text class="role" x="900" y="648" font-size="12.5">Wireless flow (Tunnel mode): Client » AP » GRE tunnel</text>
 <text class="role" x="900" y="666" font-size="12.5">ผ่าน Switch/Core » Mobility Controller » ปล่อยลง VLAN » Internet</text>
 
-<path class="tunnel" marker-end="url(#ar)" d="M500 612 C 700 604 850 500 952 306"/>
+<path class="tunnel" marker-end="url(#ar-svg-overview)" d="M500 612 C 700 604 850 500 952 306"/>
 <text class="tiny" x="516" y="552" fill="#C4620A" font-size="12.5" font-weight="700">GRE Tunnel: AP » Mobility Controller</text>
 
 <!-- legend -->

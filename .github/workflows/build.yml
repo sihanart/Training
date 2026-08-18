@@ -1,0 +1,49 @@
+name: Build site
+
+# Regenerates the site whenever the data or the generator changes, and commits
+# the result back to main. GitHub Pages keeps serving the branch root, so the
+# published site is always plain files in git — no deploy step to break.
+#
+# The paths filter deliberately lists only inputs, never generated output, so the
+# bot's own commit cannot retrigger this workflow.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'build.mjs'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-site
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build
+        run: node build.mjs
+
+      - name: Commit generated site
+        run: |
+          if git diff --quiet; then
+            echo "site already up to date — nothing to commit"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "build: regenerate site from src/"
+          git push

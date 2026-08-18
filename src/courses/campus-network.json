@@ -1,0 +1,217 @@
+{
+  "id": "campus-network",
+  "title": "Aruba Campus Network Training",
+  "subtitle": "Network Diagram & Lab Topology",
+  "docTitle": "Aruba Campus Network Training — Network Diagram",
+  "courseName": "Aruba Campus Network",
+  "description": "แผนผังเครือข่ายสำหรับอบรม Aruba Campus Network — ภาพรวมสถาปัตยกรรม, Lab topology, แผน VLAN/IP และกำหนดการ",
+  "lede": "แผนผังสำหรับใช้อ้างอิงระหว่างอบรม — ภาพรวมสถาปัตยกรรมของ Campus network, ผัง Lab ที่แบ่งตาม Pod และแผน VLAN/IP ที่ใช้จริงในห้องแลบ เปิดจากมือถือได้ระหว่างทำแลบ",
+
+  "infra": {
+    "transitVlan": "100",
+    "transitName": "Transit / Internet uplink",
+    "transitSubnet": "192.168.100.0/24",
+    "transitNote": "Default route → {{gateway}}",
+    "gateway": "192.168.100.254",
+    "serverVlan": "200",
+    "serverName": "Servers",
+    "serverNameShort": "Servers: MC / CPPM / DHCP",
+    "serverSubnet": "192.168.200.0/24",
+    "serverNote": "MC {{mc}} · CPPM .20 · DHCP/DNS .30",
+    "mc": "192.168.200.10",
+    "cppm": "192.168.200.20",
+    "services": "192.168.200.30"
+  },
+
+  "vlanPlan": [
+    { "vid": "n1", "name": "MGMT (Switch / AP)", "subnet": "10.n.1.0/24", "note": "จัดการอุปกรณ์ — ไม่ปนกับ user" },
+    { "vid": "n2", "name": "Wired Users — 802.1X", "subnet": "10.n.2.0/24", "note": "ทดสอบ 802.1X ฝั่ง wired (Module 1)" },
+    { "vid": "n3", "name": "WLAN Employee — 802.1X", "subnet": "10.n.3.0/24", "note": "SSID PODn-EMP · EAP-PEAP / EAP-TLS" },
+    { "vid": "n4", "name": "WLAN Guest — Captive portal", "subnet": "10.n.4.0/24", "note": "SSID PODn-GUEST · Guest role จำกัดสิทธิ์" },
+    { "vid": "n5", "name": "WLAN IoT — PSK + MAC Auth", "subnet": "10.n.5.0/24", "note": "SSID PODn-IOT · ใช้สอน MAC Authentication" }
+  ],
+
+  "vlanHint": "Gateway ของทุก VLAN อยู่บน core (`ip address 10.n.x.1/24`) และชี้ DHCP ด้วย `ip helper-address 192.168.200.30`",
+
+  "pod": {
+    "size": "2–3 คน",
+    "wiredVlanIndex": 2,
+    "stack": {
+      "label": "Access Stack — 2x Aruba CX 6300F 24G PoE+ (VSF)",
+      "members": [
+        { "name": "SW1", "role": "Commander · Mbr 1" },
+        { "name": "SW2", "role": "Standby · Mbr 2" }
+      ]
+    },
+    "aps": [
+      { "model": "AP-515", "note": "PoE+ · port 1/1/1" },
+      { "model": "AP-505", "note": "PoE+ · port 2/1/1" }
+    ],
+    "client": { "label": "PC (wired)", "note": "802.1X + DHCP test" },
+    "clients": { "label": "Wireless clients", "note": "Notebook / Mobile / IoT" },
+    "ssids": [
+      { "suffix": "EMP", "auth": "802.1X" },
+      { "suffix": "GUEST", "auth": "Portal" },
+      { "suffix": "IOT", "auth": "PSK/MAC" }
+    ],
+    "uplinkNote": "LAG 2x10G (SFP+) ขึ้น Core"
+  },
+
+  "overview": {
+    "figLabel": "FIG.01 — CAMPUS ARCHITECTURE",
+    "fileName": "01_Overview_Campus_Architecture",
+    "heading": "Aruba Campus Architecture — Overview",
+    "subhead": "Switch + Controller + AP · Device roles & traffic flow",
+    "edge": { "label": "Internet", "note": "WAN / ISP" },
+    "firewall": { "label": "Firewall / Edge", "note": "NAT · Security policy" },
+    "core": {
+      "tag": "CORE / DISTRIBUTION LAYER",
+      "label": "Aruba CX 8325 / CX 6300M",
+      "roles": [
+        "บทบาท: Inter-VLAN routing (SVI) · Static / OSPF",
+        "DHCP relay (ip helper) · Default route ออก Internet",
+        "10/25GbE uplink · LAG · QoS"
+      ]
+    },
+    "controller": {
+      "tag": "WLAN CONTROL PLANE + DATA PLANE",
+      "label": "Mobility Controller (AOS-8) — Aruba 7010 / VMC",
+      "roles": [
+        "บทบาท: AP termination (GRE tunnel) · SSID/WLAN & VLAN",
+        "User Role & Policy (Firewall/AppRF) · Captive portal",
+        "Centralized management + Dashboard"
+      ]
+    },
+    "cppm": {
+      "label": "ClearPass Policy Manager (RADIUS)",
+      "roles": [
+        "802.1X (wired + wireless) · MAC Authentication",
+        "Guest / Captive portal · Role assignment (VLAN, ACL)"
+      ]
+    },
+    "services": {
+      "label": "Core Services",
+      "roles": ["DHCP · DNS · NTP · CA (Certificate) · Syslog"]
+    },
+    "access": [
+      { "label": "Aruba CX 6300F (Stack)", "roles": ["PoE+ · 10GbE uplink · VSF Stacking", "VLAN · LAG · 802.1X port-based"] },
+      { "label": "Aruba CX 6200F", "roles": ["PoE+ · Edge port สำหรับ user", "VLAN · 802.1X / MAC Auth"] }
+    ],
+    "aps": [
+      { "label": "AP-515", "note": "PoE+ · Wi-Fi 6" },
+      { "label": "AP-505", "note": "PoE+ · Wi-Fi 6" }
+    ],
+    "wirelessClients": { "label": "Wireless Clients", "note": "Notebook / Smartphone / IoT" },
+    "wiredClient": { "label": "Wired Client / PC", "note": "802.1X supplicant, DHCP" },
+    "flows": [
+      { "n": "1", "color": "#1E6BB8", "lines": ["Wired flow: PC » Access SW (VLAN/802.1X)", " » Core (routing, DHCP relay) » Firewall » Internet"] },
+      { "n": "2", "color": "#FF8300", "lines": ["Wireless flow (Tunnel mode): Client » AP » GRE tunnel", "ผ่าน Switch/Core » Mobility Controller » ปล่อยลง VLAN » Internet"] }
+    ],
+    "tunnelLabel": "GRE Tunnel: AP » Mobility Controller",
+    "footnote": "หัวข้อ: Campus architecture · Traffic flow & device roles (10:30 น.)",
+    "captions": [
+      { "title": "① Wired flow", "body": "PC » Access switch (VLAN / 802.1X) » Core (routing, DHCP relay) » Firewall » Internet" },
+      { "title": "② Wireless flow — Tunnel mode", "body": "Client » AP » GRE tunnel ผ่าน switch/core » Mobility Controller » ปล่อยลง VLAN » Internet", "accent": true },
+      { "title": "Device roles", "body": "Switch = ต่อ/จ่ายไฟ · Core = routing + DHCP relay · Controller = SSID, role, policy · ClearPass = ตัดสินใจตัวตน" }
+    ]
+  },
+
+  "lab": {
+    "figLabel": "FIG.02 — LAB TOPOLOGY",
+    "fileName": "02_Lab_Topology",
+    "heading": "Aruba Campus Network Training — Lab Topology",
+    "subheadTail": "Module 1: Aruba Switch (CX) — Module 2: Mobility Controller + Access Point",
+    "edge": { "label": "Internet", "note": "Venue WAN / 4G Router" },
+    "firewall": { "label": "NAT Router / Firewall" },
+    "core": {
+      "tag": "CORE (ใช้ร่วมกันทุก Pod) — Aruba CX 8325 / CX 6300M",
+      "roles": [
+        "• SVI ทุก VLAN ของทุก Pod + Inter-VLAN routing",
+        "• DHCP relay (ip helper-address » Services VM) หรือ DHCP pool บน Core",
+        "• Default route 0.0.0.0/0 » {{gateway}}",
+        "• Uplink 10G + LAG ลงทุก Pod / ขึ้น Controller"
+      ]
+    },
+    "controller": {
+      "tag": "MOBILITY CONTROLLER (AOS-8) — 7010 / VMC",
+      "roles": [
+        "• AP onboarding + GRE tunnel termination",
+        "• WLAN/SSID, VLAN, AAA profile, User Role",
+        "• Captive portal, Application Control (AppRF)",
+        "• Dashboard / Monitoring — MGMT {{mc}}"
+      ]
+    },
+    "cppm": {
+      "label": "ClearPass Policy Manager (VM) — RADIUS",
+      "roles": [
+        "• 802.1X: wired (Module 1) + wireless (Module 2)",
+        "• MAC Authentication (IoT) · Guest self-register",
+        "• {{cppm}} — shared secret ต่อ Pod"
+      ]
+    },
+    "services": {
+      "label": "Services VM — DHCP / DNS / NTP / CA / Syslog",
+      "note": "{{services}} · ปลายทางของ DHCP relay"
+    },
+    "notesPanel": {
+      "title": "POD {{nextPod}} ... POD n",
+      "intro": [
+        "• อุปกรณ์และการต่อสายเหมือน Pod 1 ทุกประการ",
+        "• เปลี่ยนเฉพาะ VLAN ID / Subnet / ชื่อ SSID ตามตารางด้านล่าง",
+        "• แนะนำ {{podSize}}/Pod เพื่อให้ทุกคนได้ลงมือ config"
+      ],
+      "fallbackTitle": "ถ้าอุปกรณ์ไม่พอ (ปรับได้)",
+      "fallback": [
+        "• Stack: ถ้ามีสวิตช์ตัวเดียว/Pod » สอน VSF แบบ demo รวม",
+        "• Controller: ใช้ MC ตัวเดียวร่วมกันได้ แยก SSID + VLAN ต่อ Pod",
+        "  (แต่ละ Pod สร้าง WLAN/AAA profile ของตัวเอง ไม่ทับกัน)",
+        "• ClearPass: 1 VM ใช้ร่วม — เพิ่ม NAD ทุก Pod, Service แยกตาม NAD",
+        "• AP: อย่างน้อย 1 ตัว/Pod (2 ตัว จะสาธิต roaming ได้)"
+      ],
+      "prepTitle": "อุปกรณ์ที่ผู้เข้าอบรมต้องเตรียม",
+      "prep": [
+        "• Notebook 1 เครื่อง (มี LAN port หรือ USB-LAN) + สาย Console/USB-C",
+        "• PuTTY / SecureCRT, Wi-Fi adapter, มือถือสำหรับทดสอบ Guest portal",
+        "• Switch MGMT: 192.168.200.x/24 (VLAN 200) เข้าถึง MC/CPPM ได้"
+      ],
+      "footnote": "* ตรวจสอบว่า Venue อนุญาตให้ตั้ง SSID เพิ่มได้ และไม่ชนช่องสัญญาณ"
+    },
+    "topicMap": {
+      "title": "หัวข้อในหลักสูตร » ทำที่ไหนในแลบ",
+      "rows": [
+        "M1 Stacking / LAG / 10G uplink » SW1+SW2 — Core",
+        "M1 PoE budget / Redundant PSU » พอร์ตที่ต่อ AP",
+        "M1 VLAN » VLAN n1–n5 บน Access + Core",
+        "M1 Routing / DHCP relay » SVI + ip helper บน Core",
+        "M1 802.1X (wired) » PC » SW » ClearPass",
+        "M2 AP onboarding / WLAN » AP — MC (GRE)",
+        "M2 PSK / Portal / 802.1X / MAC » 3 SSID ต่อ Pod",
+        "M2 AppRF policy + Dashboard » User Role บน MC"
+      ]
+    },
+    "captions": [
+      { "title": "Module 1 — ทำที่สวิตช์", "body": "VSF stack, LAG 2x10G ขึ้น core, PoE+ จ่ายไฟ AP, VLAN, SVI + routing, DHCP relay, 802.1X ฝั่ง wired" },
+      { "title": "Module 2 — ทำที่ Controller + AP", "body": "AP onboarding ผ่าน GRE tunnel, สร้าง 3 SSID ต่อ Pod (PSK / Captive portal / 802.1X / MAC auth), User role + AppRF policy, Dashboard", "accent": true },
+      { "title": "ถ้าอุปกรณ์ไม่พอ", "body": "ใช้ Mobility Controller ตัวเดียวร่วมกันได้ โดยแยก WLAN/AAA profile ต่อ Pod · ClearPass 1 VM เพิ่ม NAD ทุก Pod" }
+    ]
+  },
+
+  "sections": {
+    "overview": { "num": "01", "nav": "Overview", "title": "ภาพรวมสถาปัตยกรรม", "sub": "ใช้คู่กับหัวข้อ Overview Aruba Solution — อธิบายบทบาทของอุปกรณ์แต่ละชั้น และเส้นทางเดินของ traffic ทั้งฝั่ง wired และ wireless" },
+    "lab": { "num": "02", "nav": "Lab topology", "title": "Lab topology (แบ่งตาม Pod)", "sub": "Pod ละ {{podSize}} แต่ละ Pod ได้อุปกรณ์ชุดเดียวกัน แยก VLAN และ SSID กันคนละชุด เพื่อให้ config ทับกันไม่ได้ — ครอบทุกหัวข้อของ Module 1 และ Module 2" },
+    "vlan": { "num": "03", "nav": "VLAN / IP", "title": "แผน VLAN / IP", "sub": "n คือหมายเลข Pod — Pod 1 ใช้ VLAN 11–15 กับ 10.1.x.0/24, Pod 2 ใช้ VLAN 21–25 กับ 10.2.x.0/24 ไล่ไปเรื่อยๆ" },
+    "agenda": { "num": "04", "nav": "Agenda", "title": "กำหนดการอบรม", "sub": "{{dateLong}} — ช่วงที่มี LAB ให้เปิดหน้า Lab topology คู่กัน" }
+  },
+
+  "agenda": [
+    { "time": "10:30", "title": "Overview Aruba Solution", "detail": "Campus architecture: Switch + Controller + AP · Traffic flow & device roles" },
+    { "time": "10:30", "title": "Module 1 : Aruba Switch (1/2)", "detail": "Switch series · Stacking, 10GbE uplink · PoE/PoE+ budget, Redundant PSU · Device & stack config · LAG · VLAN + LAB" },
+    { "time": "12:00", "title": "Lunch", "break": true },
+    { "time": "13:00", "title": "Module 1 : Aruba Switch (2/2)", "detail": "Routing · DHCP relay · 802.1X Authentication + LAB" },
+    { "time": "13:00", "title": "Module 2 : Controller + AP (1/2)", "detail": "Controller overview & AP onboarding · Configure WLANs · Authentication: PSK, Captive portal + LAB" },
+    { "time": "15:00", "title": "Break", "break": true },
+    { "time": "15:15", "title": "Module 2 : Controller + AP (2/2)", "detail": "Authentication: 802.1X, MAC Address · Application Control (Policy) · Dashboard overview + LAB" },
+    { "time": "16:00", "title": "Q & A", "break": true },
+    { "time": "16:30", "title": "เสร็จสิ้นการอบรม", "break": true }
+  ]
+}

@@ -1,0 +1,7 @@
+# The generator writes LF and `build.mjs --check` compares bytes, so the working
+# tree must stay LF on every platform — otherwise a Windows checkout reports the
+# freshly built site as stale.
+* text=auto eol=lf
+
+*.png binary
+*.svg text eol=lf

@@ -1,33 +1,95 @@
 # Aruba Campus Network Training — Network Diagram
 
 แผนผังและเอกสารอ้างอิงสำหรับอบรม **Aruba Campus Network Training**
-RMUTT × Commserv Siam · 26 สิงหาคม 2569 · Royal Hills Golf Resort & Spa
 
-## ไฟล์ในโปรเจกต์
+เว็บไซต์: **https://sihanart.github.io/Training/**
 
-| ไฟล์ | คำอธิบาย |
+หน้าเว็บทั้งหมด **generate จากไฟล์ JSON** ไม่ได้เขียน HTML มือ — แก้ข้อมูลแล้ว push ระบบจะ build ขึ้นเว็บให้เอง
+
+## เพิ่มงานอบรมใหม่ (ลูกค้าใหม่)
+
+สร้างไฟล์เดียวใน `src/events/` แล้ว push จบ:
+
+```bash
+cp src/events/2026-08-26-rmutt.json src/events/2026-11-10-xyz.json
+```
+
+แก้ข้อมูลในไฟล์ใหม่:
+
+```json
+{
+  "slug": "xyz-2026-11",
+  "course": "campus-network",
+  "date": "2026-11-10",
+  "organizer": "Commserv Siam",
+  "customer": "XYZ",
+  "attendees": "ฝ่าย IT บริษัท XYZ",
+  "partnerLine": "XYZ × Commserv Siam",
+  "venue": "สำนักงานใหญ่ XYZ",
+  "podsDrawn": 4
+}
+```
+
+| ฟิลด์ | ความหมาย |
 |---|---|
-| `index.html` | เว็บไซต์ไฟล์เดียว (ฝัง SVG ทั้งสองผังไว้ในตัว) — เปิดดูได้เลย ไม่ต้องติดตั้งอะไร |
-| `diagrams/01_Overview_Campus_Architecture.svg` | ภาพรวมสถาปัตยกรรม Campus: Switch + Controller + AP และเส้นทางเดินของ traffic |
-| `diagrams/02_Lab_Topology.svg` | ผัง Lab แบ่งตาม Pod ครอบคลุมหัวข้อ Module 1 และ Module 2 |
-| `diagrams/*.png` | ไฟล์ PNG ความละเอียด 2x สำหรับแปะสไลด์ |
+| `slug` | ชื่อโฟลเดอร์ URL — ห้ามซ้ำกับงานอื่น |
+| `course` | อ้างถึง `id` ในไฟล์ `src/courses/*.json` |
+| `date` | **ค.ศ. เสมอ** รูปแบบ `YYYY-MM-DD` — วัน/เดือน/ปี พ.ศ. ไทยคำนวณให้อัตโนมัติ |
+| `podsDrawn` | จำนวน Pod ที่วาดในผัง (1–8) — ผัง Lab ปรับขนาดเอง |
 
-## เปิดดูในเครื่อง
+`podsDrawn` คือหัวใจ: เปลี่ยนจาก 2 เป็น 4 แล้วผัง Lab จะวาด Pod เพิ่ม พร้อม VLAN, ชื่อ SSID, สาย uplink ขึ้น Core และขยายผืนผ้าใบให้เองทั้งหมด
 
-เปิด `index.html` ด้วยเบราว์เซอร์ได้ทันที
+## แก้หลักสูตร
 
-## เผยแพร่ด้วย GitHub Pages
+`src/courses/campus-network.json` — โมดูล, ตาราง VLAN, กำหนดการ, ข้อความในผังทั้งสองใบ, สเปกอุปกรณ์ต่อ Pod
+แก้ที่นี่ที่เดียว มีผลกับ **ทุกงาน** ที่อ้างหลักสูตรนี้
 
-1. Settings → Pages
-2. Source: **Deploy from a branch**
-3. Branch: `main` / `(root)` → Save
-4. รอสักครู่ จะได้ลิงก์ `https://sihanart.github.io/Training/`
+ข้อความรองรับตัวแปร `{{...}}` เช่น `{{gateway}}`, `{{mc}}`, `{{podSize}}`, `{{dateLong}}` — ถ้าพิมพ์ชื่อตัวแปรผิด build จะ fail ทันที ไม่ปล่อยให้ขึ้นเว็บแบบข้อความเพี้ยน
+
+## Build
+
+```bash
+node build.mjs
+```
+
+ไม่ต้อง `npm install` — ใช้ Node เปล่า ๆ ไม่มี dependency สักตัว (ต้องการ Node 18+)
+
+| คำสั่ง | ผล |
+|---|---|
+| `node build.mjs` | เขียนไฟล์เว็บ |
+| `node build.mjs --check` | ตรวจว่าไฟล์บนดิสก์ตรงกับ source หรือยัง (ใช้ใน CI) |
+
+### ไฟล์ที่ถูก generate — อย่าแก้มือ
+
+`index.html` · `<slug>/index.html` · `events.html` · `diagrams/*.svg`
+
+แก้ไปก็โดน build ทับ ให้ไปแก้ที่ `src/` แทน
+
+## Deploy
+
+push เข้า `main` → GitHub Actions build แล้ว commit ผลลัพธ์กลับมาให้ → GitHub Pages เสิร์ฟจาก branch root
+
+Pages ตั้งเป็น **Deploy from a branch · main · /(root)** เว็บที่เผยแพร่จึงเป็นไฟล์จริงใน git ถ้า workflow พัง เว็บเดิมยังอยู่ ไม่ดับ
+
+## โครงสร้าง
+
+```
+src/
+  courses/campus-network.json   หลักสูตร — ใช้ซ้ำได้ทุกลูกค้า
+  events/*.json                 งานอบรมแต่ละครั้ง
+  lib/
+    util.mjs                    escape, วันที่ไทย, ตัวแปร {{...}}
+    page.mjs                    โครงหน้า HTML + CSS + สคริปต์ซูม
+    svg-overview.mjs            ผัง FIG.01 (เลย์เอาต์คงที่)
+    svg-lab.mjs                 ผัง FIG.02 (ปรับตามจำนวน Pod)
+build.mjs                       ตัว build
+```
 
 ## เนื้อหาในเว็บ
 
 - ผังทั้งสองใบ กดเพื่อขยายเต็มจอ (ล้อเมาส์ซูม ลากเลื่อน Esc ปิด) และดาวน์โหลด SVG ได้
 - ตารางแผน VLAN / IP ต่อ Pod
-- กำหนดการอบรมวันที่ 26 ส.ค. 2569
+- กำหนดการอบรม
 
 ## แผน VLAN โดยย่อ (n = หมายเลข Pod)
 
@@ -42,3 +104,10 @@ RMUTT × Commserv Siam · 26 สิงหาคม 2569 · Royal Hills Golf Reso
 | 200 | Servers (MC / ClearPass / DHCP) | 192.168.200.0/24 |
 
 ตัวอย่าง: Pod 1 ใช้ VLAN 11–15 กับ 10.1.x.0/24 · Pod 2 ใช้ VLAN 21–25 กับ 10.2.x.0/24
+
+> ตารางนี้เป็นสำเนาไว้อ่านเร็ว — ตัวจริงอยู่ใน `src/courses/campus-network.json`
+
+## ข้อจำกัดที่ยังเหลือ
+
+ไฟล์ `diagrams/*.png` (สำหรับแปะสไลด์) **ยัง export เองไม่ได้** เพราะต้องใช้ตัว render ภาพซึ่งจะพาลากเอา dependency เข้ามา
+ถ้าแก้ผังแล้วอยากได้ PNG ใหม่ ให้เปิดเว็บ » กด "ดาวน์โหลด SVG" » แปลงเป็น PNG เอง — ส่วน SVG ใน `diagrams/` อัปเดตอัตโนมัติทุก build
