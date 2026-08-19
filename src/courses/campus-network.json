@@ -68,7 +68,7 @@
       "tag": "CORE / DISTRIBUTION LAYER",
       "label": "Aruba CX 8325 / CX 6300M",
       "roles": [
-        "บทบาท: Inter-VLAN routing (SVI) · Static / OSPF",
+        "บทบาท: Inter-VLAN routing (SVI) · Static route",
         "DHCP relay (ip helper) · Default route ออก Internet",
         "10/25GbE uplink · LAG · QoS"
       ]

@@ -30,7 +30,7 @@
 <rect x="430" y="205" width="360" height="26" rx="10" fill="#1E6BB8"/>
 <text class="tag" x="444" y="223">CORE / DISTRIBUTION LAYER</text>
 <text class="lbl" x="444" y="253">Aruba CX 8325 / CX 6300M</text>
-<text class="role" x="444" y="275">บทบาท: Inter-VLAN routing (SVI) · Static / OSPF</text>
+<text class="role" x="444" y="275">บทบาท: Inter-VLAN routing (SVI) · Static route</text>
 <text class="role" x="444" y="295">DHCP relay (ip helper) · Default route ออก Internet</text>
 <text class="role" x="444" y="315">10/25GbE uplink · LAG · QoS</text>
 <line class="link" x1="290" y1="261" x2="430" y2="261"/>
