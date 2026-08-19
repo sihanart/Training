@@ -6,6 +6,8 @@ Training-repo.zip
 node_modules/
 package-lock.json
 
-# Slide decks stay on this machine. They are hundreds of MB, the repo is public,
-# and the deploy workflow runs `git add -A` — one commit would sweep them in.
+# Slide decks and their exports stay on this machine. They are hundreds of MB,
+# the repo is public, and the deploy workflow runs `git add -A` — one commit
+# would sweep them in.
 *.pptx
+*.pdf
