@@ -271,7 +271,7 @@ ${list.map((c) => `    <div class="cap${c.accent ? ' amber' : ''}"><h4>${t(c.tit
 const sechead = (s, vars) => `  <div class="sechead"><span class="mono">${esc(s.num)}</span><h2>${t(s.title, vars)}</h2></div>
   <p class="sub">${t(s.sub, vars)}</p>`;
 
-export function renderPage({ course, event, vars, siblings = [] }) {
+export function renderPage({ course, event, vars, siblings = [], slides = null }) {
   const s = course.sections;
   const inf = course.infra;
   const order = ['overview', 'lab', 'vlan', 'agenda'];
@@ -286,6 +286,13 @@ export function renderPage({ course, event, vars, siblings = [] }) {
 
   const others = siblings.length
     ? `\n    <div><a href="${esc(vars.rootPath)}events.html">งานอบรมอื่น (${siblings.length + 1})</a></div>`
+    : '';
+
+  // Size comes from the file on disk at build time, so the page cannot advertise
+  // a stale one; pages comes from the event, which is the only place that knows
+  // whether anything was held back from the published copy.
+  const deck = slides
+    ? `\n    <div><a href="${esc(vars.rootPath)}${esc(slides.file)}" download>ดาวน์โหลดสไลด์อบรม (PDF · ${slides.pages} หน้า · ${slides.mb} MB)</a></div>`
     : '';
 
   return `<!DOCTYPE html>
@@ -365,7 +372,7 @@ ${course.agenda.map((a) => `<li class="ag${a.break ? ' ag-break' : ''}"><span cl
 <footer>
   <div class="wrap">
     <div>${t(course.title, vars)} · <b>${esc(event.partnerLine)}</b> · ${esc(vars.dateShort)}</div>
-    <div>กด <b>Ctrl/Cmd + P</b> เพื่อพิมพ์หรือบันทึกเป็น PDF</div>${others}
+    <div>กด <b>Ctrl/Cmd + P</b> เพื่อพิมพ์หรือบันทึกเป็น PDF</div>${deck}${others}
   </div>
 </footer>
 

@@ -8,7 +8,7 @@
 // diagrams/*.svg exports, and events.html once more than one event exists.
 
 import { readFile, writeFile, readdir, mkdir } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -49,6 +49,24 @@ function validate(event, course, file) {
     throw new Error(`${file}: podsDrawn must be an integer 1–8, got ${event.podsDrawn}`);
   }
   if (!course) throw new Error(`${file}: no such course "${event.course}"`);
+  if (event.slides) {
+    const { slides } = event;
+    if (!slides.file || !Number.isInteger(slides.pages) || slides.pages < 1) {
+      throw new Error(`${file}: slides needs { file, pages } with pages a positive integer`);
+    }
+    // A dead download link on a published page is worse than no link, and the
+    // file lives outside src/ where nothing else would catch its absence.
+    if (!existsSync(join(ROOT, slides.file))) {
+      throw new Error(`${file}: slides.file "${slides.file}" does not exist`);
+    }
+  }
+}
+
+/** Size of the linked deck, read at build time so the page can never quote a stale one. */
+function slidesFor(event) {
+  if (!event.slides) return null;
+  const bytes = statSync(join(ROOT, event.slides.file)).size;
+  return { ...event.slides, mb: Math.round(bytes / 1e6) };
 }
 
 async function main() {
@@ -76,7 +94,8 @@ async function main() {
       drafts.push(f);
       continue;
     }
-    entries.push({ slug: event.slug, event, course, date, vars: buildVars(course, event, date) });
+    entries.push({ slug: event.slug, event, course, date, slides: slidesFor(event),
+                   vars: buildVars(course, event, date) });
   }
   if (drafts.length) console.log(`  (skipped ${drafts.length} draft: ${drafts.join(', ')})`);
 

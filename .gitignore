@@ -11,3 +11,7 @@ package-lock.json
 # would sweep them in.
 *.pptx
 *.pdf
+
+# ...except the trimmed deck the site links to. That one is the published
+# handout, so it belongs in the repo GitHub Pages serves from.
+!slides/*.pdf
