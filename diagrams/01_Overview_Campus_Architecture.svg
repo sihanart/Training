@@ -39,10 +39,10 @@
 <rect x="950" y="180" width="400" height="118" rx="10" fill="#FFF3E6" stroke="#FF8300" stroke-width="2.5"/>
 <rect x="950" y="180" width="400" height="26" rx="10" fill="#FF8300"/>
 <text class="tag" x="964" y="198">WLAN CONTROL PLANE + DATA PLANE</text>
-<text class="lbl" x="964" y="228">Mobility Controller (AOS-8) — Aruba 7010 / VMC</text>
+<text class="lbl" x="964" y="228">Mobility Controller — Aruba 9004-LTE (AOS 8.7.1.2)</text>
 <text class="role" x="964" y="248">บทบาท: AP termination (GRE tunnel) · SSID/WLAN &amp; VLAN</text>
 <text class="role" x="964" y="266">User Role &amp; Policy (Firewall/AppRF) · Captive portal</text>
-<text class="role" x="964" y="284">Centralized management + Dashboard</text>
+<text class="role" x="964" y="284">Centralized management + Dashboard · MGMT 192.168.10.0/24</text>
 <path class="link10" d="M790 250 H 950"/>
 <text class="tiny" x="812" y="240">LAG 2x10G</text>
 

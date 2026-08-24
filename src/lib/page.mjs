@@ -2,6 +2,7 @@
 // everything between them comes from the course + event data.
 
 import { esc, t, inlineCode } from './util.mjs';
+import { labPods, podConfig } from './lab-config.mjs';
 import { overviewSvg } from './svg-overview.mjs';
 import { labSvg } from './svg-lab.mjs';
 import { cloudOverviewSvg } from './svg-cloud-overview.mjs';
@@ -116,6 +117,26 @@ li.ag .time{display:block;font-size:12px;color:var(--amber);letter-spacing:.06em
 li.ag-break h4{font-weight:400;color:var(--muted)}
 li.ag-break .time{color:var(--muted)}
 
+/* ---------- pod config ---------- */
+.podtabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.podtab{font-family:var(--mono);font-size:12px;padding:7px 14px;border:1px solid var(--line);background:var(--card);
+  border-radius:6px;cursor:pointer;color:var(--muted);transition:border-color .15s,color .15s,background .15s}
+.podtab:hover{border-color:var(--blue);color:var(--blue)}
+.podtab.on{background:var(--panel);border-color:var(--panel);color:#fff}
+.podtab:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.podpane{display:none}
+.podpane.on{display:block}
+.podmeta{display:flex;flex-wrap:wrap;gap:10px 28px;padding:14px 18px;background:var(--card);border:1px solid var(--line);
+  border-radius:10px 10px 0 0;border-bottom:none}
+.podmeta span{display:flex;flex-direction:column;gap:2px}
+.podmeta i{font-family:var(--mono);font-size:10.5px;font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.podmeta b{font-size:14px;color:var(--blue)}
+.codewrap{position:relative}
+.codewrap pre{margin:0;background:var(--ink);color:#CFE3DC;padding:20px 18px;border-radius:0 0 10px 10px;overflow-x:auto;
+  font-family:var(--mono);font-size:12.5px;line-height:1.75}
+.codewrap .copy{position:absolute;top:12px;right:12px;background:#173444;border-color:#2C5468;color:#CFE3DC}
+.codewrap .copy:hover{border-color:var(--led);color:#fff}
+
 /* ---------- lightbox ---------- */
 .lb{position:fixed;inset:0;z-index:90;background:rgba(8,22,30,.94);display:none;flex-direction:column}
 .lb.open{display:flex}
@@ -163,6 +184,29 @@ const SCRIPT = `(function(){
   }, {rootMargin:'-45% 0px -50% 0px'});
   document.querySelectorAll('main section').forEach(function(s){ io.observe(s); });
   if(ports[0]) ports[0].classList.add('on');
+
+  // --- pod config: one pane at a time, and a copy button per pane ---
+  document.querySelectorAll('.podtab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.podtab').forEach(function(x){ x.classList.remove('on'); });
+      document.querySelectorAll('.podpane').forEach(function(x){ x.classList.remove('on'); });
+      tab.classList.add('on');
+      var pane = document.getElementById('pane-' + tab.dataset.pod);
+      if (pane) pane.classList.add('on');
+    });
+  });
+
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var src = document.getElementById(btn.dataset.copy);
+      if (!src || !navigator.clipboard) return;
+      navigator.clipboard.writeText(src.innerText).then(function(){
+        var was = btn.textContent;
+        btn.textContent = 'คัดลอกแล้ว';
+        setTimeout(function(){ btn.textContent = was; }, 1600);
+      });
+    });
+  });
 
   // --- download the inline diagram as an SVG file ---
   document.querySelectorAll('[data-dl]').forEach(function(btn){
@@ -265,23 +309,52 @@ const figure = (label, svgId, fileName, svg) => `  <figure class="figure" style=
   </figure>`;
 
 const captions = (list, vars) => `  <div class="caption">
-${list.map((c) => `    <div class="cap${c.accent ? ' amber' : ''}"><h4>${t(c.title, vars)}</h4><p>${t(c.body, vars)}</p></div>`).join('\n')}
+${list.map((c) => `    <div class="cap${c.accent ? ' amber' : ''}"><h4>${t(c.title, vars)}</h4><p>${inlineCode(c.body, vars)}</p></div>`).join('\n')}
   </div>`;
 
 const sechead = (s, vars) => `  <div class="sechead"><span class="mono">${esc(s.num)}</span><h2>${t(s.title, vars)}</h2></div>
   <p class="sub">${t(s.sub, vars)}</p>`;
 
+/**
+ * The config each pod pastes into its own controller, one tab per pod.
+ * Same text the build writes to configs/ — see lab-config.mjs for why.
+ */
+const configSection = (sec, lab, notes, vars) => {
+  const pods = labPods(lab);
+  const meta = (p) => [
+    ['Controller MGMT', p.mgmt],
+    ['AP VLAN', String(p.vlan)],
+    ['Subnet', p.subnet],
+    ['Gateway / SVI', p.gateway],
+    ['ช่วงที่แจก', p.poolRange],
+  ].map(([k, v]) => `<span><i>${esc(k)}</i><b class="mono">${esc(v)}</b></span>`).join('');
+
+  return `
+<section id="config">
+${sechead(sec, vars)}
+  <div class="podtabs">${pods.map((p, i) =>
+    `<button class="podtab${i === 0 ? ' on' : ''}" data-pod="${esc(p.id)}">${esc(p.label)}</button>`).join('\n')}</div>
+${pods.map((p, i) => `  <div class="podpane${i === 0 ? ' on' : ''}" id="pane-${esc(p.id)}"><div class="podmeta">${meta(p)}</div>` +
+    `<div class="codewrap"><button class="copy tool" data-copy="code-${esc(p.id)}">คัดลอก</button>` +
+    `<pre id="code-${esc(p.id)}"><code>${esc(podConfig(lab, p))}</code></pre></div></div>`).join('\n')}
+${captions(notes, vars)}
+</section>
+`;
+};
+
 export function renderPage({ course, event, vars, siblings = [], slides = null }) {
   const s = course.sections;
   const inf = course.infra;
-  const order = ['overview', 'lab', 'vlan', 'agenda'];
+  const order = ['overview', 'lab', 'vlan', ...(event.lab ? ['config'] : []), 'agenda'];
 
   const draw = diagramsFor(course);
 
+  // Transit and server VLANs are shared infrastructure, which not every course
+  // has: the campus lab now puts every address on the pod's own controller.
   const vlanRows = [
     ...course.vlanPlan.map((r) => [r.vid, r.name, r.subnet, r.note]),
-    [inf.transitVlan, inf.transitName, inf.transitSubnet, inf.transitNote],
-    [inf.serverVlan, inf.serverName, inf.serverSubnet, inf.serverNote],
+    ...(inf.transitVlan ? [[inf.transitVlan, inf.transitName, inf.transitSubnet, inf.transitNote]] : []),
+    ...(inf.serverVlan ? [[inf.serverVlan, inf.serverName, inf.serverSubnet, inf.serverNote]] : []),
   ];
 
   const others = siblings.length
@@ -343,7 +416,7 @@ ${captions(course.overview.captions, vars)}
 
 <section id="lab">
 ${sechead(s.lab, vars)}
-${figure(course.lab.figLabel, 'svg-lab', course.lab.fileName, draw.lab(course, vars, event.podsDrawn))}
+${figure(course.lab.figLabel, 'svg-lab', course.lab.fileName, draw.lab(course, vars, event))}
 ${captions(course.lab.captions, vars)}
 </section>
 
@@ -359,7 +432,7 @@ ${vlanRows.map(([vid, name, subnet, note]) => `<tr><td class="mono vid">${esc(vi
   </div>
   <p class="hint">${inlineCode(course.vlanHint, vars)}</p>
 </section>
-
+${event.lab ? configSection(s.config, event.lab, course.configNotes, vars) : ''}
 <section id="agenda">
 ${sechead(s.agenda, vars)}
   <ol class="agenda">

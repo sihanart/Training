@@ -58,7 +58,8 @@ function podGroup(i, course, vars) {
 <text class="role" x="${x + 28}" y="828" fill="#4C7BA8">Central: Group POD-${num} · Site POD-${num}</text>`;
 }
 
-export function cloudLabSvg(course, vars, pods) {
+export function cloudLabSvg(course, vars, event) {
+  const pods = event.podsDrawn;
   const l = course.lab;
   const g = labGeometry(pods);
   const inf = course.infra;

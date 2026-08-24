@@ -1,134 +1,27 @@
 # Aruba Campus Network Training — Network Diagram
 
 แผนผังและเอกสารอ้างอิงสำหรับอบรม **Aruba Campus Network Training**
+RMUTT × Commserv Siam · 26 สิงหาคม 2569 · Royal Hills Golf Resort & Spa
 
 เว็บไซต์: **https://sihanart.github.io/Training/**
 
-หน้าเว็บทั้งหมด **generate จากไฟล์ JSON** ไม่ได้เขียน HTML มือ — แก้ข้อมูลแล้ว push ระบบจะ build ขึ้นเว็บให้เอง
-
-## เพิ่มงานอบรมใหม่ (ลูกค้าใหม่)
-
-สร้างไฟล์เดียวใน `src/events/` แล้ว push จบ:
-
-```bash
-cp src/events/2026-08-26-rmutt.json src/events/2026-11-10-xyz.json
-```
-
-แก้ข้อมูลในไฟล์ใหม่:
-
-```json
-{
-  "slug": "xyz-2026-11",
-  "course": "campus-network",
-  "date": "2026-11-10",
-  "organizer": "Commserv Siam",
-  "customer": "XYZ",
-  "attendees": "ฝ่าย IT บริษัท XYZ",
-  "partnerLine": "XYZ × Commserv Siam",
-  "venue": "สำนักงานใหญ่ XYZ",
-  "podsDrawn": 4
-}
-```
-
-| ฟิลด์ | ความหมาย |
-|---|---|
-| `slug` | ชื่อโฟลเดอร์ URL — ห้ามซ้ำกับงานอื่น |
-| `course` | อ้างถึง `id` ในไฟล์ `src/courses/*.json` |
-| `date` | **ค.ศ. เสมอ** รูปแบบ `YYYY-MM-DD` — วัน/เดือน/ปี พ.ศ. ไทยคำนวณให้อัตโนมัติ |
-| `podsDrawn` | จำนวน Pod ที่วาดในผัง (1–8) — ผัง Lab ปรับขนาดเอง |
-| `slides` | _(ไม่ใส่ก็ได้)_ ไฟล์สไลด์ให้ดาวน์โหลด — ดูหัวข้อถัดไป |
-
-## แนบสไลด์ให้ดาวน์โหลด
-
-วางไฟล์ไว้ใน `slides/` แล้วชี้จากไฟล์ event:
-
-```json
-"slides": { "file": "slides/rmutt-2026-08.pdf", "pages": 132 }
-```
-
-ได้ลิงก์ดาวน์โหลดที่ footer ของหน้านั้น ขนาดไฟล์อ่านจากดิสก์ตอน build จึงไม่มีทางค้างเป็นเลขเก่า ส่วน `pages` ใส่เอง เพราะมีแต่คนทำเท่านั้นที่รู้ว่าตัดหน้าไหนออกจากไฟล์ที่เผยแพร่บ้าง
-
-ชี้ไปยังไฟล์ที่ไม่มีอยู่ build จะ fail ทันที ไม่ปล่อยลิงก์ตายขึ้นเว็บ
-
-> `.gitignore` กัน `*.pdf` กับ `*.pptx` ไว้ทั้งหมด ยกเว้น `slides/*.pdf` — สไลด์ต้นฉบับจึงไม่หลุดเข้า repo ที่เป็น public โดยไม่ตั้งใจ
+> ### ⚠️ อย่าแก้ `index.html`, `diagrams/*.svg` หรือ `configs/*.txt` โดยตรง
 >
-> **ก่อนวางไฟล์ ตรวจว่าไม่มีหน้าที่ติด CONFIDENTIAL หรือ Authorized Partner Use Only** — repo นี้ public ใครก็โหลดได้ และ search engine เก็บ cache ไว้ ถอนคืนยาก
-
-## เปลี่ยนจำนวน Pod
-
-แก้ `podsDrawn` ในไฟล์ event แล้ว push — แค่นั้น
-
-```bash
-sed -i 's/"podsDrawn": 2/"podsDrawn": 4/' src/events/2026-08-26-rmutt.json
-git commit -am "RMUTT: 4 pods" && git push
-```
-
-ประมาณ 2 นาทีให้หลัง หน้าเว็บ · SVG · PNG อัปเดตครบทุกไฟล์
-
-### สิ่งที่ปรับให้อัตโนมัติ
-
-| | เปลี่ยนตามยังไง |
-|---|---|
-| กล่อง Pod | วาดครบตามจำนวน อุปกรณ์ในแต่ละ Pod เหมือนกันทุกชุด |
-| VLAN ของ wired client | Pod n ได้ VLAN `n2` — 12, 22, 32, 42 ... |
-| ชื่อ SSID | `PODn-EMP` / `PODn-GUEST` / `PODn-IOT` |
-| สาย uplink | 2 เส้นต่อ Pod กระจายลงขอบล่างกล่อง Core เท่า ๆ กัน |
-| กล่อง "POD n ... POD n" | เลขเริ่มต้นเลื่อนเอง (4 Pod » "POD 5 ... POD n") |
-| ผืนผ้าใบ | ขยายตามจำนวน Pod |
-
-ตาราง VLAN, ชื่ออุปกรณ์, ข้อความในกล่องหมายเหตุ ไม่ต้องแตะ — มาจากไฟล์หลักสูตรอยู่แล้ว
-
-### ขนาดที่ได้
-
-| Pod | SVG | PNG (2x) |
-|---|---|---|
-| 1 | 1440×1130 | 2880×2260 |
-| 2 | 1440×1130 | 2880×2260 |
-| 3 | 1900×1130 | 3800×2260 |
-| 4 | 2360×1130 | 4720×2260 |
-| 5 | 2820×1130 | 5640×2260 |
-| 6 | 3280×1130 | 6560×2260 |
-| 7 | 3740×1130 | 7480×2260 |
-| 8 | 4200×1130 | 8400×2260 |
-
-**รับได้ 1–8 Pod** ใส่นอกช่วงนี้ build จะ fail ทันทีพร้อมบอกเหตุผล ไม่ปล่อยผังพัง ๆ ขึ้นเว็บ
-
-เกิน 6 Pod ผังจะกว้างมากจนแปะสไลด์แผ่นเดียวอ่านไม่ออก — แนะนำให้พิมพ์แยกหรือใช้ปุ่ม "ขยายเต็มจอ" บนเว็บระหว่างสอนแทน
-
-### รายละเอียดเล็กน้อย
-
-- **1 กับ 2 Pod ได้ผืนผ้าใบเท่ากัน** เพราะ 1 Pod ถ้าย่อตามจริงกล่อง Core จะแคบจนใส่ข้อความไม่ลง เลยตรึงขนาดขั้นต่ำไว้ — 1 Pod จึงมีที่ว่างเหลือด้านขวา ไม่ใช่บั๊ก
-- **ตั้งแต่ 3 Pod ขึ้นไป** กล่อง Core กับตาราง VLAN ด้านล่างจะหยุดขยายที่ความกว้างสูงสุดของตัวเอง แล้วจัดกึ่งกลางแทน ถ้าปล่อยให้ยืดเต็มผืนผ้าใบจะกลายเป็นกล่องโล่งที่มีข้อความกระจุกอยู่มุมเดียว
-
-## หลักสูตรที่มี
-
-| `course` | หลักสูตร | ชุดผัง |
-|---|---|---|
-| `campus-network` | Aruba Campus Network (Switch + Controller + AP) | `campus` |
-| `central-wireless` | HPE Aruba Networking Central (New CNX) — Wireless | `cloud` |
-
-ผังสองชุดวาดคนละแบบเพราะสถาปัตยกรรมต่างกันจริง — `campus` มี Mobility Controller ที่ไซต์และ traffic วิ่งใน GRE tunnel ส่วน `cloud` ให้ Central ดูแลเฉพาะ config/auth แล้ว AP bridge traffic ลง VLAN ที่ไซต์เลย ฟิลด์ `diagramSet` ในไฟล์หลักสูตรเป็นตัวเลือกว่าใช้ชุดไหน
-
-### สถานะของ event
-
-| ฟิลด์ | ผล |
-|---|---|
-| _(ไม่ใส่อะไร)_ | ขึ้นเว็บปกติ · อยู่ในหน้ารวม · ชิงเป็นหน้าแรกได้ถ้าวันที่ใกล้สุด |
-| `"unlisted": true` | ขึ้นเว็บที่ URL ตัวเอง แต่**ไม่มีลิงก์จากหน้าไหน** · ไม่อยู่ในหน้ารวม · ไม่เป็นหน้าแรก · ใส่ `noindex, nofollow` |
-| `"draft": true` | ไม่ build เลย (แต่ยังตรวจ format วันที่ให้) |
-
-พอได้งานจริง: แก้ `customer` / `attendees` / `partnerLine` / `venue` / `date` / `slug` แล้วลบบรรทัด `unlisted` หรือ `draft` ออก
-
-> **`unlisted` ไม่ใช่ระบบความปลอดภัย** — repo นี้เป็น public ใครเปิด github.com/sihanart/Training ก็อ่านทั้งไฟล์ JSON และ HTML ที่ generate ออกมาได้
+> ไฟล์พวกนี้ **ถูก generate ทั้งหมด** — `node build.mjs` เขียนทับทุกครั้ง และ CI ก็รันให้ทุกครั้งที่ push
+> แก้แล้วจะหายเงียบ ๆ ตอน build รอบถัดไป
 >
-> มันกันได้แค่ **คนที่เดินเข้ามาทางหน้าเว็บกับ search engine** เท่านั้น ถ้าต้องการกันจริง ๆ ต้องเปลี่ยน repo เป็น private แล้วย้าย hosting ไป Cloudflare Pages / Netlify (free tier deploy จาก private repo ได้) และถ้าอยากได้ระดับ "ต้องล็อกอินก่อนถึงเปิดได้" ต้องใช้ Cloudflare Access ครอบอีกชั้น
+> แก้ที่ `src/` แทน แล้ว push — ระบบ build ขึ้นเว็บให้เอง
 
-## แก้หลักสูตร
+## ไฟล์ในโปรเจกต์
 
-`src/courses/campus-network.json` — โมดูล, ตาราง VLAN, กำหนดการ, ข้อความในผังทั้งสองใบ, สเปกอุปกรณ์ต่อ Pod
-แก้ที่นี่ที่เดียว มีผลกับ **ทุกงาน** ที่อ้างหลักสูตรนี้
-
-ข้อความรองรับตัวแปร `{{...}}` เช่น `{{gateway}}`, `{{mc}}`, `{{podSize}}`, `{{dateLong}}` — ถ้าพิมพ์ชื่อตัวแปรผิด build จะ fail ทันที ไม่ปล่อยให้ขึ้นเว็บแบบข้อความเพี้ยน
+| ไฟล์ | คำอธิบาย | แก้ที่ไหน |
+|---|---|---|
+| `index.html` | เว็บไซต์ไฟล์เดียว (ฝัง SVG ทั้งสองผังไว้ในตัว) | `src/` |
+| `diagrams/01_Overview_Campus_Architecture.svg` | ภาพรวมสถาปัตยกรรม Campus: Switch + Controller + AP และเส้นทางเดินของ traffic | `src/courses/*.json` + `src/lib/svg-overview.mjs` |
+| `diagrams/02_Lab_Topology.svg` | ผัง Lab: ชุดนักศึกษา + ชุดผู้สอน พร้อมตารางแจก Controller / AP VLAN | `src/courses/*.json` + `src/lib/svg-lab.mjs` |
+| `diagrams/*.png` | PNG ความละเอียด 2x สำหรับแปะสไลด์ (CI export ให้) | — |
+| `configs/POD1.txt` … `POD7.txt`, `TEACHER.txt` | Golden config พร้อมวางของแต่ละชุด | `src/events/*.json` (บล็อก `lab`) |
+| `slides/rmutt-2026-08.pdf` | สไลด์อบรมให้ดาวน์โหลดจากหน้าเว็บ | วางไฟล์เอง |
 
 ## Build
 
@@ -136,71 +29,90 @@ git commit -am "RMUTT: 4 pods" && git push
 node build.mjs
 ```
 
-ไม่ต้อง `npm install` — ใช้ Node เปล่า ๆ ไม่มี dependency สักตัว (ต้องการ Node 18+)
+ไม่ต้อง `npm install` — ใช้ Node เปล่า ๆ (ต้องการ Node 18+) · `node build.mjs --check` ตรวจว่าไฟล์บนดิสก์ตรงกับ `src/` หรือยัง (CI ใช้ตัวนี้ และมันจะจับได้ถ้ามีใครไปแก้ไฟล์ generated มือ)
 
-| คำสั่ง | ผล |
+## เพิ่มงานอบรมใหม่ (ลูกค้าใหม่)
+
+สร้างไฟล์เดียวใน `src/events/` แล้ว push จบ
+
+| ฟิลด์ | ความหมาย |
 |---|---|
-| `node build.mjs` | เขียนไฟล์เว็บ |
-| `node build.mjs --check` | ตรวจว่าไฟล์บนดิสก์ตรงกับ source หรือยัง (ใช้ใน CI) |
+| `slug` | ชื่อโฟลเดอร์ URL — ห้ามซ้ำกับงานอื่น |
+| `course` | อ้างถึง `id` ในไฟล์ `src/courses/*.json` |
+| `date` | **ค.ศ. เสมอ** รูปแบบ `YYYY-MM-DD` — วัน/เดือน/ปี พ.ศ. ไทยคำนวณให้อัตโนมัติ |
+| `podsDrawn` | จำนวน Pod (1–8) |
+| `lab` | อุปกรณ์จริงของงานนั้น — ดูหัวข้อถัดไป |
+| `slides` | _(ไม่ใส่ก็ได้)_ `{ "file": "slides/xxx.pdf", "pages": 132 }` — ได้ลิงก์ดาวน์โหลดที่ footer ขนาดไฟล์อ่านจากดิสก์ตอน build ชี้ไปไฟล์ที่ไม่มีอยู่ build จะ fail |
+| `unlisted` / `draft` | ไม่ลิงก์จากหน้าไหน / ไม่ build เลย |
 
-### ไฟล์ที่ถูก generate — อย่าแก้มือ
+## การจัด Controller / VLAN ต่อชุด
 
-`index.html` · `<slug>/index.html` · `events.html` · `diagrams/*.svg`
+Mobility Controller: **Aruba 9004-LTE (ArubaOS 8.7.1.2)** — 1 ตัวต่อ 1 ชุด
 
-แก้ไปก็โดน build ทับ ให้ไปแก้ที่ `src/` แทน
+| ชุด | Controller MGMT | AP VLAN | Subnet (DHCP บน controller) |
+|---|---|---|---|
+| POD 1 | 192.168.10.221 | 2601 | 10.26.1.0/24 |
+| POD 2 | 192.168.10.222 | 2602 | 10.26.2.0/24 |
+| POD 3 | 192.168.10.223 | 2603 | 10.26.3.0/24 |
+| POD 4 | 192.168.10.224 | 2604 | 10.26.4.0/24 |
+| POD 5 | 192.168.10.225 | 2605 | 10.26.5.0/24 |
+| POD 6 | 192.168.10.226 | 2606 | 10.26.6.0/24 |
+| POD 7 | 192.168.10.227 | 2607 | 10.26.7.0/24 |
+| ผู้สอน | 192.168.10.133 | 2608 | 10.26.8.0/24 |
 
-## Deploy
+Management network ของทุก controller: `192.168.10.0/24`
+แต่ละ controller ทำหน้าที่เป็น DHCP server ของ AP VLAN ตัวเอง (gateway `10.26.n.1`, แจก `.11–.240`,
+exclude `.1–.10` และ `.241–.254`, lease 8 ชม.) และทำ `ip nat inside` บน `interface vlan 260n`
 
-push เข้า `main` → GitHub Actions build แล้ว commit ผลลัพธ์กลับมาให้ → GitHub Pages เสิร์ฟจาก branch root
+**ตารางนี้เป็นสำเนาไว้อ่านเร็ว** — ตัวจริงอยู่ในบล็อก `lab` ของ `src/events/2026-08-26-rmutt.json`:
+
+```json
+"lab": {
+  "controller": "Aruba 9004-LTE",
+  "controllerOs": "ArubaOS 8.7.1.2",
+  "mgmtNet": "192.168.10.0/24",
+  "dns": "8.8.8.8 1.1.1.1",
+  "domain": "lab.local",
+  "leaseHours": 8, "poolFrom": 11, "poolTo": 240,
+  "pods": [
+    { "label": "POD 1", "mgmt": "192.168.10.221", "vlan": 2601, "subnet": "10.26.1.0/24" },
+    { "label": "TEACHER", "mgmt": "192.168.10.133", "vlan": 2608, "subnet": "10.26.8.0/24", "role": "teacher" }
+  ]
+}
+```
+
+แก้ตรงนี้ที่เดียวแล้ว build — **ตารางในผัง Lab, หัวข้อ Golden config บนเว็บ และไฟล์ `configs/*.txt` เปลี่ยนตามพร้อมกัน**
+เขียนแยกกันเมื่อไหร่มันจะเพี้ยนกันเอง แล้วชุดที่วาง config ตามเอกสารผิดตัวจะเสียเวลาไล่หาสิ่งที่ไม่ใช่บทเรียน
+
+`subnet` ต้องเป็น `/24` (build fail ถ้าไม่ใช่) · gateway, ช่วง exclude, ชื่อ DHCP pool คำนวณจาก `subnet` ให้เอง
+
+## เผยแพร่
+
+push เข้า `main` → GitHub Actions build แล้ว commit ผลลัพธ์กลับมา → GitHub Pages เสิร์ฟจาก branch root
 
 Pages ตั้งเป็น **Deploy from a branch · main · /(root)** เว็บที่เผยแพร่จึงเป็นไฟล์จริงใน git ถ้า workflow พัง เว็บเดิมยังอยู่ ไม่ดับ
+
+## เนื้อหาในเว็บ
+
+- ผังทั้งสองใบ กดเพื่อขยายเต็มจอ (ล้อเมาส์ซูม ลากเลื่อน Esc ปิด) และดาวน์โหลด SVG ได้
+- ตารางแผน VLAN / IP
+- Golden config รายชุด — เลือกแท็บชุดตัวเอง กดคัดลอก วางลง CLI ได้เลย
+- กำหนดการอบรม และลิงก์ดาวน์โหลดสไลด์ PDF
 
 ## โครงสร้าง
 
 ```
 src/
-  courses/campus-network.json   หลักสูตร — ใช้ซ้ำได้ทุกลูกค้า
-  events/*.json                 งานอบรมแต่ละครั้ง
+  courses/campus-network.json   หลักสูตร — ข้อความทั้งหมดในผังและในหน้าเว็บ
+  events/*.json                 งานอบรมแต่ละครั้ง + อุปกรณ์จริง (บล็อก lab)
   lib/
     util.mjs                    escape, วันที่ไทย, ตัวแปร {{...}}
-    page.mjs                    โครงหน้า HTML + CSS + สคริปต์ซูม
-    svg-overview.mjs            ผัง FIG.01 (เลย์เอาต์คงที่)
-    svg-lab.mjs                 ผัง FIG.02 (ปรับตามจำนวน Pod)
+    lab-config.mjs              ตาราง Pod » CLI (ที่มาเดียวของผัง เว็บ และ configs/)
+    page.mjs                    โครงหน้า HTML + CSS + สคริปต์
+    svg-overview.mjs            ผัง FIG.01
+    svg-lab.mjs                 ผัง FIG.02
 build.mjs                       ตัว build
+tools/check-layout.mjs          จับกล่องทับกัน/หลุดขอบในผัง
 ```
 
-## เนื้อหาในเว็บ
-
-- ผังทั้งสองใบ กดเพื่อขยายเต็มจอ (ล้อเมาส์ซูม ลากเลื่อน Esc ปิด) และดาวน์โหลด SVG ได้
-- ตารางแผน VLAN / IP ต่อ Pod
-- กำหนดการอบรม
-
-## แผน VLAN โดยย่อ (n = หมายเลข Pod)
-
-| VLAN | การใช้งาน | Subnet |
-|---|---|---|
-| n1 | MGMT (Switch / AP) | 10.n.1.0/24 |
-| n2 | Wired Users — 802.1X | 10.n.2.0/24 |
-| n3 | WLAN Employee — 802.1X | 10.n.3.0/24 |
-| n4 | WLAN Guest — Captive portal | 10.n.4.0/24 |
-| n5 | WLAN IoT — PSK + MAC Auth | 10.n.5.0/24 |
-| 100 | Transit / Internet uplink | 192.168.100.0/24 |
-| 200 | Servers (MC / ClearPass / DHCP) | 192.168.200.0/24 |
-
-ตัวอย่าง: Pod 1 ใช้ VLAN 11–15 กับ 10.1.x.0/24 · Pod 2 ใช้ VLAN 21–25 กับ 10.2.x.0/24
-
-> ตารางนี้เป็นสำเนาไว้อ่านเร็ว — ตัวจริงอยู่ใน `src/courses/campus-network.json`
-
-## PNG สำหรับสไลด์
-
-`diagrams/*.png` (ความละเอียด 2x) **export อัตโนมัติใน GitHub Actions** ทุกครั้งที่ผังเปลี่ยน — แก้ `podsDrawn` แล้ว push ได้ PNG ใหม่กลับมาเอง ไม่ต้องแปลงมือ
-
-ใช้ Chromium render เพราะผังถูกออกแบบมาสำหรับเบราว์เซอร์ — CSS cascade และการจัดวางตัวอักษรไทยตรงกับหน้าเว็บจริง PNG จึงไม่มีทางเพี้ยนไปจากที่เห็นบนเว็บ
-
-รันเองในเครื่องก็ได้ (ไม่จำเป็น — CI ทำให้แล้ว):
-
-```bash
-npm install && npx playwright install chromium && npm run png
-```
-
-> `node build.mjs` **ไม่ต้องใช้ dependency ใด ๆ** Playwright จำเป็นเฉพาะตอน export PNG เท่านั้น จึงไม่ commit `node_modules/` และ lockfile ลง repo
+ข้อความรองรับตัวแปร `{{...}}` เช่น `{{controller}}`, `{{mgmtNet}}`, `{{studentPods}}`, `{{dateLong}}` — พิมพ์ชื่อผิด build จะ fail ทันที ไม่ปล่อยข้อความเพี้ยนขึ้นเว็บ

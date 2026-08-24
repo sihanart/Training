@@ -2,14 +2,75 @@
   "slug": "rmutt-2026-08",
   "course": "campus-network",
   "date": "2026-08-26",
-
   "organizer": "Commserv Siam",
   "customer": "RMUTT",
   "attendees": "คณะวิศวกรรมศาสตร์ RMUTT",
   "partnerLine": "RMUTT × Commserv Siam",
   "venue": "Royal Hills Golf Resort & Spa",
-
   "podsDrawn": 7,
-
-  "slides": { "file": "slides/rmutt-2026-08.pdf", "pages": 132 }
+  "slides": {
+    "file": "slides/rmutt-2026-08.pdf",
+    "pages": 132
+  },
+  "lab": {
+    "controller": "Aruba 9004-LTE",
+    "controllerOs": "ArubaOS 8.7.1.2",
+    "mgmtNet": "192.168.10.0/24",
+    "dns": "8.8.8.8 1.1.1.1",
+    "domain": "lab.local",
+    "leaseHours": 8,
+    "poolFrom": 11,
+    "poolTo": 240,
+    "pods": [
+      {
+        "label": "POD 1",
+        "mgmt": "192.168.10.221",
+        "vlan": 2601,
+        "subnet": "10.26.1.0/24"
+      },
+      {
+        "label": "POD 2",
+        "mgmt": "192.168.10.222",
+        "vlan": 2602,
+        "subnet": "10.26.2.0/24"
+      },
+      {
+        "label": "POD 3",
+        "mgmt": "192.168.10.223",
+        "vlan": 2603,
+        "subnet": "10.26.3.0/24"
+      },
+      {
+        "label": "POD 4",
+        "mgmt": "192.168.10.224",
+        "vlan": 2604,
+        "subnet": "10.26.4.0/24"
+      },
+      {
+        "label": "POD 5",
+        "mgmt": "192.168.10.225",
+        "vlan": 2605,
+        "subnet": "10.26.5.0/24"
+      },
+      {
+        "label": "POD 6",
+        "mgmt": "192.168.10.226",
+        "vlan": 2606,
+        "subnet": "10.26.6.0/24"
+      },
+      {
+        "label": "POD 7",
+        "mgmt": "192.168.10.227",
+        "vlan": 2607,
+        "subnet": "10.26.7.0/24"
+      },
+      {
+        "label": "TEACHER",
+        "mgmt": "192.168.10.133",
+        "vlan": 2608,
+        "subnet": "10.26.8.0/24",
+        "role": "teacher"
+      }
+    ]
+  }
 }

@@ -1,395 +1,194 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="3740" height="1130" id="svg-lab" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3740 1130">
+<svg width="1440" height="1120" id="svg-lab" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1120">
 <defs>
-<style>#svg-lab text{font-family:"IBM Plex Sans Thai","Sarabun","Loma","Noto Sans Thai","Sarabun","Segoe UI",sans-serif;fill:#0F1E2E}#svg-lab .h1{font-size:28px;font-weight:700}#svg-lab .sub{font-size:14px;fill:#5A6C7D}#svg-lab .lbl{font-size:15px;font-weight:700}#svg-lab .lbl2{font-size:13px;font-weight:700}#svg-lab .role{font-size:11.5px;fill:#41545F}#svg-lab .tiny{font-size:11px;fill:#5A6C7D}#svg-lab .tag{font-size:11px;font-weight:700;fill:#fff}#svg-lab .th{font-size:11.5px;font-weight:700;fill:#1E6BB8}#svg-lab .td{font-size:11.5px;fill:#33454F}#svg-lab .link{stroke:#4A6274;stroke-width:2.5;fill:none}#svg-lab .link10{stroke:#0E7C86;stroke-width:5;fill:none;stroke-linecap:round}#svg-lab .stackl{stroke:#0E7C86;stroke-width:7;fill:none;stroke-linecap:round}#svg-lab .tunnel{stroke:#FF8300;stroke-width:3;stroke-dasharray:9 6;fill:none}#svg-lab .radius{stroke:#6B4EA8;stroke-width:2.5;stroke-dasharray:3 5;fill:none}#svg-lab .air{stroke:#14996B;stroke-width:2;fill:none;opacity:.75}#svg-lab .grp{fill:#FAFCFE;stroke:#C7D6E2;stroke-width:1.5;stroke-dasharray:6 5}
-</style>
+<style>#svg-lab text{font-family:"IBM Plex Sans Thai","Sarabun","Loma","Noto Sans Thai","Segoe UI",sans-serif;fill:#0F1E2E}#svg-lab .h1{font-size:28px;font-weight:700}#svg-lab .sub{font-size:13.5px;fill:#5A6C7D}#svg-lab .lbl{font-size:15px;font-weight:700}#svg-lab .lbl2{font-size:13px;font-weight:700}#svg-lab .role{font-size:11.5px;fill:#41545F}#svg-lab .tiny{font-size:11px;fill:#5A6C7D}#svg-lab .tag{font-size:11px;font-weight:700;fill:#fff}#svg-lab .th{font-size:10.5px;font-weight:700;fill:#1E6BB8;letter-spacing:.06em}#svg-lab .td{font-size:11.5px;fill:#33454F}#svg-lab .tteach{font-weight:700;fill:#C4620A}#svg-lab .mono2{font-family:"IBM Plex Mono",monospace;font-size:11.5px}#svg-lab .ip{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;fill:#1E6BB8}#svg-lab .link{stroke:#4A6274;stroke-width:2.5;fill:none}#svg-lab .link10{stroke:#0E7C86;stroke-width:5;fill:none;stroke-linecap:round}#svg-lab .tunnel{stroke:#FF8300;stroke-width:3;stroke-dasharray:9 6;fill:none}#svg-lab .air{stroke:#14996B;stroke-width:2;fill:none;opacity:.75}#svg-lab .grp{fill:#FAFCFE;stroke:#C7D6E2;stroke-width:1.5;stroke-dasharray:6 5}</style>
 <marker id="ar-svg-lab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
 <path d="M0 0 L10 5 L0 10 z" fill="#FF8300"/></marker>
 </defs>
 
-<rect width="3740" height="1130" fill="#FFFFFF"/>
+<rect width="1440" height="1120" fill="#FFFFFF"/>
 <text class="h1" x="40" y="48">Aruba Campus Network Training — Lab Topology</text>
-<text class="sub" x="40" y="74">RMUTT × Commserv Siam · 26 ส.ค. 2569 · Module 1: Aruba Switch (CX) — Module 2: Mobility Controller + Access Point</text>
-<line x1="40" y1="90" x2="3700" y2="90" stroke="#E1E9EF" stroke-width="2"/>
+<text class="sub" x="40" y="74">RMUTT × Commserv Siam · 26 ส.ค. 2569 · Mobility Controller: Aruba 9004-LTE (ArubaOS 8.7.1.2) · 7 ชุดนักศึกษา + 1 ชุดผู้สอน</text>
+<line x1="40" y1="90" x2="1400" y2="90" stroke="#E1E9EF" stroke-width="2"/>
 
-<!-- Internet + edge -->
+<!-- internet + management uplink -->
 <path d="M75 148 a30 30 0 0 1 30-30 h110 a30 30 0 0 1 0 60 h-110 a30 30 0 0 1-30-30z" fill="#EEF3F7" stroke="#8FA6B6" stroke-width="2"/>
 <text class="lbl" x="128" y="143">Internet</text>
-<text class="tiny" x="95" y="160">Venue WAN / 4G Router</text>
-<rect x="75" y="215" width="180" height="58" rx="8" fill="#FDECEC" stroke="#C0504D" stroke-width="2"/>
-<text class="lbl2" x="90" y="240">NAT Router / Firewall</text>
-<text class="role" x="90" y="259">VLAN 100 · 192.168.100.254</text>
-<line class="link" x1="165" y1="178" x2="165" y2="215"/>
-<line class="link" x1="255" y1="244" x2="1210" y2="244"/>
+<text class="tiny" x="96" y="160">Venue WAN / LTE</text>
+<rect x="70" y="212" width="190" height="58" rx="8" fill="#FDECEC" stroke="#C0504D" stroke-width="2"/>
+<text class="lbl2" x="86" y="237">Internet Gateway / FW</text>
+<text class="role" x="86" y="256">ทางออกของ management net</text>
+<line class="link" x1="165" y1="178" x2="165" y2="212"/>
+<line class="link" x1="260" y1="241" x2="330" y2="241"/>
 
-<!-- Core -->
-<rect x="1210" y="185" width="900" height="122" rx="10" fill="#E8F1F8" stroke="#1E6BB8" stroke-width="2.5"/>
-<rect x="1210" y="185" width="900" height="26" rx="10" fill="#1E6BB8"/>
-<text class="tag" x="1224" y="203">CORE (ใช้ร่วมกันทุก Pod) — Aruba CX 8325 / CX 6300M</text>
-<text class="role" x="1224" y="233">• SVI ทุก VLAN ของทุก Pod + Inter-VLAN routing</text>
-<text class="role" x="1224" y="252">• DHCP relay (ip helper-address » Services VM) หรือ DHCP pool บน Core</text>
-<text class="role" x="1224" y="271">• Default route 0.0.0.0/0 » 192.168.100.254</text>
-<text class="role" x="1224" y="290">• Uplink 10G + LAG ลงทุก Pod / ขึ้น Controller</text>
+<!-- core -->
+<rect x="330" y="180" width="470" height="122" rx="10" fill="#E8F1F8" stroke="#1E6BB8" stroke-width="2.5"/>
+<rect x="330" y="180" width="470" height="26" rx="10" fill="#1E6BB8"/>
+<text class="tag" x="344" y="198">CORE / DISTRIBUTION SWITCH (ใช้ร่วมทุกชุด)</text>
+<text class="role" x="344" y="228">• Trunk VLAN 2601–2608 ลงทุก Pod + Management VLAN</text>
+<text class="role" x="344" y="248">• Management network <tspan class="ip">192.168.10.0/24</tspan> (Controller ทุกตัวอยู่วงนี้)</text>
+<text class="role" x="344" y="268">• เส้นทางออก Internet ของทุก Controller</text>
+<text class="role" x="344" y="288">• Uplink 10G / LAG ลง Access switch ของแต่ละ Pod</text>
 
-<!-- Mobility Controller -->
-<rect x="3300" y="118" width="400" height="122" rx="10" fill="#FFF3E6" stroke="#FF8300" stroke-width="2.5"/>
-<rect x="3300" y="118" width="400" height="26" rx="10" fill="#FF8300"/>
-<text class="tag" x="3314" y="136">MOBILITY CONTROLLER (AOS-8) — 7010 / VMC</text>
-<text class="role" x="3314" y="166">• AP onboarding + GRE tunnel termination</text>
-<text class="role" x="3314" y="185">• WLAN/SSID, VLAN, AAA profile, User Role</text>
-<text class="role" x="3314" y="204">• Captive portal, Application Control (AppRF)</text>
-<text class="role" x="3314" y="223">• Dashboard / Monitoring — MGMT 192.168.200.10</text>
-<path class="link10" d="M2110 200 H 3300"/>
-<text class="tiny" x="2122" y="190">LAG 2x10G (VLAN 200 + user VLANs)</text>
+<!-- what the controller is for -->
+<rect x="1000" y="118" width="400" height="128" rx="10" fill="#FFF3E6" stroke="#FF8300" stroke-width="2.5"/>
+<rect x="1000" y="118" width="400" height="26" rx="10" fill="#FF8300"/>
+<text class="tag" x="1014" y="136">MOBILITY CONTROLLER — ARUBA 9004-LTE · AOS 8.7.1.2</text>
+<text class="role" x="1014" y="166">• 1 ตัวต่อ 1 ชุด — AP termination (GRE), WLAN/SSID, User role</text>
+<text class="role" x="1014" y="186">• เป็น DHCP server ของ AP VLAN ของตัวเอง (service dhcp)</text>
+<text class="role" x="1014" y="206">• ip nat inside บน SVI ของ AP VLAN » NAT ออก uplink</text>
+<text class="role" x="1014" y="226">• Application control (AppRF) + Dashboard</text>
 
-<!-- ClearPass -->
-<rect x="3300" y="262" width="400" height="96" rx="10" fill="#F1ECFB" stroke="#6B4EA8" stroke-width="2.5"/>
-<text class="lbl2" x="3314" y="288">ClearPass Policy Manager (VM) — RADIUS</text>
-<text class="role" x="3314" y="308">• 802.1X: wired (Module 1) + wireless (Module 2)</text>
-<text class="role" x="3314" y="327">• MAC Authentication (IoT) · Guest self-register</text>
-<text class="role" x="3314" y="346">• 192.168.200.20 — shared secret ต่อ Pod</text>
-<path class="radius" d="M3300 300 H 2190 V 307"/>
+<!-- which controller belongs to which pod -->
+<rect x="1000" y="282" width="400" height="264" rx="10" fill="#FFFFFF" stroke="#C7D6E2" stroke-width="1.5"/>
+<text class="lbl2" x="1014" y="306">การจัด Controller / AP VLAN ต่อชุด</text>
+<text class="th" x="1024" y="326">ชุด</text><text class="th" x="1120" y="326">CONTROLLER IP</text><text class="th" x="1268" y="326">AP VLAN</text>
+<line x1="1014" y1="331" x2="1386" y2="331" stroke="#DCE6ED"/>
+<rect x="1014" y="335" width="372" height="24" fill="#F7FAFC"/><text class="td" x="1024" y="352">POD 1</text><text class="td mono2" x="1120" y="352">192.168.10.221</text><text class="td mono2" x="1268" y="352">VLAN 2601</text>
+<rect x="1014" y="359" width="372" height="24" fill="#FFFFFF"/><text class="td" x="1024" y="376">POD 2</text><text class="td mono2" x="1120" y="376">192.168.10.222</text><text class="td mono2" x="1268" y="376">VLAN 2602</text>
+<rect x="1014" y="383" width="372" height="24" fill="#F7FAFC"/><text class="td" x="1024" y="400">POD 3</text><text class="td mono2" x="1120" y="400">192.168.10.223</text><text class="td mono2" x="1268" y="400">VLAN 2603</text>
+<rect x="1014" y="407" width="372" height="24" fill="#FFFFFF"/><text class="td" x="1024" y="424">POD 4</text><text class="td mono2" x="1120" y="424">192.168.10.224</text><text class="td mono2" x="1268" y="424">VLAN 2604</text>
+<rect x="1014" y="431" width="372" height="24" fill="#F7FAFC"/><text class="td" x="1024" y="448">POD 5</text><text class="td mono2" x="1120" y="448">192.168.10.225</text><text class="td mono2" x="1268" y="448">VLAN 2605</text>
+<rect x="1014" y="455" width="372" height="24" fill="#FFFFFF"/><text class="td" x="1024" y="472">POD 6</text><text class="td mono2" x="1120" y="472">192.168.10.226</text><text class="td mono2" x="1268" y="472">VLAN 2606</text>
+<rect x="1014" y="479" width="372" height="24" fill="#F7FAFC"/><text class="td" x="1024" y="496">POD 7</text><text class="td mono2" x="1120" y="496">192.168.10.227</text><text class="td mono2" x="1268" y="496">VLAN 2607</text>
+<rect x="1014" y="503" width="372" height="24" fill="#FFF3E6"/><text class="td tteach" x="1024" y="520">TEACHER</text><text class="td mono2" x="1120" y="520">192.168.10.133</text><text class="td mono2" x="1268" y="520">VLAN 2608</text>
+<text class="tiny" x="1014" y="538">ทุก Controller อยู่บน management network เดียวกัน 192.168.10.0/24</text>
 
-<!-- Services -->
-<rect x="3300" y="378" width="400" height="66" rx="10" fill="#EFF6F1" stroke="#4B8F6E" stroke-width="2"/>
-<text class="lbl2" x="3314" y="402">Services VM — DHCP / DNS / NTP / CA / Syslog</text>
-<text class="role" x="3314" y="424">192.168.200.30 · ปลายทางของ DHCP relay</text>
-<path class="link" d="M3300 410 H 2160 V 307"/>
+<!-- DHCP / NAT, which live on the controller here rather than the core -->
+<rect x="1000" y="566" width="400" height="304" rx="10" fill="#EFF6F1" stroke="#4B8F6E" stroke-width="2"/>
+<text class="lbl2" x="1014" y="592">DHCP + NAT ที่ตั้งบน Controller แต่ละตัว</text>
+<text class="role" x="1014" y="616">• Pool ของ AP VLAN 260n — <tspan class="mono2">10.26.n.0/24</tspan></text>
+<text class="role" x="1014" y="638">• Gateway / SVI — <tspan class="mono2">10.26.n.1</tspan> (บน controller)</text>
+<text class="role" x="1014" y="660">• แจกจริง <tspan class="mono2">.11–.240</tspan> · lease 8 ชม.</text>
+<text class="role" x="1014" y="682">• Exclude <tspan class="mono2">.1–.10</tspan> และ <tspan class="mono2">.241–.254</tspan></text>
+<text class="role" x="1014" y="704">• <tspan class="mono2">service dhcp</tspan> ต้องเปิด ไม่งั้น pool ไม่ทำงาน</text>
+<text class="role" x="1014" y="726">• <tspan class="mono2">ip nat inside</tspan> บน interface vlan 260n</text>
+<line x1="1014" y1="746" x2="1386" y2="746" stroke="#CBDDD2"/>
+<text class="lbl2" x="1014" y="770">คำสั่งตรวจสอบ</text>
+<text class="role mono2" x="1014" y="792">show ip dhcp binding</text>
+<text class="role mono2" x="1014" y="812">show ip dhcp statistics</text>
+<text class="role mono2" x="1014" y="832">show ap database / show ap active</text>
+<text class="role mono2" x="1014" y="852">show datapath session table</text>
 
-<!-- Tunnel indication -->
-<path class="tunnel" marker-end="url(#ar-svg-lab)" d="M2010 330 C 2130 380 2210 330 3285 250" />
-<text class="tiny" x="1932" y="398" fill="#C4620A" font-size="12" font-weight="700">GRE Tunnel: AP » MC</text>
+<!-- student pods -->
+<rect class="grp" x="60" y="440" width="440" height="430" rx="12"/>
+<rect x="60" y="440" width="230" height="28" rx="10" fill="#1E6BB8"/>
+<text class="tag" x="76" y="459">POD 1–7 — นักศึกษา (n = 1–7)</text>
 
-<path class="link10" d="M150 512 L 1270 307"/>
-<path class="link10" d="M410 512 L 1330 307"/>
-<path class="link10" d="M610 512 L 1390 307"/>
-<path class="link10" d="M870 512 L 1450 307"/>
-<path class="link10" d="M1070 512 L 1510 307"/>
-<path class="link10" d="M1330 512 L 1570 307"/>
-<path class="link10" d="M1530 512 L 1630 307"/>
-<path class="link10" d="M1790 512 L 1690 307"/>
-<path class="link10" d="M1990 512 L 1750 307"/>
-<path class="link10" d="M2250 512 L 1810 307"/>
-<path class="link10" d="M2450 512 L 1870 307"/>
-<path class="link10" d="M2710 512 L 1930 307"/>
-<path class="link10" d="M2910 512 L 1990 307"/>
-<path class="link10" d="M3170 512 L 2050 307"/>
-<text class="tiny" x="74" y="446">LAG 2x10G (SFP+) ขึ้น Core</text>
+<rect x="84" y="486" width="392" height="66" rx="9" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
+<text class="lbl2" x="98" y="509">Access switch — Aruba CX 6300F PoE+</text>
+<text class="role" x="98" y="530">Trunk VLAN 260n + management · จ่ายไฟ AP ด้วย PoE+</text>
 
-<!-- ============ POD 1 ============ -->
-<rect class="grp" x="60" y="470" width="440" height="420" rx="12"/>
-<rect x="60" y="470" width="120" height="28" rx="10" fill="#1E6BB8"/>
-<text class="tag" x="76" y="489">POD 1 (2–3 คน)</text>
+<rect x="84" y="586" width="196" height="96" rx="9" fill="#FFF3E6" stroke="#FF8300" stroke-width="2.5"/>
+<text class="lbl2" x="98" y="609">Controller 9004-LTE</text>
+<text class="role" x="98" y="629">MGMT</text>
+<text class="ip" x="98" y="648">192.168.10.22n</text>
+<text class="role" x="98" y="668">AP VLAN 260n · DHCP + NAT</text>
 
-<rect x="82" y="512" width="396" height="106" rx="9" fill="#F2F7FB" stroke="#1E6BB8" stroke-width="1.5" stroke-dasharray="5 4"/>
-<text class="lbl2" x="96" y="534">Access Stack — 2x Aruba CX 6300F 24G PoE+ (VSF)</text>
-<rect x="96" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl2" x="110" y="568">SW1-POD1</text>
-<text class="role" x="110" y="588">Commander · Mbr 1</text>
-<rect x="296" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl2" x="310" y="568">SW2-POD1</text>
-<text class="role" x="310" y="588">Standby · Mbr 2</text>
-<path class="stackl" d="M266 575 H 296"/>
-<text class="tiny" x="238" y="640">VSF stack link</text>
+<rect x="300" y="586" width="84" height="96" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl2" x="314" y="609">AP-515</text>
+<text class="role" x="314" y="629">PoE+</text>
+<text class="role" x="314" y="648">VLAN</text>
+<text class="role" x="314" y="667">260n</text>
+<path class="air" d="M314 578 a28 28 0 0 1 56 0"/>
+<rect x="392" y="586" width="84" height="96" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl2" x="406" y="609">AP-505</text>
+<text class="role" x="406" y="629">PoE+</text>
+<text class="role" x="406" y="648">VLAN</text>
+<text class="role" x="406" y="667">260n</text>
+<path class="air" d="M406 578 a28 28 0 0 1 56 0"/>
+<text class="tiny" x="98" y="714">AP รับ IP จาก DHCP บน controller</text>
 
-<rect x="88" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
-<text class="lbl2" x="102" y="700">AP-515</text>
-<text class="role" x="102" y="720">PoE+ · port 1/1/1</text>
-<rect x="222" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
-<text class="lbl2" x="236" y="700">AP-505</text>
-<text class="role" x="236" y="720">PoE+ · port 2/1/1</text>
-<rect x="356" y="676" width="122" height="66" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl2" x="370" y="700">PC (wired)</text>
-<text class="role" x="370" y="720">802.1X + DHCP test</text>
-<line class="link" x1="147" y1="604" x2="147" y2="676"/>
-<line class="link" x1="281" y1="604" x2="281" y2="676"/>
-<line class="link" x1="417" y1="604" x2="417" y2="676"/>
-<text class="tiny" x="152" y="646">PoE+</text>
-<text class="tiny" x="422" y="646">VLAN 12</text>
+<line class="link" x1="182" y1="552" x2="182" y2="586"/>
+<line class="link" x1="342" y1="552" x2="342" y2="586"/>
+<line class="link" x1="434" y1="552" x2="434" y2="586"/>
 
-<path class="air" d="M118 668 a38 38 0 0 1 56 0"/>
-<path class="air" d="M252 668 a38 38 0 0 1 56 0"/>
-<rect x="88" y="790" width="252" height="62" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl2" x="102" y="813">Wireless clients</text>
-<text class="role" x="102" y="832">Notebook / Mobile / IoT</text>
-<line class="link" x1="214" y1="742" x2="214" y2="790" stroke-dasharray="4 4"/>
-<text class="role" x="88" y="874">SSID: POD1-EMP (802.1X) · POD1-GUEST (Portal) · POD1-IOT (PSK/MAC)</text>
+<rect x="84" y="736" width="392" height="60" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl2" x="98" y="759">Wireless clients · Notebook ของผู้เข้าอบรม</text>
+<text class="role" x="98" y="779">SSID ของ Pod ตัวเอง · ทดสอบ PSK / Portal / 802.1X / MAC auth</text>
+<line class="link" x1="342" y1="682" x2="342" y2="736" stroke-dasharray="4 4"/>
+<text class="role" x="84" y="822">ตัวอย่าง: POD 3 » Controller <tspan class="mono2">192.168.10.223</tspan> · AP VLAN <tspan class="mono2">2603</tspan></text>
+<text class="tiny" x="84" y="846">แต่ละ Pod config บน controller ของตัวเอง — ไม่กระทบ Pod อื่น</text>
 
-<!-- ============ POD 2 ============ -->
-<rect class="grp" x="520" y="470" width="440" height="420" rx="12"/>
-<rect x="520" y="470" width="120" height="28" rx="10" fill="#1E6BB8"/>
-<text class="tag" x="536" y="489">POD 2 (2–3 คน)</text>
+<!-- instructor pod -->
+<rect class="grp" x="520" y="440" width="440" height="430" rx="12" stroke="#FFC489"/>
+<rect x="520" y="440" width="210" height="28" rx="10" fill="#C4620A"/>
+<text class="tag" x="536" y="459">ชุดผู้สอน / DEMO</text>
 
-<rect x="542" y="512" width="396" height="106" rx="9" fill="#F2F7FB" stroke="#1E6BB8" stroke-width="1.5" stroke-dasharray="5 4"/>
-<text class="lbl2" x="556" y="534">Access Stack — 2x Aruba CX 6300F 24G PoE+ (VSF)</text>
-<rect x="556" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl2" x="570" y="568">SW1-POD2</text>
-<text class="role" x="570" y="588">Commander · Mbr 1</text>
-<rect x="756" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl2" x="770" y="568">SW2-POD2</text>
-<text class="role" x="770" y="588">Standby · Mbr 2</text>
-<path class="stackl" d="M726 575 H 756"/>
+<rect x="544" y="486" width="392" height="66" rx="9" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
+<text class="lbl2" x="558" y="509">Access switch — Aruba CX 6300F PoE+</text>
+<text class="role" x="558" y="530">Trunk VLAN 2608 + management</text>
 
-<rect x="548" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
-<text class="lbl2" x="562" y="700">AP-515</text>
-<text class="role" x="562" y="720">PoE+ · port 1/1/1</text>
-<rect x="682" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
-<text class="lbl2" x="696" y="700">AP-505</text>
-<text class="role" x="696" y="720">PoE+ · port 2/1/1</text>
-<rect x="816" y="676" width="122" height="66" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl2" x="830" y="700">PC (wired)</text>
-<text class="role" x="830" y="720">802.1X + DHCP test</text>
-<line class="link" x1="607" y1="604" x2="607" y2="676"/>
-<line class="link" x1="741" y1="604" x2="741" y2="676"/>
-<line class="link" x1="877" y1="604" x2="877" y2="676"/>
-<text class="tiny" x="882" y="646">VLAN 22</text>
+<rect x="544" y="586" width="196" height="96" rx="9" fill="#FFE8CC" stroke="#C4620A" stroke-width="2.5"/>
+<text class="lbl2" x="558" y="609">Controller 9004-LTE</text>
+<text class="role" x="558" y="629">MGMT</text>
+<text class="ip" x="558" y="648" fill="#C4620A">192.168.10.133</text>
+<text class="role" x="558" y="668">AP VLAN 2608 · DHCP + NAT</text>
 
-<path class="air" d="M578 668 a38 38 0 0 1 56 0"/>
-<path class="air" d="M712 668 a38 38 0 0 1 56 0"/>
-<rect x="548" y="790" width="252" height="62" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl2" x="562" y="813">Wireless clients</text>
-<text class="role" x="562" y="832">Notebook / Mobile / IoT</text>
-<line class="link" x1="674" y1="742" x2="674" y2="790" stroke-dasharray="4 4"/>
-<text class="role" x="548" y="874">SSID: POD2-EMP (802.1X) · POD2-GUEST (Portal) · POD2-IOT (PSK/MAC)</text>
+<rect x="760" y="586" width="84" height="96" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl2" x="774" y="609">AP-515</text>
+<text class="role" x="774" y="629">PoE+</text>
+<text class="role" x="774" y="648">VLAN</text>
+<text class="role" x="774" y="667">2608</text>
+<path class="air" d="M774 578 a28 28 0 0 1 56 0"/>
+<rect x="852" y="586" width="84" height="96" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
+<text class="lbl2" x="866" y="609">AP-505</text>
+<text class="role" x="866" y="629">PoE+</text>
+<text class="role" x="866" y="648">VLAN</text>
+<text class="role" x="866" y="667">2608</text>
+<path class="air" d="M866 578 a28 28 0 0 1 56 0"/>
 
-<!-- ============ POD 3 ============ -->
-<rect class="grp" x="980" y="470" width="440" height="420" rx="12"/>
-<rect x="980" y="470" width="120" height="28" rx="10" fill="#1E6BB8"/>
-<text class="tag" x="996" y="489">POD 3 (2–3 คน)</text>
 
-<rect x="1002" y="512" width="396" height="106" rx="9" fill="#F2F7FB" stroke="#1E6BB8" stroke-width="1.5" stroke-dasharray="5 4"/>
-<text class="lbl2" x="1016" y="534">Access Stack — 2x Aruba CX 6300F 24G PoE+ (VSF)</text>
-<rect x="1016" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl2" x="1030" y="568">SW1-POD3</text>
-<text class="role" x="1030" y="588">Commander · Mbr 1</text>
-<rect x="1216" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl2" x="1230" y="568">SW2-POD3</text>
-<text class="role" x="1230" y="588">Standby · Mbr 2</text>
-<path class="stackl" d="M1186 575 H 1216"/>
+<line class="link" x1="642" y1="552" x2="642" y2="586"/>
+<line class="link" x1="802" y1="552" x2="802" y2="586"/>
+<line class="link" x1="894" y1="552" x2="894" y2="586"/>
 
-<rect x="1008" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
-<text class="lbl2" x="1022" y="700">AP-515</text>
-<text class="role" x="1022" y="720">PoE+ · port 1/1/1</text>
-<rect x="1142" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
-<text class="lbl2" x="1156" y="700">AP-505</text>
-<text class="role" x="1156" y="720">PoE+ · port 2/1/1</text>
-<rect x="1276" y="676" width="122" height="66" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl2" x="1290" y="700">PC (wired)</text>
-<text class="role" x="1290" y="720">802.1X + DHCP test</text>
-<line class="link" x1="1067" y1="604" x2="1067" y2="676"/>
-<line class="link" x1="1201" y1="604" x2="1201" y2="676"/>
-<line class="link" x1="1337" y1="604" x2="1337" y2="676"/>
-<text class="tiny" x="1342" y="646">VLAN 32</text>
+<rect x="544" y="736" width="392" height="60" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
+<text class="lbl2" x="558" y="759">เครื่องของผู้สอน · จอฉาย</text>
+<text class="role" x="558" y="779">ใช้สาธิตทีละขั้นก่อนให้นักศึกษาทำตาม</text>
+<line class="link" x1="802" y1="682" x2="802" y2="736" stroke-dasharray="4 4"/>
 
-<path class="air" d="M1038 668 a38 38 0 0 1 56 0"/>
-<path class="air" d="M1172 668 a38 38 0 0 1 56 0"/>
-<rect x="1008" y="790" width="252" height="62" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl2" x="1022" y="813">Wireless clients</text>
-<text class="role" x="1022" y="832">Notebook / Mobile / IoT</text>
-<line class="link" x1="1134" y1="742" x2="1134" y2="790" stroke-dasharray="4 4"/>
-<text class="role" x="1008" y="874">SSID: POD3-EMP (802.1X) · POD3-GUEST (Portal) · POD3-IOT (PSK/MAC)</text>
+<text class="tiny" x="544" y="822">เก็บ golden config ไว้ที่ตัวนี้ เพื่อเทียบกับของนักศึกษาเวลา debug</text>
 
-<!-- ============ POD 4 ============ -->
-<rect class="grp" x="1440" y="470" width="440" height="420" rx="12"/>
-<rect x="1440" y="470" width="120" height="28" rx="10" fill="#1E6BB8"/>
-<text class="tag" x="1456" y="489">POD 4 (2–3 คน)</text>
+<!-- core down to each column -->
+<path class="link10" d="M420 302 L 220 486"/>
+<path class="link10" d="M620 302 L 700 486"/>
+<text class="tiny" x="300" y="404">Uplink 10G / LAG</text>
+<text class="tiny" x="660" y="404">Uplink 10G / LAG</text>
 
-<rect x="1462" y="512" width="396" height="106" rx="9" fill="#F2F7FB" stroke="#1E6BB8" stroke-width="1.5" stroke-dasharray="5 4"/>
-<text class="lbl2" x="1476" y="534">Access Stack — 2x Aruba CX 6300F 24G PoE+ (VSF)</text>
-<rect x="1476" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl2" x="1490" y="568">SW1-POD4</text>
-<text class="role" x="1490" y="588">Commander · Mbr 1</text>
-<rect x="1676" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl2" x="1690" y="568">SW2-POD4</text>
-<text class="role" x="1690" y="588">Standby · Mbr 2</text>
-<path class="stackl" d="M1646 575 H 1676"/>
+<path class="tunnel" marker-end="url(#ar-svg-lab)" d="M810 300 C 900 300 920 240 985 214"/>
+<text class="tiny" x="700" y="352" fill="#C4620A" font-size="11.5" font-weight="700">AP จบ GRE tunnel ที่ controller ของชุดตัวเอง</text>
 
-<rect x="1468" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
-<text class="lbl2" x="1482" y="700">AP-515</text>
-<text class="role" x="1482" y="720">PoE+ · port 1/1/1</text>
-<rect x="1602" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
-<text class="lbl2" x="1616" y="700">AP-505</text>
-<text class="role" x="1616" y="720">PoE+ · port 2/1/1</text>
-<rect x="1736" y="676" width="122" height="66" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl2" x="1750" y="700">PC (wired)</text>
-<text class="role" x="1750" y="720">802.1X + DHCP test</text>
-<line class="link" x1="1527" y1="604" x2="1527" y2="676"/>
-<line class="link" x1="1661" y1="604" x2="1661" y2="676"/>
-<line class="link" x1="1797" y1="604" x2="1797" y2="676"/>
-<text class="tiny" x="1802" y="646">VLAN 42</text>
+<!-- legend -->
+<rect x="60" y="900" width="440" height="196" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="78" y="926">Legend</text>
+<line class="link" x1="80" y1="950" x2="128" y2="950"/><text class="tiny" x="138" y="954">Copper 1G (AP / Controller)</text>
+<line class="link10" x1="80" y1="978" x2="128" y2="978"/><text class="tiny" x="138" y="982">10G Fiber / LAG uplink</text>
+<path class="tunnel" d="M80 1006 H 128"/><text class="tiny" x="138" y="1010">GRE Tunnel (AP — Controller)</text>
+<path class="air" d="M84 1040 a24 24 0 0 1 40 0"/><text class="tiny" x="138" y="1040">Wireless (SSID broadcast)</text>
+<text class="tiny" x="80" y="1072">สีส้ม = อุปกรณ์/ค่าของชุดผู้สอน · สีน้ำเงิน = สวิตช์/Core</text>
 
-<path class="air" d="M1498 668 a38 38 0 0 1 56 0"/>
-<path class="air" d="M1632 668 a38 38 0 0 1 56 0"/>
-<rect x="1468" y="790" width="252" height="62" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl2" x="1482" y="813">Wireless clients</text>
-<text class="role" x="1482" y="832">Notebook / Mobile / IoT</text>
-<line class="link" x1="1594" y1="742" x2="1594" y2="790" stroke-dasharray="4 4"/>
-<text class="role" x="1468" y="874">SSID: POD4-EMP (802.1X) · POD4-GUEST (Portal) · POD4-IOT (PSK/MAC)</text>
+<!-- VLAN / IP summary -->
+<rect x="520" y="900" width="440" height="196" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="538" y="926">แผน VLAN / IP ที่ใช้จริง</text>
+<text class="th" x="538" y="948">รายการ</text><text class="th" x="742" y="948">ค่าที่ใช้</text>
+<line x1="538" y1="954" x2="942" y2="954" stroke="#DCE6ED"/>
+<text class="td" x="538" y="972">Management network</text><text class="td mono2" x="742" y="972">192.168.10.0/24</text>
+<text class="td" x="538" y="992">Controller นักศึกษา (Pod 1–7)</text><text class="td mono2" x="742" y="992">.221 – .227</text>
+<text class="td" x="538" y="1012">Controller ผู้สอน</text><text class="td mono2" x="742" y="1012">.133</text>
+<text class="td" x="538" y="1032">AP VLAN — Pod 1–7</text><text class="td mono2" x="742" y="1032">2601 – 2607</text>
+<text class="td" x="538" y="1052">AP VLAN — ผู้สอน</text><text class="td mono2" x="742" y="1052">2608</text>
+<text class="td" x="538" y="1072">Subnet ของ AP VLAN (DHCP)</text><text class="td mono2" x="742" y="1072">10.26.n.0/24</text>
 
-<!-- ============ POD 5 ============ -->
-<rect class="grp" x="1900" y="470" width="440" height="420" rx="12"/>
-<rect x="1900" y="470" width="120" height="28" rx="10" fill="#1E6BB8"/>
-<text class="tag" x="1916" y="489">POD 5 (2–3 คน)</text>
-
-<rect x="1922" y="512" width="396" height="106" rx="9" fill="#F2F7FB" stroke="#1E6BB8" stroke-width="1.5" stroke-dasharray="5 4"/>
-<text class="lbl2" x="1936" y="534">Access Stack — 2x Aruba CX 6300F 24G PoE+ (VSF)</text>
-<rect x="1936" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl2" x="1950" y="568">SW1-POD5</text>
-<text class="role" x="1950" y="588">Commander · Mbr 1</text>
-<rect x="2136" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl2" x="2150" y="568">SW2-POD5</text>
-<text class="role" x="2150" y="588">Standby · Mbr 2</text>
-<path class="stackl" d="M2106 575 H 2136"/>
-
-<rect x="1928" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
-<text class="lbl2" x="1942" y="700">AP-515</text>
-<text class="role" x="1942" y="720">PoE+ · port 1/1/1</text>
-<rect x="2062" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
-<text class="lbl2" x="2076" y="700">AP-505</text>
-<text class="role" x="2076" y="720">PoE+ · port 2/1/1</text>
-<rect x="2196" y="676" width="122" height="66" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl2" x="2210" y="700">PC (wired)</text>
-<text class="role" x="2210" y="720">802.1X + DHCP test</text>
-<line class="link" x1="1987" y1="604" x2="1987" y2="676"/>
-<line class="link" x1="2121" y1="604" x2="2121" y2="676"/>
-<line class="link" x1="2257" y1="604" x2="2257" y2="676"/>
-<text class="tiny" x="2262" y="646">VLAN 52</text>
-
-<path class="air" d="M1958 668 a38 38 0 0 1 56 0"/>
-<path class="air" d="M2092 668 a38 38 0 0 1 56 0"/>
-<rect x="1928" y="790" width="252" height="62" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl2" x="1942" y="813">Wireless clients</text>
-<text class="role" x="1942" y="832">Notebook / Mobile / IoT</text>
-<line class="link" x1="2054" y1="742" x2="2054" y2="790" stroke-dasharray="4 4"/>
-<text class="role" x="1928" y="874">SSID: POD5-EMP (802.1X) · POD5-GUEST (Portal) · POD5-IOT (PSK/MAC)</text>
-
-<!-- ============ POD 6 ============ -->
-<rect class="grp" x="2360" y="470" width="440" height="420" rx="12"/>
-<rect x="2360" y="470" width="120" height="28" rx="10" fill="#1E6BB8"/>
-<text class="tag" x="2376" y="489">POD 6 (2–3 คน)</text>
-
-<rect x="2382" y="512" width="396" height="106" rx="9" fill="#F2F7FB" stroke="#1E6BB8" stroke-width="1.5" stroke-dasharray="5 4"/>
-<text class="lbl2" x="2396" y="534">Access Stack — 2x Aruba CX 6300F 24G PoE+ (VSF)</text>
-<rect x="2396" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl2" x="2410" y="568">SW1-POD6</text>
-<text class="role" x="2410" y="588">Commander · Mbr 1</text>
-<rect x="2596" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl2" x="2610" y="568">SW2-POD6</text>
-<text class="role" x="2610" y="588">Standby · Mbr 2</text>
-<path class="stackl" d="M2566 575 H 2596"/>
-
-<rect x="2388" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
-<text class="lbl2" x="2402" y="700">AP-515</text>
-<text class="role" x="2402" y="720">PoE+ · port 1/1/1</text>
-<rect x="2522" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
-<text class="lbl2" x="2536" y="700">AP-505</text>
-<text class="role" x="2536" y="720">PoE+ · port 2/1/1</text>
-<rect x="2656" y="676" width="122" height="66" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl2" x="2670" y="700">PC (wired)</text>
-<text class="role" x="2670" y="720">802.1X + DHCP test</text>
-<line class="link" x1="2447" y1="604" x2="2447" y2="676"/>
-<line class="link" x1="2581" y1="604" x2="2581" y2="676"/>
-<line class="link" x1="2717" y1="604" x2="2717" y2="676"/>
-<text class="tiny" x="2722" y="646">VLAN 62</text>
-
-<path class="air" d="M2418 668 a38 38 0 0 1 56 0"/>
-<path class="air" d="M2552 668 a38 38 0 0 1 56 0"/>
-<rect x="2388" y="790" width="252" height="62" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl2" x="2402" y="813">Wireless clients</text>
-<text class="role" x="2402" y="832">Notebook / Mobile / IoT</text>
-<line class="link" x1="2514" y1="742" x2="2514" y2="790" stroke-dasharray="4 4"/>
-<text class="role" x="2388" y="874">SSID: POD6-EMP (802.1X) · POD6-GUEST (Portal) · POD6-IOT (PSK/MAC)</text>
-
-<!-- ============ POD 7 ============ -->
-<rect class="grp" x="2820" y="470" width="440" height="420" rx="12"/>
-<rect x="2820" y="470" width="120" height="28" rx="10" fill="#1E6BB8"/>
-<text class="tag" x="2836" y="489">POD 7 (2–3 คน)</text>
-
-<rect x="2842" y="512" width="396" height="106" rx="9" fill="#F2F7FB" stroke="#1E6BB8" stroke-width="1.5" stroke-dasharray="5 4"/>
-<text class="lbl2" x="2856" y="534">Access Stack — 2x Aruba CX 6300F 24G PoE+ (VSF)</text>
-<rect x="2856" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl2" x="2870" y="568">SW1-POD7</text>
-<text class="role" x="2870" y="588">Commander · Mbr 1</text>
-<rect x="3056" y="546" width="170" height="58" rx="7" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl2" x="3070" y="568">SW2-POD7</text>
-<text class="role" x="3070" y="588">Standby · Mbr 2</text>
-<path class="stackl" d="M3026 575 H 3056"/>
-
-<rect x="2848" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
-<text class="lbl2" x="2862" y="700">AP-515</text>
-<text class="role" x="2862" y="720">PoE+ · port 1/1/1</text>
-<rect x="2982" y="676" width="118" height="66" rx="9" fill="#E9F7F1" stroke="#14996B" stroke-width="2"/>
-<text class="lbl2" x="2996" y="700">AP-505</text>
-<text class="role" x="2996" y="720">PoE+ · port 2/1/1</text>
-<rect x="3116" y="676" width="122" height="66" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl2" x="3130" y="700">PC (wired)</text>
-<text class="role" x="3130" y="720">802.1X + DHCP test</text>
-<line class="link" x1="2907" y1="604" x2="2907" y2="676"/>
-<line class="link" x1="3041" y1="604" x2="3041" y2="676"/>
-<line class="link" x1="3177" y1="604" x2="3177" y2="676"/>
-<text class="tiny" x="3182" y="646">VLAN 72</text>
-
-<path class="air" d="M2878 668 a38 38 0 0 1 56 0"/>
-<path class="air" d="M3012 668 a38 38 0 0 1 56 0"/>
-<rect x="2848" y="790" width="252" height="62" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl2" x="2862" y="813">Wireless clients</text>
-<text class="role" x="2862" y="832">Notebook / Mobile / IoT</text>
-<line class="link" x1="2974" y1="742" x2="2974" y2="790" stroke-dasharray="4 4"/>
-<text class="role" x="2848" y="874">SSID: POD7-EMP (802.1X) · POD7-GUEST (Portal) · POD7-IOT (PSK/MAC)</text>
-
-<!-- ============ POD n note ============ -->
-<rect class="grp" x="3300" y="470" width="400" height="420" rx="12"/>
-<rect x="3300" y="470" width="150" height="28" rx="10" fill="#7A8C99"/>
-<text class="tag" x="3316" y="489">POD 8 ... POD n</text>
-<text class="role" x="3316" y="524">• อุปกรณ์และการต่อสายเหมือน Pod 1 ทุกประการ</text>
-<text class="role" x="3316" y="546">• เปลี่ยนเฉพาะ VLAN ID / Subnet / ชื่อ SSID ตามตารางด้านล่าง</text>
-<text class="role" x="3316" y="568">• แนะนำ 2–3 คน/Pod เพื่อให้ทุกคนได้ลงมือ config</text>
-
-<line x1="3316" y1="588" x2="3684" y2="588" stroke="#E1E9EF" stroke-width="1.5"/>
-<text class="lbl2" x="3316" y="612">ถ้าอุปกรณ์ไม่พอ (ปรับได้)</text>
-<text class="role" x="3316" y="634">• Stack: ถ้ามีสวิตช์ตัวเดียว/Pod » สอน VSF แบบ demo รวม</text>
-<text class="role" x="3316" y="656">• Controller: ใช้ MC ตัวเดียวร่วมกันได้ แยก SSID + VLAN ต่อ Pod</text>
-<text class="role" x="3316" y="678">  (แต่ละ Pod สร้าง WLAN/AAA profile ของตัวเอง ไม่ทับกัน)</text>
-<text class="role" x="3316" y="700">• ClearPass: 1 VM ใช้ร่วม — เพิ่ม NAD ทุก Pod, Service แยกตาม NAD</text>
-<text class="role" x="3316" y="722">• AP: อย่างน้อย 1 ตัว/Pod (2 ตัว จะสาธิต roaming ได้)</text>
-
-<line x1="3316" y1="742" x2="3684" y2="742" stroke="#E1E9EF" stroke-width="1.5"/>
-<text class="lbl2" x="3316" y="766">อุปกรณ์ที่ผู้เข้าอบรมต้องเตรียม</text>
-<text class="role" x="3316" y="788">• Notebook 1 เครื่อง (มี LAN port หรือ USB-LAN) + สาย Console/USB-C</text>
-<text class="role" x="3316" y="810">• PuTTY / SecureCRT, Wi-Fi adapter, มือถือสำหรับทดสอบ Guest portal</text>
-<text class="role" x="3316" y="832">• Switch MGMT: 192.168.200.x/24 (VLAN 200) เข้าถึง MC/CPPM ได้</text>
-<text class="role" x="3316" y="862">* ตรวจสอบว่า Venue อนุญาตให้ตั้ง SSID เพิ่มได้ และไม่ชนช่องสัญญาณ</text>
-
-<!-- ============ bottom band ============ -->
-<rect x="60" y="912" width="440" height="192" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
-<text class="lbl2" x="78" y="938">Legend</text>
-<line class="link" x1="80" y1="962" x2="128" y2="962"/><text class="tiny" x="138" y="966">Copper 1G (AP / PC)</text>
-<line class="link10" x1="80" y1="988" x2="128" y2="988"/><text class="tiny" x="138" y="992">10G Fiber / LAG uplink</text>
-<path class="stackl" d="M80 1014 H 128"/><text class="tiny" x="138" y="1018">VSF Stack link</text>
-<path class="tunnel" d="M80 1040 H 128"/><text class="tiny" x="138" y="1044">GRE Tunnel (AP — Controller)</text>
-<path class="radius" d="M80 1066 H 128"/><text class="tiny" x="138" y="1070">RADIUS (802.1X / MAC Auth)</text>
-<path class="air" d="M84 1094 a24 24 0 0 1 40 0"/><text class="tiny" x="138" y="1094">Wireless (SSID broadcast)</text>
-
-<rect x="1680" y="912" width="440" height="192" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
-<text class="lbl2" x="1698" y="938">VLAN / IP Plan (n = หมายเลข Pod)</text>
-<text class="th" x="1698" y="960">VLAN</text><text class="th" x="1756" y="960">ชื่อ / การใช้งาน</text><text class="th" x="1972" y="960">Subnet</text>
-<line x1="1698" y1="966" x2="2102" y2="966" stroke="#DCE6ED"/>
-<text class="td" x="1698" y="984">n1</text><text class="td" x="1756" y="984">MGMT (Switch / AP)</text><text class="td" x="1972" y="984">10.n.1.0/24</text>
-<text class="td" x="1698" y="1002">n2</text><text class="td" x="1756" y="1002">Wired Users — 802.1X</text><text class="td" x="1972" y="1002">10.n.2.0/24</text>
-<text class="td" x="1698" y="1020">n3</text><text class="td" x="1756" y="1020">WLAN Employee — 802.1X</text><text class="td" x="1972" y="1020">10.n.3.0/24</text>
-<text class="td" x="1698" y="1038">n4</text><text class="td" x="1756" y="1038">WLAN Guest — Captive portal</text><text class="td" x="1972" y="1038">10.n.4.0/24</text>
-<text class="td" x="1698" y="1056">n5</text><text class="td" x="1756" y="1056">WLAN IoT — PSK + MAC Auth</text><text class="td" x="1972" y="1056">10.n.5.0/24</text>
-<text class="td" x="1698" y="1074">100</text><text class="td" x="1756" y="1074">Transit / Internet uplink</text><text class="td" x="1972" y="1074">192.168.100.0/24</text>
-<text class="td" x="1698" y="1092">200</text><text class="td" x="1756" y="1092">Servers: MC / CPPM / DHCP</text><text class="td" x="1972" y="1092">192.168.200.0/24</text>
-
-<rect x="3300" y="912" width="400" height="192" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
-<text class="lbl2" x="3318" y="938">หัวข้อในหลักสูตร » ทำที่ไหนในแลบ</text>
-<text class="td" x="3318" y="960">M1 Stacking / LAG / 10G uplink » SW1+SW2 — Core</text>
-<text class="td" x="3318" y="979">M1 PoE budget / Redundant PSU » พอร์ตที่ต่อ AP</text>
-<text class="td" x="3318" y="998">M1 VLAN » VLAN n1–n5 บน Access + Core</text>
-<text class="td" x="3318" y="1017">M1 Routing / DHCP relay » SVI + ip helper บน Core</text>
-<text class="td" x="3318" y="1036">M1 802.1X (wired) » PC » SW » ClearPass</text>
-<text class="td" x="3318" y="1055">M2 AP onboarding / WLAN » AP — MC (GRE)</text>
-<text class="td" x="3318" y="1074">M2 PSK / Portal / 802.1X / MAC » 3 SSID ต่อ Pod</text>
-<text class="td" x="3318" y="1093">M2 AppRF policy + Dashboard » User Role บน MC</text>
+<!-- course topic map -->
+<rect x="1000" y="900" width="400" height="196" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="1018" y="926">หัวข้อในหลักสูตร » ทำที่ไหน</text>
+<text class="td" x="1018" y="950">M1 Stacking / LAG / 10G » Access switch » Core</text>
+<text class="td" x="1018" y="970">M1 PoE+ » พอร์ตที่ต่อ AP</text>
+<text class="td" x="1018" y="990">M1 VLAN / Trunk » VLAN 260n + management</text>
+<text class="td" x="1018" y="1010">M1 Routing / DHCP » SVI + pool บน controller</text>
+<text class="td" x="1018" y="1030">M1 802.1X (wired) » PC » switch » RADIUS</text>
+<text class="td" x="1018" y="1050">M2 AP onboarding / WLAN » AP » Controller ของชุด</text>
+<text class="td" x="1018" y="1070">M2 PSK / Portal / 802.1X / MAC » SSID ของชุด</text>
+<text class="td" x="1018" y="1090">M2 AppRF + Dashboard » User role บน controller</text>
 </svg>

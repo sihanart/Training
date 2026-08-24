@@ -1,0 +1,43 @@
+! =====================================================================
+! POD 6 - Student
+! Aruba 9004-LTE  |  ArubaOS 8.7.1.2
+! Controller MGMT : 192.168.10.226
+! AP VLAN         : 2606   Subnet: 10.26.6.0/24
+! =====================================================================
+
+configure terminal
+
+! ---------- 1) VLAN + SVI (gateway ของ AP VLAN) ----------
+vlan 2606
+!
+interface vlan 2606
+ description "POD 6 - Student AP VLAN"
+ ip address 10.26.6.1 255.255.255.0
+ ip nat inside
+ operstate up
+!
+
+! ---------- 2) กัน IP ที่ไม่ให้แจก ----------
+ip dhcp excluded-address 10.26.6.1 10.26.6.10
+ip dhcp excluded-address 10.26.6.241 10.26.6.254
+
+! ---------- 3) DHCP pool ----------
+ip dhcp pool POOL-VLAN2606
+ network 10.26.6.0 255.255.255.0
+ default-router 10.26.6.1
+ dns-server 8.8.8.8 1.1.1.1
+ domain-name lab.local
+ lease 0 8 0
+!
+
+! ---------- 4) เปิดบริการ DHCP + บันทึก ----------
+service dhcp
+write memory
+
+! ---------- 5) ตรวจสอบ ----------
+!  show ip interface brief
+!  show ip dhcp binding
+!  show ip dhcp statistics
+!  show ap database
+!  show ap active
+!  show datapath session table | include 10.26.6.

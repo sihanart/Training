@@ -13,6 +13,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { thaiDate } from './src/lib/util.mjs';
+import { labPods, podConfig } from './src/lib/lab-config.mjs';
 import { renderPage, renderIndex, diagramsFor } from './src/lib/page.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
@@ -38,6 +39,32 @@ function buildVars(course, event, date) {
     pods: String(event.podsDrawn),
     nextPod: String(event.podsDrawn + 1),
     rootPath: '',
+    ...labVars(event),
+  };
+}
+
+/**
+ * Tokens describing the kit this event actually runs on. Absent for an event
+ * with no lab block — which is what makes {{controller}} fail the build there
+ * instead of rendering as a blank on a published page.
+ */
+function labVars(event) {
+  if (!event.lab) return {};
+  const lab = event.lab;
+  const pods = labPods(lab);
+  const vlans = pods.map((p) => p.vlan);
+  return {
+    controller: lab.controller,
+    controllerShort: lab.controller.replace(/^Aruba\s+/, ''),
+    controllerUpper: lab.controller.toUpperCase(),
+    controllerOs: lab.controllerOs,
+    controllerOsShort: lab.controllerOs.replace(/^ArubaOS/, 'AOS'),
+    mgmtNet: lab.mgmtNet,
+    leaseHours: String(lab.leaseHours),
+    poolRange: `.${lab.poolFrom}–.${lab.poolTo}`,
+    studentPods: String(pods.filter((p) => !p.teacher).length),
+    vlanFirst: String(Math.min(...vlans)),
+    vlanLast: String(Math.max(...vlans)),
   };
 }
 
@@ -125,7 +152,7 @@ async function main() {
     const draw = diagramsFor(e.course);
     const svgs = [
       [e.course.overview.fileName, draw.overview(e.course, e.vars)],
-      [e.course.lab.fileName, draw.lab(e.course, e.vars, e.event.podsDrawn)],
+      [e.course.lab.fileName, draw.lab(e.course, e.vars, e.event)],
     ];
     if (e === featured) {
       files.set('index.html', renderPage({ ...e, siblings, vars: { ...e.vars, rootPath: '' } }));
@@ -133,6 +160,13 @@ async function main() {
       for (const [name, svg] of svgs) files.set(join('diagrams', `${name}.svg`), svgFile(svg));
     } else {
       for (const [name, svg] of svgs) files.set(join('diagrams', e.slug, `${name}.svg`), svgFile(svg));
+    }
+  }
+  for (const e of entries) {
+    if (!e.event.lab) continue;
+    for (const pod of labPods(e.event.lab)) {
+      files.set(join('configs', `${pod.id.toUpperCase()}.txt`), `${podConfig(e.event.lab, pod, { annotated: true })}
+`);
     }
   }
   if (listed.length > 1) {
