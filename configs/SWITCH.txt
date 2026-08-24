@@ -1,0 +1,83 @@
+! =====================================================================
+! Aruba CX 6100 · สวิตช์กลาง 12 พอร์ต — ผู้สอนเป็นคนวาง
+! Uplink 1/1/12 » AP-515 (Remote AP) » Aruba 9004-LTE
+! พอร์ต 1/1/1–1/1/8 = Campus AP ของแต่ละชุด ชุดละ 1 ตัว
+! =====================================================================
+
+configure terminal
+
+! ---------- 1) VLAN ของแต่ละชุด ----------
+vlan 2601
+    name POD1
+vlan 2602
+    name POD2
+vlan 2603
+    name POD3
+vlan 2604
+    name POD4
+vlan 2605
+    name POD5
+vlan 2606
+    name POD6
+vlan 2607
+    name POD7
+vlan 2608
+    name TEACHER
+
+! ---------- 2) Uplink ขึ้น RAP ----------
+interface 1/1/12
+    no shutdown
+    description Uplink-to-RAP
+    no routing
+    vlan trunk native 1
+    vlan trunk allowed 2601-2608
+
+! ---------- 3) พอร์ต Campus AP ชุดละพอร์ต ----------
+interface 1/1/1
+    no shutdown
+    description POD1-AP
+    no routing
+    vlan access 2601
+interface 1/1/2
+    no shutdown
+    description POD2-AP
+    no routing
+    vlan access 2602
+interface 1/1/3
+    no shutdown
+    description POD3-AP
+    no routing
+    vlan access 2603
+interface 1/1/4
+    no shutdown
+    description POD4-AP
+    no routing
+    vlan access 2604
+interface 1/1/5
+    no shutdown
+    description POD5-AP
+    no routing
+    vlan access 2605
+interface 1/1/6
+    no shutdown
+    description POD6-AP
+    no routing
+    vlan access 2606
+interface 1/1/7
+    no shutdown
+    description POD7-AP
+    no routing
+    vlan access 2607
+interface 1/1/8
+    no shutdown
+    description TEACHER-AP
+    no routing
+    vlan access 2608
+
+! ---------- 4) บันทึก ----------
+write memory
+
+! ---------- 5) ตรวจสอบ ----------
+!  show vlan
+!  show interface brief
+!  show power-over-ethernet brief

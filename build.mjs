@@ -13,7 +13,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { thaiDate } from './src/lib/util.mjs';
-import { labPods, podConfig } from './src/lib/lab-config.mjs';
+import { labPods, podConfig, switchConfig } from './src/lib/lab-config.mjs';
 import { renderPage, renderIndex, diagramsFor } from './src/lib/page.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
@@ -56,6 +56,13 @@ function labVars(event) {
   return {
     controller: lab.controller,
     controllerShort: lab.controller.replace(/^Aruba\s+/, ''),
+    host: lab.host,
+    rapHead: lab.rapHead,
+    rap: lab.rap,
+    switch: lab.switch,
+    switchPorts: String(lab.switchPorts),
+    switchUplink: lab.switchUplink,
+    simulator: lab.simulator,
     controllerUpper: lab.controller.toUpperCase(),
     controllerOs: lab.controllerOs,
     controllerOsShort: lab.controllerOs.replace(/^ArubaOS/, 'AOS'),
@@ -165,9 +172,14 @@ async function main() {
   for (const e of entries) {
     if (!e.event.lab) continue;
     for (const pod of labPods(e.event.lab)) {
-      files.set(join('configs', `${pod.id.toUpperCase()}.txt`), `${podConfig(e.event.lab, pod, { annotated: true })}
+      files.set(join('configs', `${pod.id.toUpperCase()}.txt`),
+                `${podConfig(e.event.lab, pod, { annotated: true })}
 `);
     }
+    // The shared switch is the instructor's, but it belongs with the rest: one
+    // pod table produces every config in the room.
+    files.set(join('configs', 'SWITCH.txt'), `${switchConfig(e.event.lab)}
+`);
   }
   if (listed.length > 1) {
     files.set('events.html', renderIndex([...listed].sort((a, b) => b.date.sortKey - a.date.sortKey)));

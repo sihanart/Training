@@ -1,9 +1,10 @@
-// The per-pod controller assignment, and the CLI that follows from it.
+// The per-pod controller assignment, and every config that follows from it.
 //
-// One definition feeds three outputs — the Lab topology diagram, the "Golden
-// config" section on the page, and the configs/*.txt files. They cannot drift
-// from each other, which is the whole point: a pod told to paste a config that
-// disagrees with the diagram loses lab time to a hunt that is not the lesson.
+// One definition feeds the Lab topology diagram, the "Golden config" section on
+// the page, and the configs/*.txt files — the pod controllers and the shared
+// access switch alike. They cannot drift from each other, which is the whole
+// point: a pod told to paste a config that disagrees with the diagram loses lab
+// time to a hunt that is not the lesson.
 
 const OCTETS = /^(\d+\.\d+\.\d+)\.(\d+)\/24$/;
 
@@ -104,5 +105,54 @@ export function podConfig(lab, pod, { annotated = false } = {}) {
           `!  show datapath session table | include ${pod.prefix}.`,
         ]
       : []),
+  ].join('\n');
+}
+
+/**
+ * The shared access switch. Every pod's Campus AP hangs off one port of it, so
+ * one wrong VLAN here takes a pod off the air — which is exactly why the
+ * students practise on a simulator and the instructor owns this box.
+ */
+export function switchConfig(lab) {
+  const pods = labPods(lab);
+  const vlans = pods.map((p) => p.vlan);
+  const range = `${Math.min(...vlans)}-${Math.max(...vlans)}`;
+
+  return [
+    '! =====================================================================',
+    `! ${lab.switch} · สวิตช์กลาง ${lab.switchPorts} พอร์ต — ผู้สอนเป็นคนวาง`,
+    `! Uplink ${lab.switchUplink} » ${lab.rap} (Remote AP) » ${lab.rapHead}`,
+    `! พอร์ต ${pods[0].port}–${pods[pods.length - 1].port} = Campus AP ของแต่ละชุด ชุดละ 1 ตัว`,
+    '! =====================================================================',
+    '',
+    'configure terminal',
+    '',
+    '! ---------- 1) VLAN ของแต่ละชุด ----------',
+    ...pods.flatMap((p) => [`vlan ${p.vlan}`, `    name ${p.label.replace(/\s+/g, '')}`]),
+    '',
+    '! ---------- 2) Uplink ขึ้น RAP ----------',
+    `interface ${lab.switchUplink}`,
+    '    no shutdown',
+    `    description Uplink-to-RAP`,
+    '    no routing',
+    '    vlan trunk native 1',
+    `    vlan trunk allowed ${range}`,
+    '',
+    '! ---------- 3) พอร์ต Campus AP ชุดละพอร์ต ----------',
+    ...pods.flatMap((p) => [
+      `interface ${p.port}`,
+      '    no shutdown',
+      `    description ${p.label.replace(/\s+/g, '')}-AP`,
+      '    no routing',
+      `    vlan access ${p.vlan}`,
+    ]),
+    '',
+    '! ---------- 4) บันทึก ----------',
+    'write memory',
+    '',
+    '! ---------- 5) ตรวจสอบ ----------',
+    '!  show vlan',
+    '!  show interface brief',
+    '!  show power-over-ethernet brief',
   ].join('\n');
 }

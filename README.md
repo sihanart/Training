@@ -20,7 +20,8 @@ RMUTT × Commserv Siam · 26 สิงหาคม 2569 · Royal Hills Golf Reso
 | `diagrams/01_Overview_Campus_Architecture.svg` | ภาพรวมสถาปัตยกรรม Campus: Switch + Controller + AP และเส้นทางเดินของ traffic | `src/courses/*.json` + `src/lib/svg-overview.mjs` |
 | `diagrams/02_Lab_Topology.svg` | ผัง Lab: ชุดนักศึกษา + ชุดผู้สอน พร้อมตารางแจก Controller / AP VLAN | `src/courses/*.json` + `src/lib/svg-lab.mjs` |
 | `diagrams/*.png` | PNG ความละเอียด 2x สำหรับแปะสไลด์ (CI export ให้) | — |
-| `configs/POD1.txt` … `POD7.txt`, `TEACHER.txt` | Golden config พร้อมวางของแต่ละชุด | `src/events/*.json` (บล็อก `lab`) |
+| `configs/POD1.txt` … `POD7.txt`, `TEACHER.txt` | Golden config ของ Controller VM แต่ละชุด | `src/events/*.json` (บล็อก `lab`) |
+| `configs/SWITCH.txt` | Golden config ของสวิตช์กลาง CX 6100 (ผู้สอนวาง) | `src/events/*.json` (บล็อก `lab`) |
 | `slides/rmutt-2026-08.pdf` | สไลด์อบรมให้ดาวน์โหลดจากหน้าเว็บ | วางไฟล์เอง |
 
 ## Build
@@ -45,9 +46,20 @@ node build.mjs
 | `slides` | _(ไม่ใส่ก็ได้)_ `{ "file": "slides/xxx.pdf", "pages": 132 }` — ได้ลิงก์ดาวน์โหลดที่ footer ขนาดไฟล์อ่านจากดิสก์ตอน build ชี้ไปไฟล์ที่ไม่มีอยู่ build จะ fail |
 | `unlisted` / `draft` | ไม่ลิงก์จากหน้าไหน / ไม่ build เลย |
 
+## อุปกรณ์ที่ใช้
+
+| ชั้น | อุปกรณ์ | ใครแตะ |
+|---|---|---|
+| Virtual (บน HCI Server) | Controller VM ชุดละตัว + PNETLAB switch simulator คนละตัว | **นักศึกษา** |
+| หัวสาย RAP | Aruba 9004-LTE — จบ IPsec ของ AP-515 | ผู้สอน |
+| ทางผ่าน | AP-515 (Remote AP) ตัวเดียวใช้ร่วม → Aruba CX 6100 12 พอร์ต | ผู้สอน |
+| ปลายทาง | Campus AP ชุดละ 1 ตัว เสียบ CX 6100 พอร์ตของชุดนั้น | นักศึกษา (onboard) |
+
+Module 1 (สวิตช์) ฝึกบน **PNETLAB** ไม่ใช่สวิตช์จริง เพราะ CX 6100 เป็นทางผ่านของทุกชุด
+
 ## การจัด Controller / VLAN ต่อชุด
 
-Mobility Controller: **Aruba 9004-LTE (ArubaOS 8.7.1.2)** — 1 ตัวต่อ 1 ชุด
+Mobility Controller: **VM บน HCI Server (ArubaOS 8.7.1.2)** — 1 ตัวต่อ 1 ชุด
 
 | ชุด | Controller MGMT | AP VLAN | Subnet (DHCP บน controller) |
 |---|---|---|---|
@@ -68,23 +80,33 @@ exclude `.1–.10` และ `.241–.254`, lease 8 ชม.) และทำ `ip
 
 ```json
 "lab": {
-  "controller": "Aruba 9004-LTE",
+  "controller": "Mobility Controller (VM)",
   "controllerOs": "ArubaOS 8.7.1.2",
+  "host": "HCI Server",
+  "rapHead": "Aruba 9004-LTE",
+  "rap": "AP-515",
+  "switch": "Aruba CX 6100",
+  "switchPorts": 12,
+  "switchUplink": "1/1/12",
+  "simulator": "PNETLAB",
   "mgmtNet": "192.168.10.0/24",
   "dns": "8.8.8.8 1.1.1.1",
   "domain": "lab.local",
   "leaseHours": 8, "poolFrom": 11, "poolTo": 240,
   "pods": [
-    { "label": "POD 1", "mgmt": "192.168.10.221", "vlan": 2601, "subnet": "10.26.1.0/24" },
-    { "label": "TEACHER", "mgmt": "192.168.10.133", "vlan": 2608, "subnet": "10.26.8.0/24", "role": "teacher" }
+    { "label": "POD 1", "mgmt": "192.168.10.221", "vlan": 2601,
+      "subnet": "10.26.1.0/24", "port": "1/1/1" },
+    { "label": "TEACHER", "mgmt": "192.168.10.133", "vlan": 2608,
+      "subnet": "10.26.8.0/24", "port": "1/1/8", "role": "teacher" }
   ]
 }
 ```
 
-แก้ตรงนี้ที่เดียวแล้ว build — **ตารางในผัง Lab, หัวข้อ Golden config บนเว็บ และไฟล์ `configs/*.txt` เปลี่ยนตามพร้อมกัน**
+แก้ตรงนี้ที่เดียวแล้ว build — **ตารางในผัง Lab, หัวข้อ Golden config บนเว็บ, `configs/POD*.txt` และ `configs/SWITCH.txt` เปลี่ยนตามพร้อมกัน**
 เขียนแยกกันเมื่อไหร่มันจะเพี้ยนกันเอง แล้วชุดที่วาง config ตามเอกสารผิดตัวจะเสียเวลาไล่หาสิ่งที่ไม่ใช่บทเรียน
 
 `subnet` ต้องเป็น `/24` (build fail ถ้าไม่ใช่) · gateway, ช่วง exclude, ชื่อ DHCP pool คำนวณจาก `subnet` ให้เอง
+`port` คือพอร์ตบนสวิตช์กลางที่ Campus AP ของชุดนั้นเสียบอยู่ — `configs/SWITCH.txt` สร้างจากคอลัมน์นี้
 
 ## เผยแพร่
 
@@ -97,6 +119,7 @@ Pages ตั้งเป็น **Deploy from a branch · main · /(root)** เ�
 - ผังทั้งสองใบ กดเพื่อขยายเต็มจอ (ล้อเมาส์ซูม ลากเลื่อน Esc ปิด) และดาวน์โหลด SVG ได้
 - ตารางแผน VLAN / IP
 - Golden config รายชุด — เลือกแท็บชุดตัวเอง กดคัดลอก วางลง CLI ได้เลย
+- Lab ทีละขั้น — บอกด้วยว่าแต่ละ Lab ทำที่เครื่องไหน (PNETLAB / Controller VM)
 - กำหนดการอบรม และลิงก์ดาวน์โหลดสไลด์ PDF
 
 ## โครงสร้าง
