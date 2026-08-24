@@ -123,6 +123,24 @@ li.ag-break .time{color:var(--muted)}
 .codewrap .copy{position:absolute;top:12px;right:12px;background:#173444;border-color:#2C5468;color:#CFE3DC}
 .codewrap .copy:hover{border-color:var(--led);color:#fff}
 
+/* ---------- labs ---------- */
+.lab{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-bottom:16px}
+.labhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.labnum{font-size:11px;letter-spacing:.12em;color:var(--amber)}
+.lab h3{margin:0;font-size:17px;font-weight:600;flex:1 1 auto}
+.labwhere{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:3px 10px;white-space:nowrap}
+.labgoal{margin:8px 0 14px;font-size:13.5px;color:var(--muted)}
+ol.labsteps{margin:0;padding-left:20px}
+ol.labsteps li{font-size:14.5px;margin-bottom:10px}
+ol.labsteps li::marker{font-family:var(--mono);font-size:12px;color:var(--blue)}
+pre.labcli{margin:8px 0 12px;background:var(--ink);color:#CFE3DC;padding:12px 14px;border-radius:8px;overflow-x:auto;
+  font-family:var(--mono);font-size:12.5px;line-height:1.7}
+.labfoot{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.labfoot i{font-family:var(--mono);font-size:10.5px;font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:10px}
+.labfoot code{font-family:var(--mono);font-size:12px;background:#E7EDEB;border-radius:4px;padding:2px 7px;margin-right:6px;display:inline-block;margin-bottom:4px}
+.labgotcha{margin:10px 0 0;font-size:13px;color:var(--muted);border-left:3px solid var(--amber);padding-left:12px}
+.labgotcha code{background:#E7EDEB;border-radius:4px;padding:1px 6px;font-family:var(--mono);font-size:12px}
+
 /* ---------- lightbox ---------- */
 .lb{position:fixed;inset:0;z-index:90;background:rgba(8,22,30,.94);display:none;flex-direction:column}
 .lb.open{display:flex}
@@ -179,7 +197,8 @@ footer a{color:#9FB4BD}
     <a class="port" href="#lab" data-target="lab"><span class="jack"><i></i><i></i></span><span class="mono pnum">02</span><span class="pname">Lab topology</span></a>
     <a class="port" href="#vlan" data-target="vlan"><span class="jack"><i></i><i></i></span><span class="mono pnum">03</span><span class="pname">VLAN / IP</span></a>
     <a class="port" href="#config" data-target="config"><span class="jack"><i></i><i></i></span><span class="mono pnum">04</span><span class="pname">Config</span></a>
-    <a class="port" href="#agenda" data-target="agenda"><span class="jack"><i></i><i></i></span><span class="mono pnum">05</span><span class="pname">Agenda</span></a>
+    <a class="port" href="#labs" data-target="labs"><span class="jack"><i></i><i></i></span><span class="mono pnum">05</span><span class="pname">Labs</span></a>
+    <a class="port" href="#agenda" data-target="agenda"><span class="jack"><i></i><i></i></span><span class="mono pnum">06</span><span class="pname">Agenda</span></a>
   </div>
 </nav>
 
@@ -779,8 +798,206 @@ write memory</code></pre></div></div>
   </div>
 </section>
 
+
+<section id="labs">
+  <div class="sechead"><span class="mono">05</span><h2>Lab ทีละขั้น</h2></div>
+  <p class="sub">7 ชุดทำพร้อมกันได้ — แต่ละชุดแตะเฉพาะ Access switch กับ Controller ของตัวเอง ส่วน Core ผู้สอน config ไว้ให้แล้ว</p>
+  <p class="hint">ทุก Lab ทำบนอุปกรณ์ของชุดตัวเอง — ค่าที่ต้องแทนอยู่ในหัวข้อ Config ด้านบน (n = หมายเลข Pod) ตัวอย่างในหน้านี้ใช้ POD 1 ทั้งหมด</p>
+  <p class="hint">หลักสูตรนี้ไม่มี ClearPass และมี Access switch ชุดละตัวเดียว — VSF stacking จึงสาธิตรวมไม่ได้ทำรายชุด, DHCP relay ไม่ใช้เพราะ controller เป็น DHCP server เอง และ 802.1X ทำเฉพาะฝั่ง WLAN</p>
+  <article class="lab">
+    <div class="labhead"><span class="mono labnum">LAB 0</span><h3>ตรวจของและหาชุดของตัวเอง</h3><span class="mono labwhere">ที่โต๊ะ</span></div>
+    <p class="labgoal">รู้ว่าชุดตัวเองคือหมายเลขอะไร ต่อ console ถูกเครื่อง และจดค่าที่ต้องใช้ทั้งวันไว้</p>
+    <ol class="labsteps">
+      <li>ดูหมายเลขชุดที่โต๊ะ แล้วเปิดหัวข้อ Config ด้านบน เลือกแท็บของชุดตัวเอง — ค่าทุกตัวในวันนี้อ้างจากตารางนั้น</li>
+      <li>ต่อสาย console เข้า Access switch (CX 6300F) ตั้ง terminal 115200 8-N-1 ไม่มี flow control</li>
+      <li>ต่อสาย console เข้า Controller (9004-LTE) อีกเส้น หรือจะรอเข้าผ่านเว็บก็ได้</li>
+      <li>จดไว้ให้เห็นตลอดวัน: Pod n · AP VLAN 260n · Controller MGMT 192.168.10.22n · Subnet 10.26.n.0/24</li>
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i><code>show version</code><code>show system</code></div>
+      <p class="labgotcha">ต่อ console ผิดเครื่องของชุดอื่นคือปัญหาที่เสียเวลาที่สุดของวัน — เช็ค hostname ก่อนพิมพ์อะไรเสมอ</p>
+    </div>
+  </article>
+  <article class="lab">
+    <div class="labhead"><span class="mono labnum">LAB 1</span><h3>Access switch — ค่าเริ่มต้นและ management</h3><span class="mono labwhere">Access switch (CX 6300F)</span></div>
+    <p class="labgoal">เข้าถึงสวิตช์ได้ทั้ง console และ SSH และตั้งชื่อให้รู้ว่าเป็นของชุดไหน</p>
+    <ol class="labsteps">
+      <li>ตั้งรหัสผ่าน admin ตอน login ครั้งแรก</li>
+      <li>ตั้ง hostname ให้เป็นของชุดตัวเอง<pre class="labcli"><code>configure terminal
+hostname POD1-SW</code></pre></li>
+      <li>ตั้ง IP ของ management interface — คนละวงกับ AP VLAN และอยู่บน VRF mgmt<pre class="labcli"><code>interface mgmt
+  no shutdown
+  ip static &amp;lt;IP ที่ผู้สอนแจก&amp;gt;/24
+  default-gateway &amp;lt;gateway ที่ผู้สอนแจก&amp;gt;</code></pre></li>
+      <li>เปิด SSH บน VRF mgmt แล้วบันทึก<pre class="labcli"><code>ssh server vrf mgmt
+write memory</code></pre></li>
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i><code>show interface mgmt</code><code>show running-config | include hostname</code></div>
+      <p class="labgotcha">IP management ของสวิตช์ผู้สอนแจกให้ต่างหาก ไม่ใช่ 192.168.10.22n — เลขนั้นเป็นของ Controller</p>
+    </div>
+  </article>
+  <article class="lab">
+    <div class="labhead"><span class="mono labnum">LAB 2</span><h3>VLAN, Trunk ขึ้น Core และพอร์ต AP</h3><span class="mono labwhere">Access switch (CX 6300F)</span></div>
+    <p class="labgoal">สร้าง AP VLAN ของชุดตัวเอง ส่งขึ้น Core ได้ และเปิดพอร์ตที่ AP เสียบอยู่</p>
+    <ol class="labsteps">
+      <li>สร้าง VLAN ของชุดตัวเอง<pre class="labcli"><code>configure terminal
+vlan 2601
+  name AP-POD1</code></pre></li>
+      <li>ตั้งพอร์ต uplink ขึ้น Core เป็น trunk ที่ยอมให้ VLAN ของตัวเองผ่าน (ฝั่ง Core ผู้สอน config ไว้แล้ว)<pre class="labcli"><code>interface 1/1/49
+  no shutdown
+  vlan trunk native 1
+  vlan trunk allowed 2601</code></pre></li>
+      <li>ตั้งพอร์ตที่ต่อ AP เป็น access VLAN ของชุดตัวเอง<pre class="labcli"><code>interface 1/1/1-1/1/2
+  no shutdown
+  vlan access 2601</code></pre></li>
+      <li>บันทึก<pre class="labcli"><code>write memory</code></pre></li>
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i><code>show vlan</code><code>show interface brief</code><code>show lldp neighbor-info</code></div>
+      <p class="labgotcha">ลืม no shutdown คือสาเหตุอันดับหนึ่งที่ AP ไม่ขึ้น · ใส่ VLAN ผิดเลข AP จะไม่ได้ IP เพราะ DHCP อยู่บน controller ของ VLAN นั้น</p>
+    </div>
+  </article>
+  <article class="lab">
+    <div class="labhead"><span class="mono labnum">LAB 3</span><h3>PoE สำหรับ AP</h3><span class="mono labwhere">Access switch (CX 6300F)</span></div>
+    <p class="labgoal">ยืนยันว่าพอร์ตที่ต่อ AP จ่ายไฟจริง และอ่าน power budget เป็น</p>
+    <ol class="labsteps">
+      <li>ดูสถานะ PoE ทั้งเครื่องและงบไฟที่เหลือ<pre class="labcli"><code>show power-over-ethernet brief</code></pre></li>
+      <li>ดูรายพอร์ตว่าจ่ายไฟกี่วัตต์ คลาสอะไร<pre class="labcli"><code>show power-over-ethernet interface 1/1/1</code></pre></li>
+      <li>ถ้าต้องปิด-เปิดไฟพอร์ตเพื่อ reboot AP<pre class="labcli"><code>interface 1/1/1
+  no power-over-ethernet
+  power-over-ethernet</code></pre></li>
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i><code>show power-over-ethernet brief</code></div>
+      <p class="labgotcha">AP-515 กิน PoE+ (คลาส 4) ถ้าเสียบ AP หลายตัวบนสวิตช์ที่งบไฟไม่พอ ตัวหลังจะไม่บูต — อ่าน available power ก่อนโทษ AP</p>
+    </div>
+  </article>
+  <article class="lab">
+    <div class="labhead"><span class="mono labnum">LAB 4</span><h3>LAG ขึ้น Core</h3><span class="mono labwhere">Access switch (CX 6300F)</span></div>
+    <p class="labgoal">รวมสองพอร์ต uplink เป็นลิงก์เดียวแบบ LACP (ฝั่ง Core ผู้สอนตั้งไว้แล้ว)</p>
+    <ol class="labsteps">
+      <li>สร้าง LAG แล้วตั้งเป็น trunk เหมือน uplink เดิม<pre class="labcli"><code>configure terminal
+interface lag 1
+  no shutdown
+  vlan trunk native 1
+  vlan trunk allowed 2601
+  lacp mode active</code></pre></li>
+      <li>ย้ายพอร์ตจริงสองพอร์ตเข้า LAG<pre class="labcli"><code>interface 1/1/49-1/1/50
+  no shutdown
+  lag 1</code></pre></li>
+      <li>บันทึก<pre class="labcli"><code>write memory</code></pre></li>
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i><code>show lacp interfaces</code><code>show lacp aggregates</code><code>show interface lag 1</code></div>
+      <p class="labgotcha">ถ้าฝั่ง Core เป็น static แต่ฝั่งเราเป็น LACP ลิงก์จะไม่ขึ้น — ถามผู้สอนก่อนว่าฝั่งโน้นตั้งไว้แบบไหน</p>
+    </div>
+  </article>
+  <article class="lab">
+    <div class="labhead"><span class="mono labnum">LAB 5</span><h3>Controller — ค่าเริ่มต้น, license, เวลา</h3><span class="mono labwhere">Controller (9004-LTE)</span></div>
+    <p class="labgoal">ทำให้ controller ของชุดตัวเองขึ้นมาและเข้าเว็บได้</p>
+    <ol class="labsteps">
+      <li>บูตครั้งแรกแล้วตอบ full-setup ที่ console — ตั้ง system name, country code TH, IP ของ controller</li>
+      <li>เข้าเว็บ https://192.168.10.221:4343 (เลขตามชุดตัวเอง) ผู้ใช้ admin</li>
+      <li>ใส่ license AP และ PEF ที่ Configuration → License</li>
+      <li>ตั้งเวลาและ timezone Asia/Bangkok ที่ Configuration → System → General</li>
+      <li>เปิด CPSec แบบ auto cert provisioning ที่ Configuration → System → Certificates</li>
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i><code>show switchinfo</code><code>show license</code><code>show clock</code></div>
+      <p class="labgotcha">เวลาผิดทำให้ certificate ของ AP ไม่ผ่าน แล้ว AP จะไม่ยอมขึ้น — ตั้งเวลาก่อนเอา AP เข้าเสมอ</p>
+    </div>
+  </article>
+  <article class="lab">
+    <div class="labhead"><span class="mono labnum">LAB 6</span><h3>Controller — VLAN, SVI, DHCP และ NAT</h3><span class="mono labwhere">Controller (9004-LTE)</span></div>
+    <p class="labgoal">ทำให้ controller เป็น gateway และ DHCP server ของ AP VLAN ของตัวเอง แล้ว NAT ออกเน็ต</p>
+    <ol class="labsteps">
+      <li>เปิดหัวข้อ Config ด้านบน เลือกแท็บชุดตัวเอง กดคัดลอก แล้ววางลง CLI ของ controller</li>
+      <li>อ่านทีละท่อนว่าแต่ละบล็อกทำอะไร — VLAN กับ SVI ที่มี ip nat inside → ช่วง IP ที่กันไม่ให้แจก → DHCP pool → service dhcp</li>
+      <li>บันทึก<pre class="labcli"><code>write memory</code></pre></li>
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i><code>show ip interface brief</code><code>show ip dhcp binding</code><code>show ip dhcp statistics</code></div>
+      <p class="labgotcha">service dhcp ไม่เปิด pool จะไม่ทำงานแม้ config ถูกหมด · เผลอวางของชุดอื่นให้ลบด้วย no interface vlan และ no ip dhcp pool ก่อนวางใหม่</p>
+    </div>
+  </article>
+  <article class="lab">
+    <div class="labhead"><span class="mono labnum">LAB 7</span><h3>AP onboarding</h3><span class="mono labwhere">Controller (9004-LTE) + AP</span></div>
+    <p class="labgoal">เอา AP สองตัวขึ้นมาอยู่กับ controller ของชุดตัวเอง และแยกเป็น AP group ของตัวเอง</p>
+    <ol class="labsteps">
+      <li>เสียบ AP เข้าพอร์ตที่ทำไว้ใน LAB 2 — AP รับ IP จาก DHCP บน controller</li>
+      <li>ถ้า AP เคยใช้ที่อื่นมาก่อน ให้ reset โดยกดปุ่ม reset ค้างเกิน 10 วินาทีตอนเปิดเครื่อง</li>
+      <li>ชี้ AP มาที่ controller (convert to campus mode) ด้วย IP ของชุดตัวเอง</li>
+      <li>อนุมัติ AP ที่ Configuration → Access Points → Allowlist → Approve</li>
+      <li>สร้าง AP group ของชุดตัวเอง แล้วย้าย AP ทั้งสองตัวเข้ากลุ่ม</li>
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i><code>show ap database</code><code>show ap active</code><code>show ap allowlist</code></div>
+      <p class="labgotcha">AP ไม่ขึ้นให้ไล่จากล่างขึ้นบน — พอร์ตมีไฟ PoE ไหม → ได้ IP ไหม (show ip dhcp binding) → เห็นใน show ap database ไหม</p>
+    </div>
+  </article>
+  <article class="lab">
+    <div class="labhead"><span class="mono labnum">LAB 8</span><h3>WLAN — PSK และ MAC Authentication</h3><span class="mono labwhere">Controller (9004-LTE)</span></div>
+    <p class="labgoal">สร้าง SSID แรกด้วย PSK แล้วเพิ่มการตรวจ MAC จากฐานข้อมูลในตัว controller</p>
+    <ol class="labsteps">
+      <li>สร้าง WLAN ที่ Configuration → WLANs → + ตั้งชื่อ SSID เป็นของชุดตัวเอง เช่น POD1-IOT</li>
+      <li>เลือก AP group ของตัวเอง · VLAN 2601 · Forwarding mode Tunnel</li>
+      <li>ตั้ง security เป็น Personal (PSK) แล้วทดสอบต่อด้วยโน้ตบุ๊ก</li>
+      <li>เพิ่ม MAC ของเครื่องทดสอบเป็น local user ที่ Configuration → Authentication → Internal Server → Users โดยใช้ MAC เป็นทั้ง username และ password</li>
+      <li>เปิด MAC authentication บน WLAN เดิม แล้วทดสอบใหม่</li>
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i><code>show user-table</code><code>show ap association</code></div>
+      <p class="labgotcha">ใส่ MAC ผิดฟอร์แมตคือปัญหาที่เจอบ่อย — ดู MAC จริงจาก show user-table ของเครื่องที่เพิ่งต่อ แล้วคัดลอกไปใส่</p>
+    </div>
+  </article>
+  <article class="lab">
+    <div class="labhead"><span class="mono labnum">LAB 9</span><h3>WLAN — Captive portal สำหรับ Guest</h3><span class="mono labwhere">Controller (9004-LTE)</span></div>
+    <p class="labgoal">สร้าง SSID สำหรับผู้มาเยือน ที่ต้องล็อกอินผ่านหน้าเว็บก่อนใช้งาน</p>
+    <ol class="labsteps">
+      <li>สร้าง WLAN ใหม่ ชื่อ POD1-GUEST · VLAN 2601 · AP group ของตัวเอง</li>
+      <li>เลือก security เป็น Captive portal (Guest)</li>
+      <li>สร้าง guest user ใน Internal Server</li>
+      <li>ต่อด้วยมือถือ — ต้องเด้งหน้า login ก่อนถึงจะออกเน็ตได้</li>
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i><code>show user-table</code><code>show rights</code></div>
+      <p class="labgotcha">ไม่เด้งหน้า login ให้ดูว่าเครื่องได้ IP กับ DNS จริงหรือยัง — captive portal ต้องให้ DNS ผ่านก่อน</p>
+    </div>
+  </article>
+  <article class="lab">
+    <div class="labhead"><span class="mono labnum">LAB 10</span><h3>WLAN — 802.1X ด้วย Internal Server</h3><span class="mono labwhere">Controller (9004-LTE)</span></div>
+    <p class="labgoal">สร้าง SSID ที่ผู้ใช้ต้องใส่ username และ password ของตัวเอง โดยตรวจกับฐานข้อมูลในตัว controller</p>
+    <ol class="labsteps">
+      <li>สร้าง WLAN ใหม่ ชื่อ POD1-EMP · VLAN 2601 · AP group ของตัวเอง</li>
+      <li>เลือก security เป็น Enterprise (802.1X) แล้วเลือก auth server เป็น Internal</li>
+      <li>สร้าง user ที่ Configuration → Authentication → Internal Server → Users</li>
+      <li>ต่อด้วยโน้ตบุ๊ก ใส่ username และ password ที่สร้างไว้</li>
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i><code>show user-table</code><code>show aaa authentication-server internal</code></div>
+      <p class="labgotcha">งานนี้ไม่มี ClearPass — 802.1X จึงทำได้เฉพาะฝั่ง WLAN ที่ controller ตรวจเอง ฝั่ง wired บนสวิตช์ทำไม่ได้เพราะไม่มี RADIUS ให้ชี้</p>
+    </div>
+  </article>
+  <article class="lab">
+    <div class="labhead"><span class="mono labnum">LAB 11</span><h3>Role, Policy และ Dashboard</h3><span class="mono labwhere">Controller (9004-LTE)</span></div>
+    <p class="labgoal">จำกัดสิทธิ์ผู้ใช้ด้วย role แล้วดูผลบน dashboard</p>
+    <ol class="labsteps">
+      <li>สร้าง network alias ของวงที่จะห้าม ที่ Configuration → Roles &amp; Policies → Aliases</li>
+      <li>สร้าง policy ที่ deny ปลายทางเป็น alias นั้น แล้ว permit ที่เหลือ</li>
+      <li>สร้าง role ใหม่ แล้วผูก policy เข้าไป</li>
+      <li>ผูก role ให้ user ที่สร้างไว้ใน LAB 10 แล้วต่อใหม่</li>
+      <li>ดูผลที่ Dashboard → Clients และดู AppRF ว่าเห็น traffic อะไรบ้าง</li>
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i><code>show user-table</code><code>show rights</code><code>show datapath session table</code></div>
+      <p class="labgotcha">role ที่ผูกกับ user มีผลตอนต่อใหม่เท่านั้น — ตัดการเชื่อมต่อแล้วต่อใหม่ก่อนสรุปว่า policy ไม่ทำงาน</p>
+    </div>
+  </article>
+</section>
+
 <section id="agenda">
-  <div class="sechead"><span class="mono">05</span><h2>กำหนดการอบรม</h2></div>
+  <div class="sechead"><span class="mono">06</span><h2>กำหนดการอบรม</h2></div>
   <p class="sub">พุธที่ 26 สิงหาคม 2569 — ช่วงที่มี LAB ให้เปิดหน้า Lab topology คู่กัน</p>
   <ol class="agenda">
 <li class="ag"><span class="mono time">10:30</span><div><h4>Overview Aruba Solution</h4><p>Campus architecture: Switch + Controller + AP · Traffic flow &amp; device roles</p></div></li>
@@ -801,7 +1018,7 @@ write memory</code></pre></div></div>
   <div class="wrap">
     <div>Aruba Campus Network Training · <b>RMUTT × Commserv Siam</b> · 26 ส.ค. 2569</div>
     <div>กด <b>Ctrl/Cmd + P</b> เพื่อพิมพ์หรือบันทึกเป็น PDF</div>
-    <div><a href="../slides/rmutt-2026-08.pdf" download>ดาวน์โหลดสไลด์อบรม (PDF · 131 หน้า · 15 MB)</a></div>
+    <div><a href="../slides/rmutt-2026-08.pdf" download>ดาวน์โหลดสไลด์อบรม (PDF · 120 หน้า · 14 MB)</a></div>
   </div>
 </footer>
 

@@ -137,6 +137,24 @@ li.ag-break .time{color:var(--muted)}
 .codewrap .copy{position:absolute;top:12px;right:12px;background:#173444;border-color:#2C5468;color:#CFE3DC}
 .codewrap .copy:hover{border-color:var(--led);color:#fff}
 
+/* ---------- labs ---------- */
+.lab{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-bottom:16px}
+.labhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.labnum{font-size:11px;letter-spacing:.12em;color:var(--amber)}
+.lab h3{margin:0;font-size:17px;font-weight:600;flex:1 1 auto}
+.labwhere{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:3px 10px;white-space:nowrap}
+.labgoal{margin:8px 0 14px;font-size:13.5px;color:var(--muted)}
+ol.labsteps{margin:0;padding-left:20px}
+ol.labsteps li{font-size:14.5px;margin-bottom:10px}
+ol.labsteps li::marker{font-family:var(--mono);font-size:12px;color:var(--blue)}
+pre.labcli{margin:8px 0 12px;background:var(--ink);color:#CFE3DC;padding:12px 14px;border-radius:8px;overflow-x:auto;
+  font-family:var(--mono);font-size:12.5px;line-height:1.7}
+.labfoot{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.labfoot i{font-family:var(--mono);font-size:10.5px;font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:10px}
+.labfoot code{font-family:var(--mono);font-size:12px;background:#E7EDEB;border-radius:4px;padding:2px 7px;margin-right:6px;display:inline-block;margin-bottom:4px}
+.labgotcha{margin:10px 0 0;font-size:13px;color:var(--muted);border-left:3px solid var(--amber);padding-left:12px}
+.labgotcha code{background:#E7EDEB;border-radius:4px;padding:1px 6px;font-family:var(--mono);font-size:12px}
+
 /* ---------- lightbox ---------- */
 .lb{position:fixed;inset:0;z-index:90;background:rgba(8,22,30,.94);display:none;flex-direction:column}
 .lb.open{display:flex}
@@ -342,10 +360,37 @@ ${captions(notes, vars)}
 `;
 };
 
+/**
+ * The step-by-step labs. Each one names the box it runs on, because half the
+ * time lost in a lab is spent typing the right command at the wrong device.
+ */
+const labsSection = (sec, guide, vars) => `
+<section id="labs">
+${sechead(sec, vars)}
+  <p class="hint">${inlineCode(guide.intro, vars)}</p>
+  <p class="hint">${inlineCode(guide.note, vars)}</p>
+${guide.labs.map((l) => `  <article class="lab">
+    <div class="labhead"><span class="mono labnum">${esc(l.num)}</span><h3>${t(l.title, vars)}</h3><span class="mono labwhere">${t(l.where, vars)}</span></div>
+    <p class="labgoal">${t(l.goal, vars)}</p>
+    <ol class="labsteps">
+${l.steps.map((st) => `      <li>${inlineCode(st.text, vars)}${st.cli
+    ? `<pre class="labcli"><code>${st.cli.map((c) => esc(t(c, vars))).join('\n')}</code></pre>` : ''}</li>`).join('\n')}
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i>${l.verify.map((v) => `<code>${esc(v)}</code>`).join('')}</div>
+      <p class="labgotcha">${inlineCode(l.gotcha, vars)}</p>
+    </div>
+  </article>`).join('\n')}
+</section>
+`;
+
 export function renderPage({ course, event, vars, siblings = [], slides = null }) {
   const s = course.sections;
   const inf = course.infra;
-  const order = ['overview', 'lab', 'vlan', ...(event.lab ? ['config'] : []), 'agenda'];
+  const order = ['overview', 'lab', 'vlan',
+    ...(event.lab ? ['config'] : []),
+    ...(course.labGuide ? ['labs'] : []),
+    'agenda'];
 
   const draw = diagramsFor(course);
 
@@ -433,6 +478,7 @@ ${vlanRows.map(([vid, name, subnet, note]) => `<tr><td class="mono vid">${esc(vi
   <p class="hint">${inlineCode(course.vlanHint, vars)}</p>
 </section>
 ${event.lab ? configSection(s.config, event.lab, course.configNotes, vars) : ''}
+${course.labGuide ? labsSection(s.labs, course.labGuide, vars) : ''}
 <section id="agenda">
 ${sechead(s.agenda, vars)}
   <ol class="agenda">

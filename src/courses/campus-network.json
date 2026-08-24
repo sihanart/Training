@@ -441,8 +441,14 @@
       "title": "Golden config รายชุด",
       "sub": "แทนค่าจริงของแต่ละชุดไว้แล้ว — เลือกชุดของตัวเอง กดคัดลอก แล้ววางลง CLI ของ controller ตัวเองได้เลย"
     },
-    "agenda": {
+    "labs": {
       "num": "05",
+      "nav": "Labs",
+      "title": "Lab ทีละขั้น",
+      "sub": "{{studentPods}} ชุดทำพร้อมกันได้ — แต่ละชุดแตะเฉพาะ Access switch กับ Controller ของตัวเอง ส่วน Core ผู้สอน config ไว้ให้แล้ว"
+    },
+    "agenda": {
+      "num": "06",
       "nav": "Agenda",
       "title": "กำหนดการอบรม",
       "sub": "{{dateLong}} — ช่วงที่มี LAB ให้เปิดหน้า Lab topology คู่กัน"
@@ -509,5 +515,394 @@
       "title": "ถ้า config ผิดชุด",
       "body": "ลบ VLAN ที่สร้างผิดด้วย `no interface vlan <id>` และ `no ip dhcp pool <name>` แล้วค่อยวางชุดที่ถูกใหม่"
     }
-  ]
+  ],
+  "labGuide": {
+    "intro": "ทุก Lab ทำบนอุปกรณ์ของชุดตัวเอง — ค่าที่ต้องแทนอยู่ในหัวข้อ Config ด้านบน (n = หมายเลข Pod) ตัวอย่างในหน้านี้ใช้ POD 1 ทั้งหมด",
+    "note": "หลักสูตรนี้ไม่มี ClearPass และมี Access switch ชุดละตัวเดียว — VSF stacking จึงสาธิตรวมไม่ได้ทำรายชุด, DHCP relay ไม่ใช้เพราะ controller เป็น DHCP server เอง และ 802.1X ทำเฉพาะฝั่ง WLAN",
+    "labs": [
+      {
+        "id": "lab0",
+        "num": "LAB 0",
+        "title": "ตรวจของและหาชุดของตัวเอง",
+        "where": "ที่โต๊ะ",
+        "goal": "รู้ว่าชุดตัวเองคือหมายเลขอะไร ต่อ console ถูกเครื่อง และจดค่าที่ต้องใช้ทั้งวันไว้",
+        "steps": [
+          {
+            "text": "ดูหมายเลขชุดที่โต๊ะ แล้วเปิดหัวข้อ Config ด้านบน เลือกแท็บของชุดตัวเอง — ค่าทุกตัวในวันนี้อ้างจากตารางนั้น"
+          },
+          {
+            "text": "ต่อสาย console เข้า Access switch (CX 6300F) ตั้ง terminal 115200 8-N-1 ไม่มี flow control"
+          },
+          {
+            "text": "ต่อสาย console เข้า Controller (9004-LTE) อีกเส้น หรือจะรอเข้าผ่านเว็บก็ได้"
+          },
+          {
+            "text": "จดไว้ให้เห็นตลอดวัน: Pod n · AP VLAN 260n · Controller MGMT 192.168.10.22n · Subnet 10.26.n.0/24"
+          }
+        ],
+        "verify": [
+          "show version",
+          "show system"
+        ],
+        "gotcha": "ต่อ console ผิดเครื่องของชุดอื่นคือปัญหาที่เสียเวลาที่สุดของวัน — เช็ค hostname ก่อนพิมพ์อะไรเสมอ"
+      },
+      {
+        "id": "lab1",
+        "num": "LAB 1",
+        "title": "Access switch — ค่าเริ่มต้นและ management",
+        "where": "Access switch (CX 6300F)",
+        "goal": "เข้าถึงสวิตช์ได้ทั้ง console และ SSH และตั้งชื่อให้รู้ว่าเป็นของชุดไหน",
+        "steps": [
+          {
+            "text": "ตั้งรหัสผ่าน admin ตอน login ครั้งแรก"
+          },
+          {
+            "text": "ตั้ง hostname ให้เป็นของชุดตัวเอง",
+            "cli": [
+              "configure terminal",
+              "hostname POD1-SW"
+            ]
+          },
+          {
+            "text": "ตั้ง IP ของ management interface — คนละวงกับ AP VLAN และอยู่บน VRF mgmt",
+            "cli": [
+              "interface mgmt",
+              "  no shutdown",
+              "  ip static <IP ที่ผู้สอนแจก>/24",
+              "  default-gateway <gateway ที่ผู้สอนแจก>"
+            ]
+          },
+          {
+            "text": "เปิด SSH บน VRF mgmt แล้วบันทึก",
+            "cli": [
+              "ssh server vrf mgmt",
+              "write memory"
+            ]
+          }
+        ],
+        "verify": [
+          "show interface mgmt",
+          "show running-config | include hostname"
+        ],
+        "gotcha": "IP management ของสวิตช์ผู้สอนแจกให้ต่างหาก ไม่ใช่ 192.168.10.22n — เลขนั้นเป็นของ Controller"
+      },
+      {
+        "id": "lab2",
+        "num": "LAB 2",
+        "title": "VLAN, Trunk ขึ้น Core และพอร์ต AP",
+        "where": "Access switch (CX 6300F)",
+        "goal": "สร้าง AP VLAN ของชุดตัวเอง ส่งขึ้น Core ได้ และเปิดพอร์ตที่ AP เสียบอยู่",
+        "steps": [
+          {
+            "text": "สร้าง VLAN ของชุดตัวเอง",
+            "cli": [
+              "configure terminal",
+              "vlan 2601",
+              "  name AP-POD1"
+            ]
+          },
+          {
+            "text": "ตั้งพอร์ต uplink ขึ้น Core เป็น trunk ที่ยอมให้ VLAN ของตัวเองผ่าน (ฝั่ง Core ผู้สอน config ไว้แล้ว)",
+            "cli": [
+              "interface 1/1/49",
+              "  no shutdown",
+              "  vlan trunk native 1",
+              "  vlan trunk allowed 2601"
+            ]
+          },
+          {
+            "text": "ตั้งพอร์ตที่ต่อ AP เป็น access VLAN ของชุดตัวเอง",
+            "cli": [
+              "interface 1/1/1-1/1/2",
+              "  no shutdown",
+              "  vlan access 2601"
+            ]
+          },
+          {
+            "text": "บันทึก",
+            "cli": [
+              "write memory"
+            ]
+          }
+        ],
+        "verify": [
+          "show vlan",
+          "show interface brief",
+          "show lldp neighbor-info"
+        ],
+        "gotcha": "ลืม no shutdown คือสาเหตุอันดับหนึ่งที่ AP ไม่ขึ้น · ใส่ VLAN ผิดเลข AP จะไม่ได้ IP เพราะ DHCP อยู่บน controller ของ VLAN นั้น"
+      },
+      {
+        "id": "lab3",
+        "num": "LAB 3",
+        "title": "PoE สำหรับ AP",
+        "where": "Access switch (CX 6300F)",
+        "goal": "ยืนยันว่าพอร์ตที่ต่อ AP จ่ายไฟจริง และอ่าน power budget เป็น",
+        "steps": [
+          {
+            "text": "ดูสถานะ PoE ทั้งเครื่องและงบไฟที่เหลือ",
+            "cli": [
+              "show power-over-ethernet brief"
+            ]
+          },
+          {
+            "text": "ดูรายพอร์ตว่าจ่ายไฟกี่วัตต์ คลาสอะไร",
+            "cli": [
+              "show power-over-ethernet interface 1/1/1"
+            ]
+          },
+          {
+            "text": "ถ้าต้องปิด-เปิดไฟพอร์ตเพื่อ reboot AP",
+            "cli": [
+              "interface 1/1/1",
+              "  no power-over-ethernet",
+              "  power-over-ethernet"
+            ]
+          }
+        ],
+        "verify": [
+          "show power-over-ethernet brief"
+        ],
+        "gotcha": "AP-515 กิน PoE+ (คลาส 4) ถ้าเสียบ AP หลายตัวบนสวิตช์ที่งบไฟไม่พอ ตัวหลังจะไม่บูต — อ่าน available power ก่อนโทษ AP"
+      },
+      {
+        "id": "lab4",
+        "num": "LAB 4",
+        "title": "LAG ขึ้น Core",
+        "where": "Access switch (CX 6300F)",
+        "goal": "รวมสองพอร์ต uplink เป็นลิงก์เดียวแบบ LACP (ฝั่ง Core ผู้สอนตั้งไว้แล้ว)",
+        "steps": [
+          {
+            "text": "สร้าง LAG แล้วตั้งเป็น trunk เหมือน uplink เดิม",
+            "cli": [
+              "configure terminal",
+              "interface lag 1",
+              "  no shutdown",
+              "  vlan trunk native 1",
+              "  vlan trunk allowed 2601",
+              "  lacp mode active"
+            ]
+          },
+          {
+            "text": "ย้ายพอร์ตจริงสองพอร์ตเข้า LAG",
+            "cli": [
+              "interface 1/1/49-1/1/50",
+              "  no shutdown",
+              "  lag 1"
+            ]
+          },
+          {
+            "text": "บันทึก",
+            "cli": [
+              "write memory"
+            ]
+          }
+        ],
+        "verify": [
+          "show lacp interfaces",
+          "show lacp aggregates",
+          "show interface lag 1"
+        ],
+        "gotcha": "ถ้าฝั่ง Core เป็น static แต่ฝั่งเราเป็น LACP ลิงก์จะไม่ขึ้น — ถามผู้สอนก่อนว่าฝั่งโน้นตั้งไว้แบบไหน"
+      },
+      {
+        "id": "lab5",
+        "num": "LAB 5",
+        "title": "Controller — ค่าเริ่มต้น, license, เวลา",
+        "where": "Controller (9004-LTE)",
+        "goal": "ทำให้ controller ของชุดตัวเองขึ้นมาและเข้าเว็บได้",
+        "steps": [
+          {
+            "text": "บูตครั้งแรกแล้วตอบ full-setup ที่ console — ตั้ง system name, country code TH, IP ของ controller"
+          },
+          {
+            "text": "เข้าเว็บ https://192.168.10.221:4343 (เลขตามชุดตัวเอง) ผู้ใช้ admin"
+          },
+          {
+            "text": "ใส่ license AP และ PEF ที่ Configuration → License"
+          },
+          {
+            "text": "ตั้งเวลาและ timezone Asia/Bangkok ที่ Configuration → System → General"
+          },
+          {
+            "text": "เปิด CPSec แบบ auto cert provisioning ที่ Configuration → System → Certificates"
+          }
+        ],
+        "verify": [
+          "show switchinfo",
+          "show license",
+          "show clock"
+        ],
+        "gotcha": "เวลาผิดทำให้ certificate ของ AP ไม่ผ่าน แล้ว AP จะไม่ยอมขึ้น — ตั้งเวลาก่อนเอา AP เข้าเสมอ"
+      },
+      {
+        "id": "lab6",
+        "num": "LAB 6",
+        "title": "Controller — VLAN, SVI, DHCP และ NAT",
+        "where": "Controller (9004-LTE)",
+        "goal": "ทำให้ controller เป็น gateway และ DHCP server ของ AP VLAN ของตัวเอง แล้ว NAT ออกเน็ต",
+        "steps": [
+          {
+            "text": "เปิดหัวข้อ Config ด้านบน เลือกแท็บชุดตัวเอง กดคัดลอก แล้ววางลง CLI ของ controller"
+          },
+          {
+            "text": "อ่านทีละท่อนว่าแต่ละบล็อกทำอะไร — VLAN กับ SVI ที่มี ip nat inside → ช่วง IP ที่กันไม่ให้แจก → DHCP pool → service dhcp"
+          },
+          {
+            "text": "บันทึก",
+            "cli": [
+              "write memory"
+            ]
+          }
+        ],
+        "verify": [
+          "show ip interface brief",
+          "show ip dhcp binding",
+          "show ip dhcp statistics"
+        ],
+        "gotcha": "service dhcp ไม่เปิด pool จะไม่ทำงานแม้ config ถูกหมด · เผลอวางของชุดอื่นให้ลบด้วย no interface vlan และ no ip dhcp pool ก่อนวางใหม่"
+      },
+      {
+        "id": "lab7",
+        "num": "LAB 7",
+        "title": "AP onboarding",
+        "where": "Controller (9004-LTE) + AP",
+        "goal": "เอา AP สองตัวขึ้นมาอยู่กับ controller ของชุดตัวเอง และแยกเป็น AP group ของตัวเอง",
+        "steps": [
+          {
+            "text": "เสียบ AP เข้าพอร์ตที่ทำไว้ใน LAB 2 — AP รับ IP จาก DHCP บน controller"
+          },
+          {
+            "text": "ถ้า AP เคยใช้ที่อื่นมาก่อน ให้ reset โดยกดปุ่ม reset ค้างเกิน 10 วินาทีตอนเปิดเครื่อง"
+          },
+          {
+            "text": "ชี้ AP มาที่ controller (convert to campus mode) ด้วย IP ของชุดตัวเอง"
+          },
+          {
+            "text": "อนุมัติ AP ที่ Configuration → Access Points → Allowlist → Approve"
+          },
+          {
+            "text": "สร้าง AP group ของชุดตัวเอง แล้วย้าย AP ทั้งสองตัวเข้ากลุ่ม"
+          }
+        ],
+        "verify": [
+          "show ap database",
+          "show ap active",
+          "show ap allowlist"
+        ],
+        "gotcha": "AP ไม่ขึ้นให้ไล่จากล่างขึ้นบน — พอร์ตมีไฟ PoE ไหม → ได้ IP ไหม (show ip dhcp binding) → เห็นใน show ap database ไหม"
+      },
+      {
+        "id": "lab8",
+        "num": "LAB 8",
+        "title": "WLAN — PSK และ MAC Authentication",
+        "where": "Controller (9004-LTE)",
+        "goal": "สร้าง SSID แรกด้วย PSK แล้วเพิ่มการตรวจ MAC จากฐานข้อมูลในตัว controller",
+        "steps": [
+          {
+            "text": "สร้าง WLAN ที่ Configuration → WLANs → + ตั้งชื่อ SSID เป็นของชุดตัวเอง เช่น POD1-IOT"
+          },
+          {
+            "text": "เลือก AP group ของตัวเอง · VLAN 2601 · Forwarding mode Tunnel"
+          },
+          {
+            "text": "ตั้ง security เป็น Personal (PSK) แล้วทดสอบต่อด้วยโน้ตบุ๊ก"
+          },
+          {
+            "text": "เพิ่ม MAC ของเครื่องทดสอบเป็น local user ที่ Configuration → Authentication → Internal Server → Users โดยใช้ MAC เป็นทั้ง username และ password"
+          },
+          {
+            "text": "เปิด MAC authentication บน WLAN เดิม แล้วทดสอบใหม่"
+          }
+        ],
+        "verify": [
+          "show user-table",
+          "show ap association"
+        ],
+        "gotcha": "ใส่ MAC ผิดฟอร์แมตคือปัญหาที่เจอบ่อย — ดู MAC จริงจาก show user-table ของเครื่องที่เพิ่งต่อ แล้วคัดลอกไปใส่"
+      },
+      {
+        "id": "lab9",
+        "num": "LAB 9",
+        "title": "WLAN — Captive portal สำหรับ Guest",
+        "where": "Controller (9004-LTE)",
+        "goal": "สร้าง SSID สำหรับผู้มาเยือน ที่ต้องล็อกอินผ่านหน้าเว็บก่อนใช้งาน",
+        "steps": [
+          {
+            "text": "สร้าง WLAN ใหม่ ชื่อ POD1-GUEST · VLAN 2601 · AP group ของตัวเอง"
+          },
+          {
+            "text": "เลือก security เป็น Captive portal (Guest)"
+          },
+          {
+            "text": "สร้าง guest user ใน Internal Server"
+          },
+          {
+            "text": "ต่อด้วยมือถือ — ต้องเด้งหน้า login ก่อนถึงจะออกเน็ตได้"
+          }
+        ],
+        "verify": [
+          "show user-table",
+          "show rights"
+        ],
+        "gotcha": "ไม่เด้งหน้า login ให้ดูว่าเครื่องได้ IP กับ DNS จริงหรือยัง — captive portal ต้องให้ DNS ผ่านก่อน"
+      },
+      {
+        "id": "lab10",
+        "num": "LAB 10",
+        "title": "WLAN — 802.1X ด้วย Internal Server",
+        "where": "Controller (9004-LTE)",
+        "goal": "สร้าง SSID ที่ผู้ใช้ต้องใส่ username และ password ของตัวเอง โดยตรวจกับฐานข้อมูลในตัว controller",
+        "steps": [
+          {
+            "text": "สร้าง WLAN ใหม่ ชื่อ POD1-EMP · VLAN 2601 · AP group ของตัวเอง"
+          },
+          {
+            "text": "เลือก security เป็น Enterprise (802.1X) แล้วเลือก auth server เป็น Internal"
+          },
+          {
+            "text": "สร้าง user ที่ Configuration → Authentication → Internal Server → Users"
+          },
+          {
+            "text": "ต่อด้วยโน้ตบุ๊ก ใส่ username และ password ที่สร้างไว้"
+          }
+        ],
+        "verify": [
+          "show user-table",
+          "show aaa authentication-server internal"
+        ],
+        "gotcha": "งานนี้ไม่มี ClearPass — 802.1X จึงทำได้เฉพาะฝั่ง WLAN ที่ controller ตรวจเอง ฝั่ง wired บนสวิตช์ทำไม่ได้เพราะไม่มี RADIUS ให้ชี้"
+      },
+      {
+        "id": "lab11",
+        "num": "LAB 11",
+        "title": "Role, Policy และ Dashboard",
+        "where": "Controller (9004-LTE)",
+        "goal": "จำกัดสิทธิ์ผู้ใช้ด้วย role แล้วดูผลบน dashboard",
+        "steps": [
+          {
+            "text": "สร้าง network alias ของวงที่จะห้าม ที่ Configuration → Roles & Policies → Aliases"
+          },
+          {
+            "text": "สร้าง policy ที่ deny ปลายทางเป็น alias นั้น แล้ว permit ที่เหลือ"
+          },
+          {
+            "text": "สร้าง role ใหม่ แล้วผูก policy เข้าไป"
+          },
+          {
+            "text": "ผูก role ให้ user ที่สร้างไว้ใน LAB 10 แล้วต่อใหม่"
+          },
+          {
+            "text": "ดูผลที่ Dashboard → Clients และดู AppRF ว่าเห็น traffic อะไรบ้าง"
+          }
+        ],
+        "verify": [
+          "show user-table",
+          "show rights",
+          "show datapath session table"
+        ],
+        "gotcha": "role ที่ผูกกับ user มีผลตอนต่อใหม่เท่านั้น — ตัดการเชื่อมต่อแล้วต่อใหม่ก่อนสรุปว่า policy ไม่ทำงาน"
+      }
+    ]
+  }
 }
