@@ -59,19 +59,19 @@ export function switchLabSvg(course, vars) {
 <line x1="40" y1="86" x2="1400" y2="86" stroke="#E1E9EF" stroke-width="2"/>
 
 <!-- VSX pair, drawn side by side so KA and ISL are told apart -->
-<text class="ag" x="440" y="140" text-anchor="middle">${t(s.agLabel, vars)}</text>
-<text class="ag" x="440" y="162" text-anchor="middle">${esc(s.agIp)}</text>
+<text class="ag" x="490" y="140" text-anchor="middle">${t(s.agLabel, vars)}</text>
+<text class="ag" x="490" y="162" text-anchor="middle">${esc(s.agIp)}</text>
 
 ${sw(200, 196, n.sw1)}
 ${sw(580, 196, n.sw2)}
 
 <line class="ka" x1="400" y1="216" x2="580" y2="216"/>
 ${port(428, 216, '1/1/5')}${port(552, 216, '1/1/5')}
-<text class="lbl2" x="490" y="206" text-anchor="middle" fill="#C4620A">${esc(s.kaLabel)}</text>
+<text class="lbl2" x="490" y="202" text-anchor="middle" fill="#C4620A">${esc(s.kaLabel)}</text>
 
 <line class="isl" x1="400" y1="252" x2="580" y2="252"/>
 ${port(428, 252, '1/1/6')}${port(552, 252, '1/1/6')}
-<text class="lbl2" x="490" y="278" text-anchor="middle" fill="#0E7C86">${esc(s.vsxLabel)}</text>
+<text class="lbl2" x="490" y="276" text-anchor="middle" fill="#0E7C86">${esc(s.vsxLabel)}</text>
 
 <!-- PCs on the pair -->
 ${pc(20, 206, n.pc11)}
@@ -83,15 +83,15 @@ ${pc(860, 206, n.pc12)}
 ${port(820, 232, '1/1/1')}
 
 <!-- down to the second core -->
-${sw(440, 430, n.sw3)}
-<line class="link" x1="300" y1="268" x2="490" y2="430"/>
-${port(338, 301, '1/1/1')}${port(452, 398, '1/1/1')}
-<line class="link" x1="680" y1="268" x2="590" y2="430"/>
-${port(662, 301, '1/1/2')}${port(608, 398, '1/1/2')}
+${sw(390, 430, n.sw3)}
+<line class="link" x1="300" y1="268" x2="440" y2="430"/>
+${port(328, 300, '1/1/1')}${port(412, 398, '1/1/1')}
+<line class="link" x1="680" y1="268" x2="540" y2="430"/>
+${port(652, 300, '1/1/2')}${port(568, 398, '1/1/2')}
 
-${pc(485, 600, n.pc21)}
-<line class="link" x1="540" y1="502" x2="540" y2="600"/>
-${port(540, 550, '1/1/3')}
+${pc(435, 600, n.pc21)}
+<line class="link" x1="490" y1="502" x2="490" y2="600"/>
+${port(490, 550, '1/1/3')}
 
 <!-- how to get in -->
 <rect x="1000" y="120" width="400" height="150" rx="10" fill="#F3F7FA" stroke="#4A6274" stroke-width="2"/>

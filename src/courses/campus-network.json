@@ -914,36 +914,6 @@
           "show datapath session table"
         ],
         "gotcha": "role ที่ผูกกับ user มีผลตอนต่อใหม่เท่านั้น — ตัดการเชื่อมต่อแล้วต่อใหม่ก่อนสรุปว่า policy ไม่ทำงาน"
-      },
-      {
-        "id": "demo1",
-        "num": "DEMO",
-        "title": "Remote AP และสวิตช์จริง — ผู้สอนสาธิต",
-        "where": "หน้าห้อง",
-        "goal": "เห็นว่าอุปกรณ์จริงที่ทุกชุดใช้ร่วมกันต่อกันอย่างไร และทำไมนักศึกษาไม่ได้แตะ",
-        "steps": [
-          {
-            "text": "ดู AP-515 ที่ตั้งเป็น Remote AP — จบ IPsec tunnel ที่ 9004-LTE ดึงวงของแลบมาถึงห้องนี้"
-          },
-          {
-            "text": "ดูสวิตช์ CX 6100 — พอร์ต 1/1/12 เป็น uplink ขึ้น RAP ส่วนพอร์ต 1/1/1–1/1/8 คือ Campus AP ของแต่ละชุด"
-          },
-          {
-            "text": "เปิด configs/SWITCH.txt ดูว่า VLAN ของแต่ละชุดถูกวางไว้อย่างไร"
-          },
-          {
-            "text": "ดู PoE budget ว่าเหลือเท่าไรเมื่อเสียบ AP ครบทุกชุด",
-            "cli": [
-              "show power-over-ethernet brief"
-            ]
-          }
-        ],
-        "verify": [
-          "show ap database",
-          "show vlan",
-          "show power-over-ethernet brief"
-        ],
-        "gotcha": "สามตัวนี้เป็นทางผ่านของทุกชุด ถ้าล้มคือล้มทั้งห้อง — จึงเป็นของผู้สอน ส่วนที่ฝึกพิมพ์อยู่บน PNETLAB"
       }
     ]
   },
