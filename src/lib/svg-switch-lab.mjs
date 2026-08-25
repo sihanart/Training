@@ -27,6 +27,7 @@ const CSS = [
   `#${ID} .isl{stroke:#0E7C86;stroke-width:4;fill:none}`,
   `#${ID} .ka{stroke:#C4620A;stroke-width:2.5;stroke-dasharray:6 4;fill:none}`,
   `#${ID} .ag{fill:#C4620A;font-size:13px;font-weight:700}`,
+  `#${ID} .agsub{fill:#C4620A;font-size:11.5px}`,
 ].join('');
 
 /** A port bubble sitting on a link, the way the simulator labels them. */
@@ -40,10 +41,11 @@ const sw = (x, y, node) =>
   `<text class="lbl2" x="${x + 100}" y="${y + 30}" text-anchor="middle">${esc(node.name)}</text>` +
   `<text class="ip" x="${x + 100}" y="${y + 52}" text-anchor="middle">${esc(node.ip)}</text>`;
 
-/** A PC box. */
+/** A PC box: which machine, and the VLAN it sits in. */
 const pc = (x, y, node) =>
-  `<rect x="${x}" y="${y}" width="110" height="52" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>` +
-  `<text class="lbl2" x="${x + 55}" y="${y + 32}" text-anchor="middle">${esc(node.name)}</text>`;
+  `<rect x="${x}" y="${y}" width="124" height="60" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>` +
+  `<text class="lbl2" x="${x + 62}" y="${y + 26}" text-anchor="middle">${esc(node.name)}</text>` +
+  `<text class="tiny" x="${x + 62}" y="${y + 45}" text-anchor="middle">${esc(node.detail)}</text>`;
 
 export function switchLabSvg(course, vars) {
   const s = course.switchLab;
@@ -60,7 +62,7 @@ export function switchLabSvg(course, vars) {
 
 <!-- VSX pair, drawn side by side so KA and ISL are told apart -->
 <text class="ag" x="490" y="140" text-anchor="middle">${t(s.agLabel, vars)}</text>
-<text class="ag" x="490" y="162" text-anchor="middle">${esc(s.agIp)}</text>
+<text class="agsub" x="490" y="161" text-anchor="middle">${esc(s.agIp)}</text>
 
 ${sw(200, 196, n.sw1)}
 ${sw(580, 196, n.sw2)}
@@ -74,13 +76,13 @@ ${port(428, 252, '1/1/6')}${port(552, 252, '1/1/6')}
 <text class="lbl2" x="490" y="276" text-anchor="middle" fill="#0E7C86">${esc(s.vsxLabel)}</text>
 
 <!-- PCs on the pair -->
-${pc(20, 206, n.pc11)}
-<line class="link" x1="130" y1="232" x2="200" y2="232"/>
-${port(165, 232, '1/1/3')}
+${pc(15, 202, n.pc11)}
+<line class="link" x1="139" y1="232" x2="200" y2="232"/>
+${port(172, 232, '1/1/3')}
 
-${pc(860, 206, n.pc12)}
-<line class="link" x1="780" y1="232" x2="860" y2="232"/>
-${port(820, 232, '1/1/1')}
+${pc(856, 202, n.pc12)}
+<line class="link" x1="780" y1="232" x2="856" y2="232"/>
+${port(818, 232, '1/1/1')}
 
 <!-- down to the second core -->
 ${sw(390, 430, n.sw3)}
@@ -89,7 +91,7 @@ ${port(328, 300, '1/1/1')}${port(412, 398, '1/1/1')}
 <line class="link" x1="680" y1="268" x2="540" y2="430"/>
 ${port(652, 300, '1/1/2')}${port(568, 398, '1/1/2')}
 
-${pc(435, 600, n.pc21)}
+${pc(428, 600, n.pc21)}
 <line class="link" x1="490" y1="502" x2="490" y2="600"/>
 ${port(490, 550, '1/1/3')}
 
@@ -99,15 +101,15 @@ ${port(490, 550, '1/1/3')}
 ${s.access.rows.map(([k, v], i) => `<text class="td" x="1018" y="${172 + i * 22}">${esc(k)}</text><text class="td mono2" x="1140" y="${172 + i * 22}">${esc(v)}</text>`).join('\n')}
 <text class="tiny" x="1018" y="${172 + s.access.rows.length * 22 + 8}">${t(s.access.note, vars)}</text>
 
-<rect x="1000" y="300" width="400" height="190" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<rect x="1000" y="300" width="400" height="212" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
 <text class="lbl2" x="1018" y="326">${t(s.plan.title, vars)}</text>
 <text class="th" x="1018" y="348">${esc(s.plan.cols[0])}</text><text class="th" x="1210" y="348">${esc(s.plan.cols[1])}</text>
 <line x1="1018" y1="354" x2="1382" y2="354" stroke="#DCE6ED"/>
 ${s.plan.rows.map(([k, v], i) => `<text class="td" x="1018" y="${372 + i * 20}">${esc(k)}</text><text class="td mono2" x="1210" y="${372 + i * 20}">${esc(v)}</text>`).join('\n')}
 
-<rect x="1000" y="520" width="400" height="150" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
-<text class="lbl2" x="1018" y="546">อ่านผังนี้อย่างไร</text>
-${s.notes.map((r, i) => `<text class="role" x="1018" y="${572 + i * 30}">• ${esc(t(r, vars))}</text>`).join('\n')}
+<rect x="1000" y="534" width="400" height="146" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="1018" y="560">อ่านผังนี้อย่างไร</text>
+${s.notes.map((r, i) => `<text class="role" x="1018" y="${584 + i * 25}">• ${esc(t(r, vars))}</text>`).join('\n')}
 
 <line class="ka" x1="60" y1="700" x2="108" y2="700"/><text class="tiny" x="118" y="704">Keepalive (1/1/5)</text>
 <line class="isl" x1="260" y1="700" x2="308" y2="700"/><text class="tiny" x="318" y="704">VSX ISL (1/1/6)</text>
