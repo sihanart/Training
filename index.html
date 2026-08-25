@@ -733,102 +733,220 @@ write memory</code></pre></div></div>
 <section id="labs">
   <div class="sechead"><span class="mono">05</span><h2>Lab ทีละขั้น</h2></div>
   <p class="sub">7 ชุดทำพร้อมกันได้ — Module 1 บน PNETLAB ของตัวเอง Module 2 บน Controller VM ของชุดตัวเอง</p>
-  <p class="hint">Module 1 ฝึกบน PNETLAB ของตัวเอง — สวิตช์จำลองคนละตัว พังได้ไม่กระทบใคร · Module 2 ทำบน Controller VM ของชุดตัวเอง ค่าที่ต้องแทนอยู่ในหัวข้อ Config ด้านบน (n = หมายเลข Pod) ตัวอย่างในหน้านี้ใช้ POD 1 ทั้งหมด</p>
+  <figure class="figure" style="margin:0">
+    <div class="figbar">
+      <span>FIG.03 — PNETLAB SWITCH LAB</span>
+      <div class="figtools">
+        <button class="tool" data-zoom="svg-switchlab">ขยายเต็มจอ</button>
+        <button class="tool" data-dl="svg-switchlab" data-name="03_Lab_Switch_PNETLAB">ดาวน์โหลด SVG</button>
+      </div>
+    </div>
+    <div class="figscroll"><svg id="svg-switchlab" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 760">
+<defs><style>#svg-switchlab text{font-family:"IBM Plex Sans Thai","Sarabun","Loma","Noto Sans Thai","Segoe UI",sans-serif;fill:#0F1E2E}#svg-switchlab .h1{font-size:26px;font-weight:700}#svg-switchlab .sub{font-size:13.5px;fill:#5A6C7D}#svg-switchlab .lbl2{font-size:13px;font-weight:700}#svg-switchlab .role{font-size:11.5px;fill:#41545F}#svg-switchlab .tiny{font-size:11px;fill:#5A6C7D}#svg-switchlab .th{font-size:10.5px;font-weight:700;fill:#1E6BB8;letter-spacing:.06em}#svg-switchlab .td{font-size:11.5px;fill:#33454F}#svg-switchlab .mono2{font-family:"IBM Plex Mono",monospace;font-size:11.5px}#svg-switchlab .ip{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;fill:#1E6BB8}#svg-switchlab .port{font-family:"IBM Plex Mono",monospace;font-size:10px;fill:#41545F}#svg-switchlab .link{stroke:#4A6274;stroke-width:2.5;fill:none}#svg-switchlab .isl{stroke:#0E7C86;stroke-width:4;fill:none}#svg-switchlab .ka{stroke:#C4620A;stroke-width:2.5;stroke-dasharray:6 4;fill:none}#svg-switchlab .ag{fill:#C4620A;font-size:13px;font-weight:700}</style></defs>
+
+<rect width="1440" height="760" fill="#FFFFFF"/>
+<text class="h1" x="40" y="46">Switch Lab บน PNETLAB</text>
+<text class="sub" x="40" y="70">RMUTT × Commserv Siam · 26 ส.ค. 2569 · VSX pair + Active Gateway · สวิตช์จำลอง 3 ตัวและ PC 3 เครื่องต่อชุด</text>
+<line x1="40" y1="86" x2="1400" y2="86" stroke="#E1E9EF" stroke-width="2"/>
+
+<!-- VSX pair, drawn side by side so KA and ISL are told apart -->
+<text class="ag" x="440" y="140" text-anchor="middle">Active Gateway</text>
+<text class="ag" x="440" y="162" text-anchor="middle">192.168.1.1/24</text>
+
+<rect x="200" y="196" width="200" height="72" rx="10" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2.5"/><text class="lbl2" x="300" y="226" text-anchor="middle">CX-CORE-1/1</text><text class="ip" x="300" y="248" text-anchor="middle">192.168.0.2/24</text>
+<rect x="580" y="196" width="200" height="72" rx="10" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2.5"/><text class="lbl2" x="680" y="226" text-anchor="middle">CX-CORE-1/2</text><text class="ip" x="680" y="248" text-anchor="middle">192.168.0.3/24</text>
+
+<line class="ka" x1="400" y1="216" x2="580" y2="216"/>
+<rect x="404" y="206" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="428" y="220" text-anchor="middle">1/1/5</text><rect x="528" y="206" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="552" y="220" text-anchor="middle">1/1/5</text>
+<text class="lbl2" x="490" y="206" text-anchor="middle" fill="#C4620A">KA</text>
+
+<line class="isl" x1="400" y1="252" x2="580" y2="252"/>
+<rect x="404" y="242" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="428" y="256" text-anchor="middle">1/1/6</text><rect x="528" y="242" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="552" y="256" text-anchor="middle">1/1/6</text>
+<text class="lbl2" x="490" y="278" text-anchor="middle" fill="#0E7C86">VSX</text>
+
+<!-- PCs on the pair -->
+<rect x="40" y="206" width="120" height="52" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/><text class="lbl2" x="100" y="238" text-anchor="middle">PC11</text>
+<line class="link" x1="160" y1="232" x2="200" y2="232"/>
+<rect x="156" y="222" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="180" y="236" text-anchor="middle">1/1/3</text>
+
+<rect x="850" y="206" width="120" height="52" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/><text class="lbl2" x="910" y="238" text-anchor="middle">PC12</text>
+<line class="link" x1="780" y1="232" x2="850" y2="232"/>
+<rect x="791" y="222" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="815" y="236" text-anchor="middle">1/1/1</text>
+
+<!-- down to the second core -->
+<rect x="440" y="430" width="200" height="72" rx="10" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2.5"/><text class="lbl2" x="540" y="460" text-anchor="middle">CX-CORE-2</text><text class="ip" x="540" y="482" text-anchor="middle">192.168.0.4/24</text>
+<path class="link" d="M300 268 L 300 350 L 490 350 L 490 430"/>
+<rect x="276" y="290" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="300" y="304" text-anchor="middle">1/1/1</text><rect x="466" y="390" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="490" y="404" text-anchor="middle">1/1/1</text>
+<path class="link" d="M680 268 L 680 350 L 590 350 L 590 430"/>
+<rect x="656" y="290" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="680" y="304" text-anchor="middle">1/1/2</text><rect x="566" y="390" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="590" y="404" text-anchor="middle">1/1/2</text>
+
+<rect x="480" y="600" width="120" height="52" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/><text class="lbl2" x="540" y="632" text-anchor="middle">PC21</text>
+<line class="link" x1="540" y1="502" x2="540" y2="600"/>
+<rect x="516" y="540" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="540" y="554" text-anchor="middle">1/1/3</text>
+
+<!-- how to get in -->
+<rect x="1000" y="120" width="400" height="150" rx="10" fill="#F3F7FA" stroke="#4A6274" stroke-width="2"/>
+<text class="lbl2" x="1018" y="146">เข้าใช้งาน PNETLAB</text>
+<text class="td" x="1018" y="172">URL</text><text class="td mono2" x="1140" y="172">http://10.69.11.10/</text>
+<text class="td" x="1018" y="194">ผู้ใช้</text><text class="td mono2" x="1140" y="194">pod1 – pod7 (ตามชุดตัวเอง)</text>
+<text class="td" x="1018" y="216">รหัสผ่าน</text><text class="td mono2" x="1140" y="216">P@ssw0rd</text>
+<text class="tiny" x="1018" y="246">ทุกคนในชุดใช้ล็อกอินเดียวกัน — ตกลงกันก่อนว่าใครกดอะไร</text>
+
+<rect x="1000" y="300" width="400" height="190" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="1018" y="326">ค่าที่ใช้ในผังนี้</text>
+<text class="th" x="1018" y="348">รายการ</text><text class="th" x="1210" y="348">ค่า</text>
+<line x1="1018" y1="354" x2="1382" y2="354" stroke="#DCE6ED"/>
+<text class="td" x="1018" y="372">CX-CORE-1/1 · CX-CORE-1/2</text><text class="td mono2" x="1210" y="372">192.168.0.2 · 192.168.0.3</text>
+<text class="td" x="1018" y="392">CX-CORE-2</text><text class="td mono2" x="1210" y="392">192.168.0.4</text>
+<text class="td" x="1018" y="412">Active Gateway (VSX pair)</text><text class="td mono2" x="1210" y="412">192.168.1.1/24</text>
+<text class="td" x="1018" y="432">VSX ISL</text><text class="td mono2" x="1210" y="432">1/1/6 ↔ 1/1/6</text>
+<text class="td" x="1018" y="452">VSX Keepalive</text><text class="td mono2" x="1210" y="452">1/1/5 ↔ 1/1/5</text>
+<text class="td" x="1018" y="472">ลงไป CX-CORE-2</text><text class="td mono2" x="1210" y="472">1/1/1 และ 1/1/2</text>
+
+<rect x="1000" y="520" width="400" height="150" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="1018" y="546">อ่านผังนี้อย่างไร</text>
+<text class="role" x="1018" y="572">• สวิตช์สามตัวเป็น VM คนละชุดกับเพื่อน — พังได้ reset ใหม่ได้</text>
+<text class="role" x="1018" y="602">• CX-CORE-1/1 กับ CX-CORE-1/2 จับคู่เป็น VSX</text>
+<text class="role" x="1018" y="632">• CX-CORE-2 มองขึ้นไปเห็น VSX pair เป็นสวิตช์ตัวเดียว</text>
+<text class="role" x="1018" y="662">• PC11 » 1/1/3 · PC12 » 1/1/1 · PC21 » 1/1/3</text>
+
+<line class="ka" x1="60" y1="700" x2="108" y2="700"/><text class="tiny" x="118" y="704">Keepalive (1/1/5)</text>
+<line class="isl" x1="260" y1="700" x2="308" y2="700"/><text class="tiny" x="318" y="704">VSX ISL (1/1/6)</text>
+<line class="link" x1="460" y1="700" x2="508" y2="700"/><text class="tiny" x="518" y="704">สายปกติ</text>
+</svg></div>
+    <p class="swipe">เลื่อนซ้าย–ขวาเพื่อดูทั้งผัง · แตะที่ผังเพื่อขยาย</p>
+  </figure>
+  <p class="hint">Module 1 ฝึกบน PNETLAB — ห้องแลบของชุดตัวเองมีสวิตช์จำลอง 3 ตัวและ PC 3 เครื่อง ทำ VSX ได้จริง พังได้ reset ใหม่ได้ · Module 2 ทำบน Controller VM ของชุดตัวเอง ค่าที่ต้องแทนอยู่ในหัวข้อ Config ด้านบน (n = หมายเลข Pod)</p>
   <p class="hint">อุปกรณ์จริงที่ใช้ร่วมกัน — Aruba 9004-LTE (หัวสาย RAP), AP-515 และ Aruba CX 6100 — ผู้สอนเป็นคนคุม เพราะเป็นทางผ่านของทุกชุด · งานนี้ไม่มี ClearPass จึงทำ 802.1X เฉพาะฝั่ง WLAN และไม่มี VSF stacking เพราะสวิตช์จริงมีตัวเดียว</p>
   <article class="lab">
-    <div class="labhead"><span class="mono labnum">LAB 0</span><h3>หาชุดของตัวเองและเปิดเครื่องมือให้ครบ</h3><span class="mono labwhere">ที่โต๊ะ</span></div>
-    <p class="labgoal">รู้ว่าตัวเองคือชุดไหน เปิด PNETLAB ได้ และเข้า Controller VM ของชุดตัวเองได้</p>
+    <div class="labhead"><span class="mono labnum">LAB 0</span><h3>เข้า PNETLAB และเปิดเครื่องมือให้ครบ</h3><span class="mono labwhere">ที่โต๊ะ</span></div>
+    <p class="labgoal">เข้าห้องแลบของชุดตัวเองได้ เห็นสวิตช์ครบสามตัว และเข้า Controller VM ของชุดได้</p>
     <ol class="labsteps">
-      <li>ดูหมายเลขชุดที่โต๊ะ แล้วเปิดหัวข้อ Config ด้านบน เลือกแท็บของชุดตัวเอง — ค่าทุกตัวในวันนี้อ้างจากตารางนั้น</li>
-      <li>เปิด PNETLAB ในเบราว์เซอร์ แล้วเข้าสวิตช์จำลองของตัวเอง (คนละตัวกับเพื่อน)</li>
+      <li>เปิด http://10.69.11.10/ แล้วล็อกอินด้วยผู้ใช้ของชุดตัวเอง — POD 1 ใช้ pod1 รหัส P@ssw0rd</li>
+      <li>เปิด lab ของชุดตัวเอง กด START แล้วรอให้ทั้งสามสวิตช์ขึ้น</li>
+      <li>คลิกที่สวิตช์เพื่อเปิด console — เริ่มที่ CX-CORE-1/1</li>
       <li>เปิดอีกแท็บ เข้าเว็บ Controller VM ของชุดตัวเอง เช่น POD 1 » https://192.168.10.221:4343</li>
-      <li>จดไว้ให้เห็นตลอดวัน: Pod n · AP VLAN 260n · Controller 192.168.10.22n · Subnet 10.26.n.0/24</li>
+      <li>จดไว้: สวิตช์ 192.168.0.2 / .3 / .4 · Active Gateway 192.168.1.1 · Controller 192.168.10.22n</li>
     </ol>
     <div class="labfoot">
-      <div><i>ตรวจผล</i><code>show version</code><code>show running-config</code></div>
-      <p class="labgotcha">เข้า Controller ของชุดอื่นคือปัญหาที่เสียเวลาที่สุดของวัน — ดูเลขท้าย IP ให้ตรงชุดตัวเองก่อนกดอะไร</p>
+      <div><i>ตรวจผล</i><code>show version</code><code>show interface brief</code></div>
+      <p class="labgotcha">ทุกคนในชุดใช้ล็อกอิน PNETLAB เดียวกัน — ถ้าสองคนกดพร้อมกันจะแย่ง console ตกลงกันก่อนว่าใครทำตัวไหน</p>
     </div>
   </article>
   <article class="lab">
-    <div class="labhead"><span class="mono labnum">LAB 1</span><h3>รู้จัก CLI ของ AOS-CX</h3><span class="mono labwhere">PNETLAB (สวิตช์จำลอง)</span></div>
-    <p class="labgoal">เดิน context ของ CLI เป็น และตั้งชื่อสวิตช์จำลองของตัวเอง</p>
+    <div class="labhead"><span class="mono labnum">LAB 1</span><h3>ตั้งชื่อและ IP ให้สวิตช์ทั้งสามตัว</h3><span class="mono labwhere">PNETLAB (สวิตช์จำลอง)</span></div>
+    <p class="labgoal">แยกออกว่ากำลังพิมพ์อยู่ที่สวิตช์ตัวไหน และ ping ถึงกันได้ทั้งสามตัว</p>
     <ol class="labsteps">
-      <li>ไล่ context: operator (&gt;) » manager (#) » global config (config)# » interface config</li>
-      <li>ตั้ง hostname เป็นชื่อของตัวเอง จะได้ไม่สับสนกับของเพื่อน<pre class="labcli"><code>configure terminal
-hostname POD1-SIM</code></pre></li>
-      <li>ดู config ปัจจุบันและช่วยเหลือด้วย ? ที่ท้ายคำสั่ง<pre class="labcli"><code>show running-config
-show interface brief</code></pre></li>
-      <li>บันทึก<pre class="labcli"><code>write memory</code></pre></li>
+      <li>ที่ CX-CORE-1/1 ตั้งชื่อและ IP บนพอร์ตที่ต่อหากัน (1/1/5 คือเส้น keepalive)<pre class="labcli"><code>configure terminal
+hostname CX-CORE-1-1
+interface 1/1/5
+    no shutdown
+    ip address 192.168.0.2/24</code></pre></li>
+      <li>ที่ CX-CORE-1/2 ทำแบบเดียวกันแต่เปลี่ยนเลข<pre class="labcli"><code>hostname CX-CORE-1-2
+interface 1/1/5
+    no shutdown
+    ip address 192.168.0.3/24</code></pre></li>
+      <li>ที่ CX-CORE-2 ตั้งชื่อไว้ก่อน ส่วน IP 192.168.0.4 ใช้ตอนทำ LAB 4<pre class="labcli"><code>hostname CX-CORE-2</code></pre></li>
+      <li>ทดสอบว่าคู่ VSX คุยกันได้<pre class="labcli"><code>ping 192.168.0.3</code></pre></li>
+      <li>บันทึกทุกตัว<pre class="labcli"><code>write memory</code></pre></li>
     </ol>
     <div class="labfoot">
-      <div><i>ตรวจผล</i><code>show running-config | include hostname</code><code>show interface brief</code></div>
-      <p class="labgotcha">อยู่ผิด context คือสาเหตุที่คำสั่งขึ้น Invalid input บ่อยที่สุด — ดู prompt ก่อนพิมพ์เสมอ</p>
+      <div><i>ตรวจผล</i><code>show interface brief</code><code>show ip interface brief</code><code>ping 192.168.0.3</code></div>
+      <p class="labgotcha">ping ไม่ผ่านให้ดูก่อนว่าใส่ IP ผิดตัวหรือเปล่า — console ทั้งสามหน้าตาเหมือนกันหมดจนกว่าจะตั้ง hostname</p>
     </div>
   </article>
   <article class="lab">
-    <div class="labhead"><span class="mono labnum">LAB 2</span><h3>VLAN, Access port และ Trunk</h3><span class="mono labwhere">PNETLAB (สวิตช์จำลอง)</span></div>
-    <p class="labgoal">สร้าง VLAN ตั้งพอร์ตเป็น access และ trunk แล้วอ่านผลออก</p>
+    <div class="labhead"><span class="mono labnum">LAB 2</span><h3>VLAN และพอร์ตที่ต่อ PC</h3><span class="mono labwhere">PNETLAB (สวิตช์จำลอง)</span></div>
+    <p class="labgoal">สร้าง VLAN ของผู้ใช้ แล้วเปิดพอร์ตที่ PC ทั้งสามเครื่องเสียบอยู่</p>
     <ol class="labsteps">
-      <li>สร้าง VLAN สองวงพร้อมตั้งชื่อ<pre class="labcli"><code>configure terminal
-vlan 2601
-    name AP-POD1
-vlan 2608
-    name TEACHER</code></pre></li>
-      <li>ตั้งพอร์ตเป็น access ให้ VLAN แรก<pre class="labcli"><code>interface 1/1/1
+      <li>สร้าง VLAN 10 บนสวิตช์ทั้งสามตัว<pre class="labcli"><code>configure terminal
+vlan 10
+    name USERS</code></pre></li>
+      <li>ที่ CX-CORE-1/1 เปิดพอร์ตที่ PC11 เสียบ<pre class="labcli"><code>interface 1/1/3
     no shutdown
     no routing
-    vlan access 2601</code></pre></li>
-      <li>ตั้งพอร์ต uplink เป็น trunk ที่ยอมให้ทั้งสอง VLAN ผ่าน<pre class="labcli"><code>interface 1/1/12
+    vlan access 10</code></pre></li>
+      <li>ที่ CX-CORE-1/2 เปิดพอร์ตที่ PC12 เสียบ<pre class="labcli"><code>interface 1/1/1
+    no shutdown
+    no routing
+    vlan access 10</code></pre></li>
+      <li>ที่ CX-CORE-2 เปิดพอร์ตที่ PC21 เสียบ<pre class="labcli"><code>interface 1/1/3
+    no shutdown
+    no routing
+    vlan access 10</code></pre></li>
+      <li>ตั้ง IP ให้ PC ทั้งสามเครื่องในวง 192.168.1.0/24 (PC11 = .11, PC12 = .12, PC21 = .21) gateway 192.168.1.1 แล้วบันทึก config สวิตช์<pre class="labcli"><code>write memory</code></pre></li>
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i><code>show vlan</code><code>show interface brief</code><code>show mac-address-table</code></div>
+      <p class="labgotcha">ตอนนี้ PC ยังคุยข้ามสวิตช์ไม่ได้ เพราะ VSX กับ LAG ยังไม่ได้ทำ — เป็นเรื่องปกติ ยังไม่ต้องแก้</p>
+    </div>
+  </article>
+  <article class="lab">
+    <div class="labhead"><span class="mono labnum">LAB 3</span><h3>จับคู่ VSX</h3><span class="mono labwhere">PNETLAB (สวิตช์จำลอง)</span></div>
+    <p class="labgoal">ทำให้ CX-CORE-1/1 กับ CX-CORE-1/2 เป็นคู่ VSX ที่มองจากข้างล่างเหมือนสวิตช์ตัวเดียว</p>
+    <ol class="labsteps">
+      <li>สร้าง ISL เป็น LAG บนพอร์ต 1/1/6 — ทำเหมือนกันทั้งสองตัว<pre class="labcli"><code>configure terminal
+interface lag 256
+    no shutdown
+    description VSX-ISL
+    no routing
+    vlan trunk native 1
+    vlan trunk allowed all
+    lacp mode active
+interface 1/1/6
+    no shutdown
+    lag 256</code></pre></li>
+      <li>ที่ CX-CORE-1/1 ตั้งเป็น primary — keepalive วิ่งบน 1/1/5 ที่ใส่ IP ไว้ใน LAB 1<pre class="labcli"><code>vsx
+    system-mac 02:00:00:00:01:00
+    inter-switch-link lag 256
+    role primary
+    keepalive peer 192.168.0.3 source 192.168.0.2</code></pre></li>
+      <li>ที่ CX-CORE-1/2 ตั้งเป็น secondary — system-mac ต้องตรงกัน<pre class="labcli"><code>vsx
+    system-mac 02:00:00:00:01:00
+    inter-switch-link lag 256
+    role secondary
+    keepalive peer 192.168.0.2 source 192.168.0.3</code></pre></li>
+      <li>บันทึกทั้งสองตัว<pre class="labcli"><code>write memory</code></pre></li>
+    </ol>
+    <div class="labfoot">
+      <div><i>ตรวจผล</i><code>show vsx status</code><code>show vsx brief</code><code>show lacp interfaces</code></div>
+      <p class="labgotcha">system-mac ต้องเป็นค่าเดียวกันทั้งคู่ ถ้าใส่ไม่ตรงกัน VSX จะไม่ขึ้น · ISL ใช้ 1/1/6 ส่วน keepalive ใช้ 1/1/5 อย่าสลับกัน</p>
+    </div>
+  </article>
+  <article class="lab">
+    <div class="labhead"><span class="mono labnum">LAB 4</span><h3>Active Gateway และ LAG ลง CX-CORE-2</h3><span class="mono labwhere">PNETLAB (สวิตช์จำลอง)</span></div>
+    <p class="labgoal">ให้ PC ทุกเครื่องใช้ gateway เดียวกัน แล้วเชื่อม CX-CORE-2 ขึ้นคู่ VSX ด้วย LAG เส้นเดียว</p>
+    <ol class="labsteps">
+      <li>ที่ทั้งสองตัวของคู่ VSX สร้าง SVI ของ VLAN 10 แล้วใส่ active gateway (CX-CORE-1/1 ใช้ .2 · CX-CORE-1/2 ใช้ .3)<pre class="labcli"><code>configure terminal
+interface vlan 10
+    ip address 192.168.1.2/24
+    active-gateway ip 192.168.1.1 mac 02:00:00:00:00:01</code></pre></li>
+      <li>ที่คู่ VSX สร้าง multi-chassis LAG ลง CX-CORE-2 — CX-CORE-1/1 ใช้พอร์ต 1/1/1 · CX-CORE-1/2 ใช้ 1/1/2<pre class="labcli"><code>interface lag 1 multi-chassis
     no shutdown
     no routing
     vlan trunk native 1
-    vlan trunk allowed 2601,2608</code></pre></li>
-      <li>บันทึกแล้วอ่านผล<pre class="labcli"><code>write memory</code></pre></li>
-    </ol>
-    <div class="labfoot">
-      <div><i>ตรวจผล</i><code>show vlan</code><code>show interface brief</code><code>show vlan port 1/1/1</code></div>
-      <p class="labgotcha">บนบางรุ่นพอร์ตเป็น routed มาแต่ต้น ถ้าไม่สั่ง no routing คำสั่ง vlan access จะไม่ติด</p>
-    </div>
-  </article>
-  <article class="lab">
-    <div class="labhead"><span class="mono labnum">LAB 3</span><h3>LAG แบบ LACP</h3><span class="mono labwhere">PNETLAB (สวิตช์จำลอง)</span></div>
-    <p class="labgoal">รวมสองพอร์ตเป็นลิงก์เดียว แล้วดูว่า LACP จับคู่สำเร็จหรือไม่</p>
-    <ol class="labsteps">
-      <li>สร้าง LAG แล้วตั้งค่าเหมือน trunk<pre class="labcli"><code>configure terminal
-interface lag 1
-    no shutdown
-    no routing
-    vlan trunk native 1
-    vlan trunk allowed 2601,2608
-    lacp mode active</code></pre></li>
-      <li>ย้ายพอร์ตจริงเข้า LAG<pre class="labcli"><code>interface 1/1/9-1/1/10
+    vlan trunk allowed 10
+    lacp mode active
+interface 1/1/1
     no shutdown
     lag 1</code></pre></li>
-      <li>บันทึกแล้วดูสถานะ<pre class="labcli"><code>write memory</code></pre></li>
+      <li>ที่ CX-CORE-2 สร้าง LAG ธรรมดาแล้วใส่ทั้งสองพอร์ตเข้าไป<pre class="labcli"><code>interface lag 1
+    no shutdown
+    no routing
+    vlan trunk native 1
+    vlan trunk allowed 10
+    lacp mode active
+interface 1/1/1-1/1/2
+    no shutdown
+    lag 1</code></pre></li>
+      <li>ทดสอบ: ping จาก PC21 ไป PC11 และ PC12 ต้องผ่าน และ ping gateway 192.168.1.1 ต้องผ่าน</li>
+      <li>ทดสอบ failover: shutdown พอร์ต 1/1/1 ที่ CX-CORE-1/1 แล้ว ping ต้องยังผ่านอยู่<pre class="labcli"><code>interface 1/1/1
+    shutdown
+    no shutdown</code></pre></li>
     </ol>
     <div class="labfoot">
-      <div><i>ตรวจผล</i><code>show lacp interfaces</code><code>show lacp aggregates</code><code>show interface lag 1</code></div>
-      <p class="labgotcha">สองฝั่งต้องเป็น LACP เหมือนกัน ถ้าฝั่งหนึ่ง active อีกฝั่ง static ลิงก์จะไม่ขึ้น</p>
-    </div>
-  </article>
-  <article class="lab">
-    <div class="labhead"><span class="mono labnum">LAB 4</span><h3>SVI, Routing และ Checkpoint</h3><span class="mono labwhere">PNETLAB (สวิตช์จำลอง)</span></div>
-    <p class="labgoal">ทำให้ VLAN คุยข้ามกันได้ แล้วฝึกย้อน config กลับเมื่อพัง</p>
-    <ol class="labsteps">
-      <li>สร้าง SVI ให้ VLAN แล้วใส่ IP<pre class="labcli"><code>configure terminal
-interface vlan 2601
-    ip address 10.26.1.1/24
-interface vlan 2608
-    ip address 10.26.8.1/24</code></pre></li>
-      <li>เปิด routing แล้วดูตาราง<pre class="labcli"><code>show ip route
-show ip interface brief</code></pre></li>
-      <li>เก็บ checkpoint ก่อนลองพัง<pre class="labcli"><code>copy running-config checkpoint SAFE</code></pre></li>
-      <li>ลองลบ SVI ทิ้งแล้วย้อนกลับ<pre class="labcli"><code>no interface vlan 2601
-checkpoint rollback SAFE</code></pre></li>
-    </ol>
-    <div class="labfoot">
-      <div><i>ตรวจผล</i><code>show ip route</code><code>show checkpoint</code><code>show ip interface brief</code></div>
-      <p class="labgotcha">ทำ checkpoint ก่อนทุกครั้งที่จะลองอะไรแรง ๆ — บน simulator ย้อนได้ บนของจริงบางทีไม่ทัน</p>
+      <div><i>ตรวจผล</i><code>show vsx status</code><code>show lacp interfaces</code><code>show ip interface brief</code><code>show ip route</code></div>
+      <p class="labgotcha">active-gateway ต้องใส่ทั้งสองตัวและ mac ต้องตรงกัน ไม่งั้น PC จะเห็น gateway หายไปตอน failover</p>
     </div>
   </article>
   <article class="lab">
@@ -969,7 +1087,7 @@ checkpoint rollback SAFE</code></pre></li>
   <div class="wrap">
     <div>Aruba Campus Network Training · <b>RMUTT × Commserv Siam</b> · 26 ส.ค. 2569</div>
     <div>กด <b>Ctrl/Cmd + P</b> เพื่อพิมพ์หรือบันทึกเป็น PDF</div>
-    <div><a href="slides/rmutt-2026-08.pdf" download>ดาวน์โหลดสไลด์อบรม (PDF · 121 หน้า · 14 MB)</a></div>
+    <div><a href="slides/rmutt-2026-08.pdf" download>ดาวน์โหลดสไลด์อบรม (PDF · 126 หน้า · 14 MB)</a></div>
   </div>
 </footer>
 

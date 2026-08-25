@@ -19,6 +19,7 @@ RMUTT × Commserv Siam · 26 สิงหาคม 2569 · Royal Hills Golf Reso
 | `index.html` | เว็บไซต์ไฟล์เดียว (ฝัง SVG ทั้งสองผังไว้ในตัว) | `src/` |
 | `diagrams/01_Overview_Campus_Architecture.svg` | ภาพรวมสถาปัตยกรรม Campus: Switch + Controller + AP และเส้นทางเดินของ traffic | `src/courses/*.json` + `src/lib/svg-overview.mjs` |
 | `diagrams/02_Lab_Topology.svg` | ผัง Lab: ชุดนักศึกษา + ชุดผู้สอน พร้อมตารางแจก Controller / AP VLAN | `src/courses/*.json` + `src/lib/svg-lab.mjs` |
+| `diagrams/03_Lab_Switch_PNETLAB.svg` | ผัง Switch lab ใน PNETLAB: VSX pair + Active Gateway + LAG ลง CX-CORE-2 | `src/courses/*.json` + `src/lib/svg-switch-lab.mjs` |
 | `diagrams/*.png` | PNG ความละเอียด 2x สำหรับแปะสไลด์ (CI export ให้) | — |
 | `configs/POD1.txt` … `POD7.txt`, `TEACHER.txt` | Golden config ของ Controller VM แต่ละชุด | `src/events/*.json` (บล็อก `lab`) |
 | `configs/SWITCH.txt` | Golden config ของสวิตช์กลาง CX 6100 (ผู้สอนวาง) | `src/events/*.json` (บล็อก `lab`) |
@@ -56,6 +57,14 @@ node build.mjs
 | ปลายทาง | Campus AP ชุดละ 1 ตัว เสียบ CX 6100 พอร์ตของชุดนั้น | นักศึกษา (onboard) |
 
 Module 1 (สวิตช์) ฝึกบน **PNETLAB** ไม่ใช่สวิตช์จริง เพราะ CX 6100 เป็นทางผ่านของทุกชุด
+
+ห้องแลบ PNETLAB ของแต่ละชุดมีสวิตช์จำลอง 3 ตัว (CX-CORE-1/1, CX-CORE-1/2, CX-CORE-2) กับ PC 3 เครื่อง
+จึงทำ **VSX pair + keepalive + Active Gateway + multi-chassis LAG** ได้จริง — ดู `diagrams/03_Lab_Switch_PNETLAB.svg`
+
+| | |
+|---|---|
+| PNETLAB | `http://10.69.11.10/` |
+| ผู้ใช้ | `pod1` – `pod7` (ตามชุด) |
 
 ## การจัด Controller / VLAN ต่อชุด
 
@@ -119,7 +128,7 @@ Pages ตั้งเป็น **Deploy from a branch · main · /(root)** เ�
 - ผังทั้งสองใบ กดเพื่อขยายเต็มจอ (ล้อเมาส์ซูม ลากเลื่อน Esc ปิด) และดาวน์โหลด SVG ได้
 - ตารางแผน VLAN / IP
 - Golden config รายชุด — เลือกแท็บชุดตัวเอง กดคัดลอก วางลง CLI ได้เลย
-- Lab ทีละขั้น — บอกด้วยว่าแต่ละ Lab ทำที่เครื่องไหน (PNETLAB / Controller VM)
+- Lab ทีละขั้น — บอกด้วยว่าแต่ละ Lab ทำที่เครื่องไหน (PNETLAB / Controller VM) พร้อมผัง PNETLAB
 - กำหนดการอบรม และลิงก์ดาวน์โหลดสไลด์ PDF
 
 ## โครงสร้าง
@@ -134,6 +143,7 @@ src/
     page.mjs                    โครงหน้า HTML + CSS + สคริปต์
     svg-overview.mjs            ผัง FIG.01
     svg-lab.mjs                 ผัง FIG.02
+    svg-switch-lab.mjs          ผัง FIG.03 (PNETLAB)
 build.mjs                       ตัว build
 tools/check-layout.mjs          จับกล่องทับกัน/หลุดขอบในผัง
 ```

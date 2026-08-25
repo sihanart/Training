@@ -3,6 +3,7 @@
 
 import { esc, t, inlineCode } from './util.mjs';
 import { labPods, podConfig } from './lab-config.mjs';
+import { switchLabSvg } from './svg-switch-lab.mjs';
 import { overviewSvg } from './svg-overview.mjs';
 import { labSvg } from './svg-lab.mjs';
 import { cloudOverviewSvg } from './svg-cloud-overview.mjs';
@@ -364,9 +365,10 @@ ${captions(notes, vars)}
  * The step-by-step labs. Each one names the box it runs on, because half the
  * time lost in a lab is spent typing the right command at the wrong device.
  */
-const labsSection = (sec, guide, vars) => `
+const labsSection = (sec, guide, vars, course) => `
 <section id="labs">
 ${sechead(sec, vars)}
+${course.switchLab ? figure(course.switchLab.figLabel, 'svg-switchlab', course.switchLab.fileName, switchLabSvg(course, vars)) : ''}
   <p class="hint">${inlineCode(guide.intro, vars)}</p>
   <p class="hint">${inlineCode(guide.note, vars)}</p>
 ${guide.labs.map((l) => `  <article class="lab">
@@ -478,7 +480,7 @@ ${vlanRows.map(([vid, name, subnet, note]) => `<tr><td class="mono vid">${esc(vi
   <p class="hint">${inlineCode(course.vlanHint, vars)}</p>
 </section>
 ${event.lab ? configSection(s.config, event.lab, course.configNotes, vars) : ''}
-${course.labGuide ? labsSection(s.labs, course.labGuide, vars) : ''}
+${course.labGuide ? labsSection(s.labs, course.labGuide, vars, course) : ''}
 <section id="agenda">
 ${sechead(s.agenda, vars)}
   <ol class="agenda">

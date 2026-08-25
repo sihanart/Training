@@ -459,110 +459,134 @@
     }
   ],
   "labGuide": {
-    "intro": "Module 1 ฝึกบน {{simulator}} ของตัวเอง — สวิตช์จำลองคนละตัว พังได้ไม่กระทบใคร · Module 2 ทำบน Controller VM ของชุดตัวเอง ค่าที่ต้องแทนอยู่ในหัวข้อ Config ด้านบน (n = หมายเลข Pod) ตัวอย่างในหน้านี้ใช้ POD 1 ทั้งหมด",
+    "intro": "Module 1 ฝึกบน {{simulator}} — ห้องแลบของชุดตัวเองมีสวิตช์จำลอง 3 ตัวและ PC 3 เครื่อง ทำ VSX ได้จริง พังได้ reset ใหม่ได้ · Module 2 ทำบน Controller VM ของชุดตัวเอง ค่าที่ต้องแทนอยู่ในหัวข้อ Config ด้านบน (n = หมายเลข Pod)",
     "note": "อุปกรณ์จริงที่ใช้ร่วมกัน — {{rapHead}} (หัวสาย RAP), {{rap}} และ {{switch}} — ผู้สอนเป็นคนคุม เพราะเป็นทางผ่านของทุกชุด · งานนี้ไม่มี ClearPass จึงทำ 802.1X เฉพาะฝั่ง WLAN และไม่มี VSF stacking เพราะสวิตช์จริงมีตัวเดียว",
     "labs": [
       {
         "id": "lab0",
         "num": "LAB 0",
-        "title": "หาชุดของตัวเองและเปิดเครื่องมือให้ครบ",
+        "title": "เข้า PNETLAB และเปิดเครื่องมือให้ครบ",
         "where": "ที่โต๊ะ",
-        "goal": "รู้ว่าตัวเองคือชุดไหน เปิด PNETLAB ได้ และเข้า Controller VM ของชุดตัวเองได้",
+        "goal": "เข้าห้องแลบของชุดตัวเองได้ เห็นสวิตช์ครบสามตัว และเข้า Controller VM ของชุดได้",
         "steps": [
           {
-            "text": "ดูหมายเลขชุดที่โต๊ะ แล้วเปิดหัวข้อ Config ด้านบน เลือกแท็บของชุดตัวเอง — ค่าทุกตัวในวันนี้อ้างจากตารางนั้น"
+            "text": "เปิด http://10.69.11.10/ แล้วล็อกอินด้วยผู้ใช้ของชุดตัวเอง — POD 1 ใช้ pod1 รหัส P@ssw0rd"
           },
           {
-            "text": "เปิด PNETLAB ในเบราว์เซอร์ แล้วเข้าสวิตช์จำลองของตัวเอง (คนละตัวกับเพื่อน)"
+            "text": "เปิด lab ของชุดตัวเอง กด START แล้วรอให้ทั้งสามสวิตช์ขึ้น"
+          },
+          {
+            "text": "คลิกที่สวิตช์เพื่อเปิด console — เริ่มที่ CX-CORE-1/1"
           },
           {
             "text": "เปิดอีกแท็บ เข้าเว็บ Controller VM ของชุดตัวเอง เช่น POD 1 » https://192.168.10.221:4343"
           },
           {
-            "text": "จดไว้ให้เห็นตลอดวัน: Pod n · AP VLAN 260n · Controller 192.168.10.22n · Subnet 10.26.n.0/24"
+            "text": "จดไว้: สวิตช์ 192.168.0.2 / .3 / .4 · Active Gateway 192.168.1.1 · Controller 192.168.10.22n"
           }
         ],
         "verify": [
           "show version",
-          "show running-config"
+          "show interface brief"
         ],
-        "gotcha": "เข้า Controller ของชุดอื่นคือปัญหาที่เสียเวลาที่สุดของวัน — ดูเลขท้าย IP ให้ตรงชุดตัวเองก่อนกดอะไร"
+        "gotcha": "ทุกคนในชุดใช้ล็อกอิน PNETLAB เดียวกัน — ถ้าสองคนกดพร้อมกันจะแย่ง console ตกลงกันก่อนว่าใครทำตัวไหน"
       },
       {
         "id": "lab1",
         "num": "LAB 1",
-        "title": "รู้จัก CLI ของ AOS-CX",
+        "title": "ตั้งชื่อและ IP ให้สวิตช์ทั้งสามตัว",
         "where": "PNETLAB (สวิตช์จำลอง)",
-        "goal": "เดิน context ของ CLI เป็น และตั้งชื่อสวิตช์จำลองของตัวเอง",
+        "goal": "แยกออกว่ากำลังพิมพ์อยู่ที่สวิตช์ตัวไหน และ ping ถึงกันได้ทั้งสามตัว",
         "steps": [
           {
-            "text": "ไล่ context: operator (>) » manager (#) » global config (config)# » interface config"
-          },
-          {
-            "text": "ตั้ง hostname เป็นชื่อของตัวเอง จะได้ไม่สับสนกับของเพื่อน",
+            "text": "ที่ CX-CORE-1/1 ตั้งชื่อและ IP บนพอร์ตที่ต่อหากัน (1/1/5 คือเส้น keepalive)",
             "cli": [
               "configure terminal",
-              "hostname POD1-SIM"
+              "hostname CX-CORE-1-1",
+              "interface 1/1/5",
+              "    no shutdown",
+              "    ip address 192.168.0.2/24"
             ]
           },
           {
-            "text": "ดู config ปัจจุบันและช่วยเหลือด้วย ? ที่ท้ายคำสั่ง",
+            "text": "ที่ CX-CORE-1/2 ทำแบบเดียวกันแต่เปลี่ยนเลข",
             "cli": [
-              "show running-config",
-              "show interface brief"
+              "hostname CX-CORE-1-2",
+              "interface 1/1/5",
+              "    no shutdown",
+              "    ip address 192.168.0.3/24"
             ]
           },
           {
-            "text": "บันทึก",
+            "text": "ที่ CX-CORE-2 ตั้งชื่อไว้ก่อน ส่วน IP 192.168.0.4 ใช้ตอนทำ LAB 4",
+            "cli": [
+              "hostname CX-CORE-2"
+            ]
+          },
+          {
+            "text": "ทดสอบว่าคู่ VSX คุยกันได้",
+            "cli": [
+              "ping 192.168.0.3"
+            ]
+          },
+          {
+            "text": "บันทึกทุกตัว",
             "cli": [
               "write memory"
             ]
           }
         ],
         "verify": [
-          "show running-config | include hostname",
-          "show interface brief"
+          "show interface brief",
+          "show ip interface brief",
+          "ping 192.168.0.3"
         ],
-        "gotcha": "อยู่ผิด context คือสาเหตุที่คำสั่งขึ้น Invalid input บ่อยที่สุด — ดู prompt ก่อนพิมพ์เสมอ"
+        "gotcha": "ping ไม่ผ่านให้ดูก่อนว่าใส่ IP ผิดตัวหรือเปล่า — console ทั้งสามหน้าตาเหมือนกันหมดจนกว่าจะตั้ง hostname"
       },
       {
         "id": "lab2",
         "num": "LAB 2",
-        "title": "VLAN, Access port และ Trunk",
+        "title": "VLAN และพอร์ตที่ต่อ PC",
         "where": "PNETLAB (สวิตช์จำลอง)",
-        "goal": "สร้าง VLAN ตั้งพอร์ตเป็น access และ trunk แล้วอ่านผลออก",
+        "goal": "สร้าง VLAN ของผู้ใช้ แล้วเปิดพอร์ตที่ PC ทั้งสามเครื่องเสียบอยู่",
         "steps": [
           {
-            "text": "สร้าง VLAN สองวงพร้อมตั้งชื่อ",
+            "text": "สร้าง VLAN 10 บนสวิตช์ทั้งสามตัว",
             "cli": [
               "configure terminal",
-              "vlan 2601",
-              "    name AP-POD1",
-              "vlan 2608",
-              "    name TEACHER"
+              "vlan 10",
+              "    name USERS"
             ]
           },
           {
-            "text": "ตั้งพอร์ตเป็น access ให้ VLAN แรก",
+            "text": "ที่ CX-CORE-1/1 เปิดพอร์ตที่ PC11 เสียบ",
+            "cli": [
+              "interface 1/1/3",
+              "    no shutdown",
+              "    no routing",
+              "    vlan access 10"
+            ]
+          },
+          {
+            "text": "ที่ CX-CORE-1/2 เปิดพอร์ตที่ PC12 เสียบ",
             "cli": [
               "interface 1/1/1",
               "    no shutdown",
               "    no routing",
-              "    vlan access 2601"
+              "    vlan access 10"
             ]
           },
           {
-            "text": "ตั้งพอร์ต uplink เป็น trunk ที่ยอมให้ทั้งสอง VLAN ผ่าน",
+            "text": "ที่ CX-CORE-2 เปิดพอร์ตที่ PC21 เสียบ",
             "cli": [
-              "interface 1/1/12",
+              "interface 1/1/3",
               "    no shutdown",
               "    no routing",
-              "    vlan trunk native 1",
-              "    vlan trunk allowed 2601,2608"
+              "    vlan access 10"
             ]
           },
           {
-            "text": "บันทึกแล้วอ่านผล",
+            "text": "ตั้ง IP ให้ PC ทั้งสามเครื่องในวง 192.168.1.0/24 (PC11 = .11, PC12 = .12, PC21 = .21) gateway 192.168.1.1 แล้วบันทึก config สวิตช์",
             "cli": [
               "write memory"
             ]
@@ -571,95 +595,130 @@
         "verify": [
           "show vlan",
           "show interface brief",
-          "show vlan port 1/1/1"
+          "show mac-address-table"
         ],
-        "gotcha": "บนบางรุ่นพอร์ตเป็น routed มาแต่ต้น ถ้าไม่สั่ง no routing คำสั่ง vlan access จะไม่ติด"
+        "gotcha": "ตอนนี้ PC ยังคุยข้ามสวิตช์ไม่ได้ เพราะ VSX กับ LAG ยังไม่ได้ทำ — เป็นเรื่องปกติ ยังไม่ต้องแก้"
       },
       {
         "id": "lab3",
         "num": "LAB 3",
-        "title": "LAG แบบ LACP",
+        "title": "จับคู่ VSX",
         "where": "PNETLAB (สวิตช์จำลอง)",
-        "goal": "รวมสองพอร์ตเป็นลิงก์เดียว แล้วดูว่า LACP จับคู่สำเร็จหรือไม่",
+        "goal": "ทำให้ CX-CORE-1/1 กับ CX-CORE-1/2 เป็นคู่ VSX ที่มองจากข้างล่างเหมือนสวิตช์ตัวเดียว",
         "steps": [
           {
-            "text": "สร้าง LAG แล้วตั้งค่าเหมือน trunk",
+            "text": "สร้าง ISL เป็น LAG บนพอร์ต 1/1/6 — ทำเหมือนกันทั้งสองตัว",
             "cli": [
               "configure terminal",
-              "interface lag 1",
+              "interface lag 256",
               "    no shutdown",
+              "    description VSX-ISL",
               "    no routing",
               "    vlan trunk native 1",
-              "    vlan trunk allowed 2601,2608",
-              "    lacp mode active"
-            ]
-          },
-          {
-            "text": "ย้ายพอร์ตจริงเข้า LAG",
-            "cli": [
-              "interface 1/1/9-1/1/10",
+              "    vlan trunk allowed all",
+              "    lacp mode active",
+              "interface 1/1/6",
               "    no shutdown",
-              "    lag 1"
+              "    lag 256"
             ]
           },
           {
-            "text": "บันทึกแล้วดูสถานะ",
+            "text": "ที่ CX-CORE-1/1 ตั้งเป็น primary — keepalive วิ่งบน 1/1/5 ที่ใส่ IP ไว้ใน LAB 1",
+            "cli": [
+              "vsx",
+              "    system-mac 02:00:00:00:01:00",
+              "    inter-switch-link lag 256",
+              "    role primary",
+              "    keepalive peer 192.168.0.3 source 192.168.0.2"
+            ]
+          },
+          {
+            "text": "ที่ CX-CORE-1/2 ตั้งเป็น secondary — system-mac ต้องตรงกัน",
+            "cli": [
+              "vsx",
+              "    system-mac 02:00:00:00:01:00",
+              "    inter-switch-link lag 256",
+              "    role secondary",
+              "    keepalive peer 192.168.0.2 source 192.168.0.3"
+            ]
+          },
+          {
+            "text": "บันทึกทั้งสองตัว",
             "cli": [
               "write memory"
             ]
           }
         ],
         "verify": [
-          "show lacp interfaces",
-          "show lacp aggregates",
-          "show interface lag 1"
+          "show vsx status",
+          "show vsx brief",
+          "show lacp interfaces"
         ],
-        "gotcha": "สองฝั่งต้องเป็น LACP เหมือนกัน ถ้าฝั่งหนึ่ง active อีกฝั่ง static ลิงก์จะไม่ขึ้น"
+        "gotcha": "system-mac ต้องเป็นค่าเดียวกันทั้งคู่ ถ้าใส่ไม่ตรงกัน VSX จะไม่ขึ้น · ISL ใช้ 1/1/6 ส่วน keepalive ใช้ 1/1/5 อย่าสลับกัน"
       },
       {
         "id": "lab4",
         "num": "LAB 4",
-        "title": "SVI, Routing และ Checkpoint",
+        "title": "Active Gateway และ LAG ลง CX-CORE-2",
         "where": "PNETLAB (สวิตช์จำลอง)",
-        "goal": "ทำให้ VLAN คุยข้ามกันได้ แล้วฝึกย้อน config กลับเมื่อพัง",
+        "goal": "ให้ PC ทุกเครื่องใช้ gateway เดียวกัน แล้วเชื่อม CX-CORE-2 ขึ้นคู่ VSX ด้วย LAG เส้นเดียว",
         "steps": [
           {
-            "text": "สร้าง SVI ให้ VLAN แล้วใส่ IP",
+            "text": "ที่ทั้งสองตัวของคู่ VSX สร้าง SVI ของ VLAN 10 แล้วใส่ active gateway (CX-CORE-1/1 ใช้ .2 · CX-CORE-1/2 ใช้ .3)",
             "cli": [
               "configure terminal",
-              "interface vlan 2601",
-              "    ip address 10.26.1.1/24",
-              "interface vlan 2608",
-              "    ip address 10.26.8.1/24"
+              "interface vlan 10",
+              "    ip address 192.168.1.2/24",
+              "    active-gateway ip 192.168.1.1 mac 02:00:00:00:00:01"
             ]
           },
           {
-            "text": "เปิด routing แล้วดูตาราง",
+            "text": "ที่คู่ VSX สร้าง multi-chassis LAG ลง CX-CORE-2 — CX-CORE-1/1 ใช้พอร์ต 1/1/1 · CX-CORE-1/2 ใช้ 1/1/2",
             "cli": [
-              "show ip route",
-              "show ip interface brief"
+              "interface lag 1 multi-chassis",
+              "    no shutdown",
+              "    no routing",
+              "    vlan trunk native 1",
+              "    vlan trunk allowed 10",
+              "    lacp mode active",
+              "interface 1/1/1",
+              "    no shutdown",
+              "    lag 1"
             ]
           },
           {
-            "text": "เก็บ checkpoint ก่อนลองพัง",
+            "text": "ที่ CX-CORE-2 สร้าง LAG ธรรมดาแล้วใส่ทั้งสองพอร์ตเข้าไป",
             "cli": [
-              "copy running-config checkpoint SAFE"
+              "interface lag 1",
+              "    no shutdown",
+              "    no routing",
+              "    vlan trunk native 1",
+              "    vlan trunk allowed 10",
+              "    lacp mode active",
+              "interface 1/1/1-1/1/2",
+              "    no shutdown",
+              "    lag 1"
             ]
           },
           {
-            "text": "ลองลบ SVI ทิ้งแล้วย้อนกลับ",
+            "text": "ทดสอบ: ping จาก PC21 ไป PC11 และ PC12 ต้องผ่าน และ ping gateway 192.168.1.1 ต้องผ่าน"
+          },
+          {
+            "text": "ทดสอบ failover: shutdown พอร์ต 1/1/1 ที่ CX-CORE-1/1 แล้ว ping ต้องยังผ่านอยู่",
             "cli": [
-              "no interface vlan 2601",
-              "checkpoint rollback SAFE"
+              "interface 1/1/1",
+              "    shutdown",
+              "    no shutdown"
             ]
           }
         ],
         "verify": [
-          "show ip route",
-          "show checkpoint",
-          "show ip interface brief"
+          "show vsx status",
+          "show lacp interfaces",
+          "show ip interface brief",
+          "show ip route"
         ],
-        "gotcha": "ทำ checkpoint ก่อนทุกครั้งที่จะลองอะไรแรง ๆ — บน simulator ย้อนได้ บนของจริงบางทีไม่ทัน"
+        "gotcha": "active-gateway ต้องใส่ทั้งสองตัวและ mac ต้องตรงกัน ไม่งั้น PC จะเห็น gateway หายไปตอน failover"
       },
       {
         "id": "lab5",
@@ -886,6 +945,96 @@
         ],
         "gotcha": "สามตัวนี้เป็นทางผ่านของทุกชุด ถ้าล้มคือล้มทั้งห้อง — จึงเป็นของผู้สอน ส่วนที่ฝึกพิมพ์อยู่บน PNETLAB"
       }
+    ]
+  },
+  "switchLab": {
+    "figLabel": "FIG.03 — PNETLAB SWITCH LAB",
+    "fileName": "03_Lab_Switch_PNETLAB",
+    "heading": "Switch Lab บน {{simulator}}",
+    "subTail": "VSX pair + Active Gateway · สวิตช์จำลอง 3 ตัวและ PC 3 เครื่องต่อชุด",
+    "access": {
+      "title": "เข้าใช้งาน {{simulator}}",
+      "rows": [
+        [
+          "URL",
+          "http://10.69.11.10/"
+        ],
+        [
+          "ผู้ใช้",
+          "pod1 – pod7 (ตามชุดตัวเอง)"
+        ],
+        [
+          "รหัสผ่าน",
+          "P@ssw0rd"
+        ]
+      ],
+      "note": "ทุกคนในชุดใช้ล็อกอินเดียวกัน — ตกลงกันก่อนว่าใครกดอะไร"
+    },
+    "nodes": {
+      "sw1": {
+        "name": "CX-CORE-1/1",
+        "ip": "192.168.0.2/24"
+      },
+      "sw2": {
+        "name": "CX-CORE-1/2",
+        "ip": "192.168.0.3/24"
+      },
+      "sw3": {
+        "name": "CX-CORE-2",
+        "ip": "192.168.0.4/24"
+      },
+      "pc11": {
+        "name": "PC11"
+      },
+      "pc12": {
+        "name": "PC12"
+      },
+      "pc21": {
+        "name": "PC21"
+      }
+    },
+    "vsxLabel": "VSX",
+    "kaLabel": "KA",
+    "agLabel": "Active Gateway",
+    "agIp": "192.168.1.1/24",
+    "plan": {
+      "title": "ค่าที่ใช้ในผังนี้",
+      "cols": [
+        "รายการ",
+        "ค่า"
+      ],
+      "rows": [
+        [
+          "CX-CORE-1/1 · CX-CORE-1/2",
+          "192.168.0.2 · 192.168.0.3"
+        ],
+        [
+          "CX-CORE-2",
+          "192.168.0.4"
+        ],
+        [
+          "Active Gateway (VSX pair)",
+          "192.168.1.1/24"
+        ],
+        [
+          "VSX ISL",
+          "1/1/6 ↔ 1/1/6"
+        ],
+        [
+          "VSX Keepalive",
+          "1/1/5 ↔ 1/1/5"
+        ],
+        [
+          "ลงไป CX-CORE-2",
+          "1/1/1 และ 1/1/2"
+        ]
+      ]
+    },
+    "notes": [
+      "สวิตช์สามตัวเป็น VM คนละชุดกับเพื่อน — พังได้ reset ใหม่ได้",
+      "CX-CORE-1/1 กับ CX-CORE-1/2 จับคู่เป็น VSX",
+      "CX-CORE-2 มองขึ้นไปเห็น VSX pair เป็นสวิตช์ตัวเดียว",
+      "PC11 » 1/1/3 · PC12 » 1/1/1 · PC21 » 1/1/3"
     ]
   }
 }
