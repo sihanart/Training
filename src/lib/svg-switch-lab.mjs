@@ -42,8 +42,8 @@ const sw = (x, y, node) =>
 
 /** A PC box. */
 const pc = (x, y, node) =>
-  `<rect x="${x}" y="${y}" width="120" height="52" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>` +
-  `<text class="lbl2" x="${x + 60}" y="${y + 32}" text-anchor="middle">${esc(node.name)}</text>`;
+  `<rect x="${x}" y="${y}" width="110" height="52" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>` +
+  `<text class="lbl2" x="${x + 55}" y="${y + 32}" text-anchor="middle">${esc(node.name)}</text>`;
 
 export function switchLabSvg(course, vars) {
   const s = course.switchLab;
@@ -74,22 +74,22 @@ ${port(428, 252, '1/1/6')}${port(552, 252, '1/1/6')}
 <text class="lbl2" x="490" y="278" text-anchor="middle" fill="#0E7C86">${esc(s.vsxLabel)}</text>
 
 <!-- PCs on the pair -->
-${pc(40, 206, n.pc11)}
-<line class="link" x1="160" y1="232" x2="200" y2="232"/>
-${port(180, 232, '1/1/3')}
+${pc(20, 206, n.pc11)}
+<line class="link" x1="130" y1="232" x2="200" y2="232"/>
+${port(165, 232, '1/1/3')}
 
-${pc(850, 206, n.pc12)}
-<line class="link" x1="780" y1="232" x2="850" y2="232"/>
-${port(815, 232, '1/1/1')}
+${pc(860, 206, n.pc12)}
+<line class="link" x1="780" y1="232" x2="860" y2="232"/>
+${port(820, 232, '1/1/1')}
 
 <!-- down to the second core -->
 ${sw(440, 430, n.sw3)}
-<path class="link" d="M300 268 L 300 350 L 490 350 L 490 430"/>
-${port(300, 300, '1/1/1')}${port(490, 400, '1/1/1')}
-<path class="link" d="M680 268 L 680 350 L 590 350 L 590 430"/>
-${port(680, 300, '1/1/2')}${port(590, 400, '1/1/2')}
+<line class="link" x1="300" y1="268" x2="490" y2="430"/>
+${port(338, 301, '1/1/1')}${port(452, 398, '1/1/1')}
+<line class="link" x1="680" y1="268" x2="590" y2="430"/>
+${port(662, 301, '1/1/2')}${port(608, 398, '1/1/2')}
 
-${pc(480, 600, n.pc21)}
+${pc(485, 600, n.pc21)}
 <line class="link" x1="540" y1="502" x2="540" y2="600"/>
 ${port(540, 550, '1/1/3')}
 
