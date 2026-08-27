@@ -11,8 +11,8 @@
 </defs>
 
 <rect width="1440" height="1000" fill="#FFFFFF"/>
-<text class="h1" x="40" y="48">Aruba CX Switch + WLAN Basic — Lab Topology</text>
-<text class="sub" x="40" y="74">IT Green — Authorized Aruba (HPE) Networking Training · 3 ก.ย. 2569 · ครึ่งเช้าอยู่ใน PNETLAB · ครึ่งบ่ายอยู่บน Controller VM ของชุด</text>
+<text class="h1" x="40" y="48">Aruba Campus Network Training — Lab Topology</text>
+<text class="sub" x="40" y="74">RMUTT × Commserv Siam · 26 ส.ค. 2569 · RAP จบที่ Aruba 9004-LTE · Campus AP จบที่ Controller VM ของชุดตัวเอง · 7 ชุดนักศึกษา + 1 ชุดผู้สอน</text>
 <line x1="40" y1="90" x2="1400" y2="90" stroke="#E1E9EF" stroke-width="2"/>
 
 <!-- everything virtual lives on the one host -->
@@ -22,7 +22,7 @@
 
 <rect x="84" y="178" width="512" height="300" rx="10" fill="#FFF3E6" stroke="#FF8300" stroke-width="2.5"/>
 <text class="lbl2" x="102" y="204">Mobility Controller (VM) — 1 ตัวต่อ 1 ชุด</text>
-<text class="th" x="102" y="226">ชุด</text><text class="th" x="212" y="226">MGMT</text><text class="th" x="376" y="226">AP VLAN</text>
+<text class="th" x="102" y="226">ชุด</text><text class="th" x="212" y="226">CONTROLLER IP</text><text class="th" x="376" y="226">AP VLAN</text>
 <line x1="102" y1="231" x2="578" y2="231" stroke="#F0D6BC"/>
 <rect x="102" y="235" width="476" height="24" fill="#FFFAF4"/><text class="td" x="112" y="252">POD 1</text><text class="td mono2" x="212" y="252">192.168.10.221</text><text class="td mono2" x="376" y="252">VLAN 2601</text>
 <rect x="102" y="259" width="476" height="24" fill="#FFFFFF"/><text class="td" x="112" y="276">POD 2</text><text class="td mono2" x="212" y="276">192.168.10.222</text><text class="td mono2" x="376" y="276">VLAN 2602</text>
@@ -32,19 +32,19 @@
 <rect x="102" y="355" width="476" height="24" fill="#FFFFFF"/><text class="td" x="112" y="372">POD 6</text><text class="td mono2" x="212" y="372">192.168.10.226</text><text class="td mono2" x="376" y="372">VLAN 2606</text>
 <rect x="102" y="379" width="476" height="24" fill="#FFFAF4"/><text class="td" x="112" y="396">POD 7</text><text class="td mono2" x="212" y="396">192.168.10.227</text><text class="td mono2" x="376" y="396">VLAN 2607</text>
 <rect x="102" y="403" width="476" height="24" fill="#FFE8CC"/><text class="td tteach" x="112" y="420">TEACHER</text><text class="td mono2" x="212" y="420">192.168.10.133</text><text class="td mono2" x="376" y="420">VLAN 2608</text>
-<text class="tiny" x="102" y="446">แต่ละตัวเป็น DHCP + NAT ของ AP VLAN ตัวเอง (10.26.n.0/24)</text>
-<text class="tiny" x="102" y="464">ใช้ในช่วงบ่ายทั้งหมด — LAB 8 ถึง LAB 14</text>
+<text class="tiny" x="102" y="446">แต่ละตัวเป็น DHCP + NAT ของ AP VLAN ตัวเอง (10.26.n.0/24) · ผู้สอนเตรียมไว้ให้แล้ว</text>
+<text class="tiny" x="102" y="464">เป็นปลายทาง GRE ของ Campus AP ในชุดนั้น</text>
 
 <rect x="84" y="500" width="512" height="226" rx="10" fill="#F3F7FA" stroke="#4A6274" stroke-width="2.5"/>
 <text class="lbl2" x="102" y="526">PNETLAB — Switch simulator</text>
-<text class="role" x="102" y="552">• ห้องแลบของแต่ละชุดมีสวิตช์จำลอง 3 ตัว</text>
-<text class="role" x="102" y="574">• PC 3 เครื่อง อยู่คนละ VLAN คนละวง</text>
-<text class="role" x="102" y="596">• ใช้ในช่วงเช้าทั้งหมด — LAB 1 ถึง LAB 7</text>
-<text class="role" x="102" y="618">• พัง reset ใหม่ได้ ไม่กระทบชุดอื่น</text>
+<text class="role" x="102" y="552">• VM สวิตช์จำลอง 1 ตัวต่อนักศึกษา 1 คน</text>
+<text class="role" x="102" y="574">• เข้าผ่านเบราว์เซอร์ ไม่ต้องต่อสายอะไร</text>
+<text class="role" x="102" y="596">• ใช้ทำ Module 1 ทั้งหมด — VLAN, Trunk, LAG, SVI, routing</text>
+<text class="role" x="102" y="618">• พังได้ไม่กลัว reset แล้วเริ่มใหม่ได้</text>
 <line x1="102" y1="640" x2="578" y2="640" stroke="#CBD8E2"/>
 <text class="lbl2" x="102" y="664">ทำไมไม่ฝึกบนสวิตช์จริง</text>
 <text class="role" x="102" y="688">Aruba CX 6100 มี 12 พอร์ตและเป็นทางผ่านของทุกชุด</text>
-<text class="role" x="102" y="708">ถ้าให้ทุกคนแตะ VLAN บนตัวเดียวกัน ทั้งห้องหลุดพร้อมกัน</text>
+<text class="role" x="102" y="708">ถ้าใครพิมพ์ผิดจะล้มทั้งห้อง จึงแยกที่ฝึกไปไว้บน simulator</text>
 
 <!-- the only box the remote AP tunnels to -->
 <rect x="672" y="150" width="316" height="130" rx="10" fill="#FDECEC" stroke="#C0504D" stroke-width="2.5"/>
@@ -52,8 +52,8 @@
 <text class="tag" x="686" y="168">CONTROLLER — หัวสาย RAP</text>
 <text class="lbl2" x="686" y="200">Aruba 9004-LTE</text>
 <text class="role" x="686" y="222">ตัวจริง · จบ IPsec tunnel ของ AP-515</text>
-<text class="role" x="686" y="242">พาทั้งห้องออกเน็ต</text>
-<text class="role" x="686" y="262">ผู้สอนคุม — ไม่มีใน LAB ของผู้เข้าอบรม</text>
+<text class="role" x="686" y="242">ดึงไซต์ปลายทางกลับเข้าวงของแลบ</text>
+<text class="role" x="686" y="262">มีตัวเดียวใช้ร่วมทุกชุด — ผู้สอนคุม</text>
 
 <path class="link" marker-end="url(#arg-svg-lab)" d="M620 215 H 672"/>
 <text class="tiny" x="624" y="205">สายจริง</text>
@@ -63,21 +63,23 @@
 <rect x="1040" y="150" width="340" height="118" rx="10" fill="#F3EEFA" stroke="#6B4EA8" stroke-width="2.5"/>
 <rect x="1040" y="150" width="340" height="26" rx="10" fill="#6B4EA8"/>
 <text class="tag" x="1054" y="168">REMOTE AP</text>
-<text class="lbl2" x="1054" y="200">AP-515</text>
-<text class="role" x="1054" y="222">ตัวเดียวใช้ร่วมทั้งห้อง</text>
-<text class="role" x="1054" y="242">IPsec กลับไปที่ Aruba 9004-LTE</text>
+<text class="lbl2" x="1054" y="200">AP-515 (RAP)</text>
+<text class="role" x="1054" y="222">มีตัวเดียวใช้ร่วมทั้งห้อง</text>
+<text class="role" x="1054" y="242">จบ IPsec ที่ Aruba 9004-LTE</text>
+<text class="role" x="1054" y="262">มีพอร์ต wired ให้ต่อสวิตช์ด้านล่าง</text>
 <rect x="1040" y="320" width="340" height="118" rx="10" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2.5"/>
 <rect x="1040" y="320" width="340" height="26" rx="10" fill="#1E6BB8"/>
-<text class="tag" x="1054" y="338">SWITCH กลาง</text>
+<text class="tag" x="1054" y="338">SWITCH — ผู้สอนคุม</text>
 <text class="lbl2" x="1054" y="370">Aruba CX 6100 · 12 พอร์ต</text>
-<text class="role" x="1054" y="392">พอร์ต 1 ถึง 7 = Campus AP ของแต่ละชุด</text>
-<text class="role" x="1054" y="412">Uplink 1/1/12 ขึ้น AP-515</text>
+<text class="role" x="1054" y="392">uplink 1/1/12 ขึ้น RAP</text>
+<text class="role" x="1054" y="412">พอร์ต 1–8 = Campus AP ชุดละพอร์ต</text>
+<text class="role" x="1054" y="432">access VLAN 260n · trunk 2601–2608</text>
 <rect x="1040" y="490" width="340" height="118" rx="10" fill="#E9F7F1" stroke="#14996B" stroke-width="2.5"/>
 <rect x="1040" y="490" width="340" height="26" rx="10" fill="#14996B"/>
 <text class="tag" x="1054" y="508">CAMPUS AP</text>
-<text class="lbl2" x="1054" y="540">Campus AP — ชุดละ 1 ตัว</text>
-<text class="role" x="1054" y="562">ผู้เข้าอบรม onboard เอง (LAB 10)</text>
-<text class="role" x="1054" y="582">Tunnel กลับ Controller VM ของชุดตัวเอง</text>
+<text class="lbl2" x="1054" y="540">Access Point — ชุดละ 1 ตัว</text>
+<text class="role" x="1054" y="562">เสียบ Aruba CX 6100 · รับ PoE และ IP</text>
+<text class="role" x="1054" y="582">ทำ GRE กลับ Controller VM ของชุด</text>
 
 <rect x="1040" y="660" width="340" height="76" rx="10" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
 <text class="lbl2" x="1054" y="686">Wireless clients</text>
@@ -91,34 +93,33 @@
 <text class="tiny" x="998" y="199" fill="#6B4EA8" font-weight="700">IPsec</text>
 
 <path class="tunnel" marker-end="url(#ar-svg-lab)" d="M1040 549 C 880 549 820 420 600 404"/>
-<text class="tiny" x="726" y="500" fill="#C4620A" font-weight="700">Tunnel — Campus AP » Controller VM ของชุดตัวเอง</text>
+<text class="tiny" x="726" y="500" fill="#C4620A" font-weight="700">GRE — Campus AP » Controller VM ของชุดตัวเอง</text>
 
 <!-- reference band -->
 <rect x="60" y="780" width="400" height="178" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
 <text class="lbl2" x="78" y="806">Legend</text>
 <line class="link" x1="80" y1="830" x2="128" y2="830"/><text class="tiny" x="138" y="834">สายจริง</text>
-<path class="ipsec" d="M80 858 H 128"/><text class="tiny" x="138" y="862">IPsec</text>
-<path class="tunnel" d="M80 886 H 128"/><text class="tiny" x="138" y="890">Tunnel</text>
-<path class="air" d="M84 918 a24 24 0 0 1 40 0"/><text class="tiny" x="138" y="918">VM</text>
-<text class="tiny" x="78" y="944">แดง = Aruba 9004-LTE (ตัวจริง) · ส้ม = Controller VM · น้ำเงิน = สวิตช์กลาง</text>
+<path class="ipsec" d="M80 858 H 128"/><text class="tiny" x="138" y="862">IPsec (AP-515 RAP — Aruba 9004-LTE)</text>
+<path class="tunnel" d="M80 886 H 128"/><text class="tiny" x="138" y="890">GRE (Campus AP — Controller VM)</text>
+<path class="air" d="M84 918 a24 24 0 0 1 40 0"/><text class="tiny" x="138" y="918">Wireless (SSID broadcast)</text>
+<text class="tiny" x="78" y="944">แดง = Aruba 9004-LTE (ตัวจริง) · ส้ม = Controller VM · น้ำเงิน = สวิตช์</text>
 
 <rect x="500" y="780" width="420" height="178" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
 <text class="lbl2" x="518" y="806">แผน VLAN / IP ที่ใช้จริง</text>
-<text class="th" x="518" y="828">รายการ</text><text class="th" x="740" y="828">ค่า</text>
+<text class="th" x="518" y="828">รายการ</text><text class="th" x="740" y="828">ค่าที่ใช้</text>
 <line x1="518" y1="834" x2="902" y2="834" stroke="#DCE6ED"/>
 <text class="td" x="518" y="852">Management network</text><text class="td mono2" x="740" y="852">192.168.10.0/24</text>
-<text class="td" x="518" y="872">Controller ของผู้เข้าอบรม</text><text class="td mono2" x="740" y="872">192.168.10.221–227</text>
-<text class="td" x="518" y="892">Controller ผู้สอน</text><text class="td mono2" x="740" y="892">192.168.10.133</text>
-<text class="td" x="518" y="912">AP VLAN</text><text class="td mono2" x="740" y="912">2601–2608 (10.26.n.0/24)</text>
-<text class="td" x="518" y="932">Switch lab (PNETLAB)</text><text class="td mono2" x="740" y="932">VLAN 10 / 20 / 30</text>
+<text class="td" x="518" y="872">Controller VM นักศึกษา / ผู้สอน</text><text class="td mono2" x="740" y="872">.221 – .227 / .133</text>
+<text class="td" x="518" y="892">AP VLAN — Pod 1–7 / ผู้สอน</text><text class="td mono2" x="740" y="892">2601 – 2607 / 2608</text>
+<text class="td" x="518" y="912">Subnet ของ AP VLAN (DHCP)</text><text class="td mono2" x="740" y="912">10.26.n.0/24</text>
+<text class="td" x="518" y="932">Gateway / SVI บน Controller VM</text><text class="td mono2" x="740" y="932">10.26.n.1</text>
 
 <rect x="960" y="780" width="420" height="178" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
 <text class="lbl2" x="978" y="806">หัวข้อในหลักสูตร » ทำที่ไหน</text>
-<text class="td" x="978" y="830">09:45 Initial setup » PNETLAB ของชุดตัวเอง</text>
-<text class="td" x="978" y="850">10:45 Clock / DNS / SNMP / Checkpoint » PNETLAB</text>
-<text class="td" x="978" y="870">11:30 VLAN / Trunk / LAG » PNETLAB</text>
-<text class="td" x="978" y="890">13:00 SVI / Inter-VLAN routing » PNETLAB</text>
-<text class="td" x="978" y="910">14:15 Initial MC + AP Provisioning » Controller VM</text>
-<text class="td" x="978" y="930">15:15 Authentication (PSK/Portal/802.1X/MAC) » Controller VM</text>
-<text class="td" x="978" y="950">16:15 Role &amp; Policy + Dashboard » Controller VM</text>
+<text class="td" x="978" y="830">M1 VLAN / Trunk / LAG / SVI » PNETLAB ของตัวเอง</text>
+<text class="td" x="978" y="850">M1 PoE / พอร์ต AP » Aruba CX 6100 (ผู้สอนสาธิต)</text>
+<text class="td" x="978" y="870">M2 Remote AP » AP-515 จบ IPsec ที่ Aruba 9004-LTE</text>
+<text class="td" x="978" y="890">M2 AP onboarding » Campus AP » Controller VM ของชุด</text>
+<text class="td" x="978" y="910">M2 PSK / Portal / 802.1X / MAC » SSID ของชุด</text>
+<text class="td" x="978" y="930">M2 Role &amp; Policy + Dashboard » บน Controller VM</text>
 </svg>

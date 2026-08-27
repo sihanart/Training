@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440" height="760" id="svg-switchlab" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 760">
+<defs><style>#svg-switchlab text{font-family:"IBM Plex Sans Thai","Sarabun","Loma","Noto Sans Thai","Segoe UI",sans-serif;fill:#0F1E2E}#svg-switchlab .h1{font-size:26px;font-weight:700}#svg-switchlab .sub{font-size:13.5px;fill:#5A6C7D}#svg-switchlab .lbl2{font-size:13px;font-weight:700}#svg-switchlab .role{font-size:11.5px;fill:#41545F}#svg-switchlab .tiny{font-size:11px;fill:#5A6C7D}#svg-switchlab .th{font-size:10.5px;font-weight:700;fill:#1E6BB8;letter-spacing:.06em}#svg-switchlab .td{font-size:11.5px;fill:#33454F}#svg-switchlab .mono2{font-family:"IBM Plex Mono",monospace;font-size:11.5px}#svg-switchlab .ip{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;fill:#1E6BB8}#svg-switchlab .port{font-family:"IBM Plex Mono",monospace;font-size:10px;fill:#41545F}#svg-switchlab .link{stroke:#4A6274;stroke-width:2.5;fill:none}#svg-switchlab .isl{stroke:#0E7C86;stroke-width:4;fill:none}#svg-switchlab .ka{stroke:#C4620A;stroke-width:2.5;stroke-dasharray:6 4;fill:none}#svg-switchlab .ag{fill:#C4620A;font-size:13px;font-weight:700}#svg-switchlab .agsub{fill:#C4620A;font-size:11.5px}</style></defs>
+
+<rect width="1440" height="760" fill="#FFFFFF"/>
+<text class="h1" x="40" y="46">Switch Lab บน PNETLAB</text>
+<text class="sub" x="40" y="70">RMUTT × Commserv Siam · 26 ส.ค. 2569 · VSX pair + Active Gateway · PC คนละ VLAN เพื่อทดสอบ inter-VLAN routing</text>
+<line x1="40" y1="86" x2="1400" y2="86" stroke="#E1E9EF" stroke-width="2"/>
+
+<!-- VSX pair, drawn side by side so KA and ISL are told apart -->
+<text class="ag" x="490" y="140" text-anchor="middle">Inter-VLAN routing — SVI + Active Gateway</text>
+<text class="agsub" x="490" y="161" text-anchor="middle">VLAN 11 / 12 / 21 · gateway .1 ของแต่ละวง</text>
+
+<rect x="200" y="196" width="200" height="72" rx="10" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2.5"/><text class="lbl2" x="300" y="226" text-anchor="middle">CX-CORE-1/1</text><text class="ip" x="300" y="248" text-anchor="middle">192.168.0.2/24</text>
+<rect x="580" y="196" width="200" height="72" rx="10" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2.5"/><text class="lbl2" x="680" y="226" text-anchor="middle">CX-CORE-1/2</text><text class="ip" x="680" y="248" text-anchor="middle">192.168.0.3/24</text>
+
+<line class="ka" x1="400" y1="216" x2="580" y2="216"/>
+<rect x="404" y="206" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="428" y="220" text-anchor="middle">1/1/5</text><rect x="528" y="206" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="552" y="220" text-anchor="middle">1/1/5</text>
+<text class="lbl2" x="490" y="202" text-anchor="middle" fill="#C4620A">KA</text>
+
+<line class="isl" x1="400" y1="252" x2="580" y2="252"/>
+<rect x="404" y="242" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="428" y="256" text-anchor="middle">1/1/6</text><rect x="528" y="242" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="552" y="256" text-anchor="middle">1/1/6</text>
+<text class="lbl2" x="490" y="276" text-anchor="middle" fill="#0E7C86">VSX</text>
+
+<!-- PCs on the pair -->
+<rect x="15" y="202" width="124" height="60" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/><text class="lbl2" x="77" y="228" text-anchor="middle">PC11</text><text class="tiny" x="77" y="247" text-anchor="middle">VLAN 11 · .11</text>
+<line class="link" x1="139" y1="232" x2="200" y2="232"/>
+<rect x="148" y="222" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="172" y="236" text-anchor="middle">1/1/3</text>
+
+<rect x="856" y="202" width="124" height="60" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/><text class="lbl2" x="918" y="228" text-anchor="middle">PC12</text><text class="tiny" x="918" y="247" text-anchor="middle">VLAN 12 · .12</text>
+<line class="link" x1="780" y1="232" x2="856" y2="232"/>
+<rect x="794" y="222" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="818" y="236" text-anchor="middle">1/1/1</text>
+
+<!-- down to the second core -->
+<rect x="390" y="430" width="200" height="72" rx="10" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2.5"/><text class="lbl2" x="490" y="460" text-anchor="middle">CX-CORE-2</text><text class="ip" x="490" y="482" text-anchor="middle">192.168.0.4/24</text>
+<line class="link" x1="300" y1="268" x2="440" y2="430"/>
+<rect x="304" y="290" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="328" y="304" text-anchor="middle">1/1/1</text><rect x="388" y="388" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="412" y="402" text-anchor="middle">1/1/1</text>
+<line class="link" x1="680" y1="268" x2="540" y2="430"/>
+<rect x="628" y="290" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="652" y="304" text-anchor="middle">1/1/2</text><rect x="544" y="388" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="568" y="402" text-anchor="middle">1/1/2</text>
+
+<rect x="428" y="600" width="124" height="60" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/><text class="lbl2" x="490" y="626" text-anchor="middle">PC21</text><text class="tiny" x="490" y="645" text-anchor="middle">VLAN 21 · .21</text>
+<line class="link" x1="490" y1="502" x2="490" y2="600"/>
+<rect x="466" y="540" width="48" height="20" rx="10" fill="#FFFFFF" stroke="#9FB4BD"/><text class="port" x="490" y="554" text-anchor="middle">1/1/3</text>
+
+<!-- how to get in -->
+<rect x="1000" y="120" width="400" height="150" rx="10" fill="#F3F7FA" stroke="#4A6274" stroke-width="2"/>
+<text class="lbl2" x="1018" y="146">เข้าใช้งาน PNETLAB</text>
+<text class="td" x="1018" y="172">URL</text><text class="td mono2" x="1140" y="172">http://10.69.11.10/</text>
+<text class="td" x="1018" y="194">ผู้ใช้</text><text class="td mono2" x="1140" y="194">pod1 – pod7 (ตามชุดตัวเอง)</text>
+<text class="td" x="1018" y="216">รหัสผ่าน</text><text class="td mono2" x="1140" y="216">P@ssw0rd</text>
+<text class="tiny" x="1018" y="246">ทุกคนในชุดใช้ล็อกอินเดียวกัน — ตกลงกันก่อนว่าใครกดอะไร</text>
+
+<rect x="1000" y="300" width="400" height="212" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="1018" y="326">ค่าที่ใช้ในผังนี้</text>
+<text class="th" x="1018" y="348">รายการ</text><text class="th" x="1210" y="348">ค่า</text>
+<line x1="1018" y1="354" x2="1382" y2="354" stroke="#DCE6ED"/>
+<text class="td" x="1018" y="372">CX-CORE-1/1 · CX-CORE-1/2</text><text class="td mono2" x="1210" y="372">192.168.0.2 · 192.168.0.3</text>
+<text class="td" x="1018" y="392">CX-CORE-2</text><text class="td mono2" x="1210" y="392">192.168.0.4</text>
+<text class="td" x="1018" y="412">PC11 — VLAN 11</text><text class="td mono2" x="1210" y="412">192.168.11.11 · gw .1</text>
+<text class="td" x="1018" y="432">PC12 — VLAN 12</text><text class="td mono2" x="1210" y="432">192.168.12.12 · gw .1</text>
+<text class="td" x="1018" y="452">PC21 — VLAN 21</text><text class="td mono2" x="1210" y="452">192.168.21.21 · gw .1</text>
+<text class="td" x="1018" y="472">VSX ISL / Keepalive</text><text class="td mono2" x="1210" y="472">1/1/6 / 1/1/5</text>
+<text class="td" x="1018" y="492">LAG ลง CX-CORE-2</text><text class="td mono2" x="1210" y="492">1/1/1 และ 1/1/2</text>
+
+<rect x="1000" y="534" width="400" height="146" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
+<text class="lbl2" x="1018" y="560">อ่านผังนี้อย่างไร</text>
+<text class="role" x="1018" y="584">• สวิตช์สามตัวเป็น VM คนละชุดกับเพื่อน — พังได้ reset ใหม่ได้</text>
+<text class="role" x="1018" y="609">• CX-CORE-1/1 กับ CX-CORE-1/2 จับคู่เป็น VSX</text>
+<text class="role" x="1018" y="634">• SVI ของทั้งสาม VLAN อยู่บนคู่ VSX · CX-CORE-2 เป็น L2 อย่างเดียว</text>
+<text class="role" x="1018" y="659">• PC อยู่คนละ VLAN — ping หากันได้ต้องผ่าน inter-VLAN routing</text>
+
+<line class="ka" x1="60" y1="700" x2="108" y2="700"/><text class="tiny" x="118" y="704">Keepalive (1/1/5)</text>
+<line class="isl" x1="260" y1="700" x2="308" y2="700"/><text class="tiny" x="318" y="704">VSX ISL (1/1/6)</text>
+<line class="link" x1="460" y1="700" x2="508" y2="700"/><text class="tiny" x="518" y="704">สายปกติ</text>
+</svg>

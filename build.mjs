@@ -15,7 +15,6 @@ import { fileURLToPath } from 'node:url';
 import { thaiDate } from './src/lib/util.mjs';
 import { labPods, podConfig, switchConfig } from './src/lib/lab-config.mjs';
 import { renderPage, renderIndex, diagramsFor } from './src/lib/page.mjs';
-import { switchLabSvg } from './src/lib/svg-switch-lab.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const SRC = join(ROOT, 'src');
@@ -163,7 +162,9 @@ async function main() {
       [e.course.lab.fileName, draw.lab(e.course, e.vars, e.event)],
       // The simulator topology only exists for courses that run their switch
       // labs there, so it is optional rather than part of the diagram pair.
-      ...(e.course.switchLab ? [[e.course.switchLab.fileName, switchLabSvg(e.course, e.vars)]] : []),
+      ...(e.course.switchLab && draw.switchLab
+        ? [[e.course.switchLab.fileName, draw.switchLab(e.course, e.vars)]]
+        : []),
     ];
     if (e === featured) {
       files.set('index.html', renderPage({ ...e, siblings, vars: { ...e.vars, rootPath: '' } }));
@@ -173,17 +174,27 @@ async function main() {
       for (const [name, svg] of svgs) files.set(join('diagrams', e.slug, `${name}.svg`), svgFile(svg));
     }
   }
+  // configs/ is a flat namespace shared by every event, so two events with
+  // different pod tables would quietly overwrite each other and hand a class the
+  // other room's addresses. Same content is fine — that is two events on one kit.
+  const putConfig = (rel, content, slug) => {
+    const prev = files.get(rel);
+    if (prev !== undefined && prev !== content) {
+      throw new Error(`${rel}: "${slug}" and an earlier event disagree — give one of them its own pod labels`);
+    }
+    files.set(rel, content);
+  };
   for (const e of entries) {
     if (!e.event.lab) continue;
     for (const pod of labPods(e.event.lab)) {
-      files.set(join('configs', `${pod.id.toUpperCase()}.txt`),
+      putConfig(join('configs', `${pod.id.toUpperCase()}.txt`),
                 `${podConfig(e.event.lab, pod, { annotated: true })}
-`);
+`, e.slug);
     }
     // The shared switch is the instructor's, but it belongs with the rest: one
     // pod table produces every config in the room.
-    files.set(join('configs', 'SWITCH.txt'), `${switchConfig(e.event.lab)}
-`);
+    putConfig(join('configs', 'SWITCH.txt'), `${switchConfig(e.event.lab)}
+`, e.slug);
   }
   if (listed.length > 1) {
     files.set('events.html', renderIndex([...listed].sort((a, b) => b.date.sortKey - a.date.sortKey)));

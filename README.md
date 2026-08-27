@@ -1,7 +1,13 @@
-# Aruba Campus Network Training — Network Diagram
+# Aruba Training — Network Diagram
 
-แผนผังและเอกสารอ้างอิงสำหรับอบรม **Aruba Campus Network Training**
-RMUTT × Commserv Siam · 26 สิงหาคม 2569 · Royal Hills Golf Resort & Spa
+แผนผังและเอกสารอ้างอิงสำหรับงานอบรม Aruba หน้าเว็บของแต่ละงานสร้างจาก `src/` ทั้งหมด
+
+| งาน | หลักสูตร | URL |
+|---|---|---|
+| 3 กันยายน 2569 · IT Green | Aruba CX Switch + WLAN Basic (รวม 1 วัน) | `/itgreen-2026-09/` (หน้าแรกตอนนี้) |
+| 26 สิงหาคม 2569 · RMUTT × Commserv Siam | Aruba Campus Network | `/rmutt-2026-08/` |
+
+หน้าแรกของเว็บคือ **งานที่ใกล้ถึงที่สุดที่ยังไม่ผ่าน** — build เลือกให้เอง ไม่ต้องแก้อะไร
 
 เว็บไซต์: **https://sihanart.github.io/Training/**
 
@@ -16,14 +22,17 @@ RMUTT × Commserv Siam · 26 สิงหาคม 2569 · Royal Hills Golf Reso
 
 | ไฟล์ | คำอธิบาย | แก้ที่ไหน |
 |---|---|---|
-| `index.html` | เว็บไซต์ไฟล์เดียว (ฝัง SVG ทั้งสองผังไว้ในตัว) | `src/` |
-| `diagrams/01_Overview_Campus_Architecture.svg` | ภาพรวมสถาปัตยกรรม Campus: Switch + Controller + AP และเส้นทางเดินของ traffic | `src/courses/*.json` + `src/lib/svg-overview.mjs` |
-| `diagrams/02_Lab_Topology.svg` | ผัง Lab: ชุดนักศึกษา + ชุดผู้สอน พร้อมตารางแจก Controller / AP VLAN | `src/courses/*.json` + `src/lib/svg-lab.mjs` |
-| `diagrams/03_Lab_Switch_PNETLAB.svg` | ผัง Switch lab ใน PNETLAB: VSX pair + Active Gateway + LAG ลง CX-CORE-2 | `src/courses/*.json` + `src/lib/svg-switch-lab.mjs` |
+| `index.html` · `<slug>/index.html` | หน้าเว็บของแต่ละงาน (ฝัง SVG ทุกผังไว้ในตัว) | `src/` |
+| `events.html` | สารบัญงานอบรมทั้งหมด — โผล่เองเมื่อมีมากกว่า 1 งาน | — |
+| `diagrams/*.svg` | ผังของงานที่เป็นหน้าแรก | `src/courses/*.json` + `src/lib/svg-*.mjs` |
+| `diagrams/<slug>/*.svg` | ผังของงานอื่น | เหมือนกัน |
 | `diagrams/*.png` | PNG ความละเอียด 2x สำหรับแปะสไลด์ (CI export ให้) | — |
+
+ผังของแต่ละงานมีสามใบ — ภาพรวมสถาปัตยกรรม (FIG.01), Lab topology แบ่งตาม Pod (FIG.02)
+และผัง Switch lab ใน PNETLAB (FIG.03 — เฉพาะหลักสูตรที่มี `switchLab`)
 | `configs/POD1.txt` … `POD7.txt`, `TEACHER.txt` | Golden config ของ Controller VM แต่ละชุด | `src/events/*.json` (บล็อก `lab`) |
 | `configs/SWITCH.txt` | Golden config ของสวิตช์กลาง CX 6100 (ผู้สอนวาง) | `src/events/*.json` (บล็อก `lab`) |
-| `slides/rmutt-2026-08.pdf` | สไลด์อบรมให้ดาวน์โหลดจากหน้าเว็บ | วางไฟล์เอง |
+| `slides/*.pdf` | สไลด์อบรมให้ดาวน์โหลดจากหน้าเว็บ | วางไฟล์เอง |
 
 ## Build
 
@@ -47,24 +56,39 @@ node build.mjs
 | `slides` | _(ไม่ใส่ก็ได้)_ `{ "file": "slides/xxx.pdf", "pages": 132 }` — ได้ลิงก์ดาวน์โหลดที่ footer ขนาดไฟล์อ่านจากดิสก์ตอน build ชี้ไปไฟล์ที่ไม่มีอยู่ build จะ fail |
 | `unlisted` / `draft` | ไม่ลิงก์จากหน้าไหน / ไม่ build เลย |
 
+## หลักสูตร
+
+`src/courses/*.json` หนึ่งไฟล์ = หนึ่งหลักสูตร งานอบรมชี้มาที่ `id` ของไฟล์นั้น
+
+| หลักสูตร | `diagramSet` | ขอบเขต |
+|---|---|---|
+| `campus-network` | `campus` | Aruba Campus Network — Switch lab ทำ **VSX pair + Active Gateway + multi-chassis LAG** |
+| `cx-wlan-basic` | `campus-basic` | Aruba CX Switch + WLAN Basic รวม 1 วัน — Switch lab หยุดที่ **VLAN + Trunk + LAG + SVI** ไม่มี VSX |
+| `central-wireless` | `cloud` | Aruba Central (cloud-managed) — ยังเป็นหน้าตัวอย่าง |
+
+`diagramSet` เลือกชุดฟังก์ชันวาดผังใน `src/lib/page.mjs` — สถาปัตยกรรมต่างกันเกินกว่าจะวาดด้วยผังเดียวกันได้
+ใส่ชื่อที่ไม่มีอยู่ build จะ fail ทันที
+
+หลักสูตร `cx-wlan-basic` ตัด **VSX, Spanning-tree และ OSPF** ออกตามที่ course outline ระบุว่าเป็นเนื้อหาหลักสูตร Advance
+
 ## อุปกรณ์ที่ใช้
 
 | ชั้น | อุปกรณ์ | ใครแตะ |
 |---|---|---|
-| Virtual (บน HCI Server) | Controller VM ชุดละตัว + PNETLAB switch simulator คนละตัว | **นักศึกษา** |
+| Virtual (บน HCI Server) | Controller VM ชุดละตัว + PNETLAB switch simulator คนละตัว | **ผู้เข้าอบรม** |
 | หัวสาย RAP | Aruba 9004-LTE — จบ IPsec ของ AP-515 | ผู้สอน |
 | ทางผ่าน | AP-515 (Remote AP) ตัวเดียวใช้ร่วม → Aruba CX 6100 12 พอร์ต | ผู้สอน |
-| ปลายทาง | Campus AP ชุดละ 1 ตัว เสียบ CX 6100 พอร์ตของชุดนั้น | นักศึกษา (onboard) |
+| ปลายทาง | Campus AP ชุดละ 1 ตัว เสียบ CX 6100 พอร์ตของชุดนั้น | ผู้เข้าอบรม (onboard) |
 
-Module 1 (สวิตช์) ฝึกบน **PNETLAB** ไม่ใช่สวิตช์จริง เพราะ CX 6100 เป็นทางผ่านของทุกชุด
+ช่วง Switch ฝึกบน **PNETLAB** ไม่ใช่สวิตช์จริง เพราะ CX 6100 เป็นทางผ่านของทุกชุด
 
-ห้องแลบ PNETLAB ของแต่ละชุดมีสวิตช์จำลอง 3 ตัว (CX-CORE-1/1, CX-CORE-1/2, CX-CORE-2) กับ PC 3 เครื่อง
-จึงทำ **VSX pair + keepalive + Active Gateway + multi-chassis LAG** ได้จริง — ดู `diagrams/03_Lab_Switch_PNETLAB.svg`
+ห้องแลบ PNETLAB ของแต่ละชุดมีสวิตช์จำลอง 3 ตัวกับ PC 3 เครื่อง — งาน RMUTT ใช้ทำ VSX
+ส่วนหลักสูตร Basic ใช้ชุดเดียวกันแต่ทำแค่ LAG กับ SVI ดู `diagrams/03_Lab_Switch_PNETLAB.svg`
 
 | | |
 |---|---|
 | PNETLAB | `http://10.69.11.10/` |
-| ผู้ใช้ | `pod1` – `pod7` (ตามชุด) |
+| ผู้ใช้ | `pod1` – `pod7` (ตามชุด) · รหัส `P@ssw0rd` |
 
 ## การจัด Controller / VLAN ต่อชุด
 
@@ -85,7 +109,7 @@ Management network ของทุก controller: `192.168.10.0/24`
 แต่ละ controller ทำหน้าที่เป็น DHCP server ของ AP VLAN ตัวเอง (gateway `10.26.n.1`, แจก `.11–.240`,
 exclude `.1–.10` และ `.241–.254`, lease 8 ชม.) และทำ `ip nat inside` บน `interface vlan 260n`
 
-**ตารางนี้เป็นสำเนาไว้อ่านเร็ว** — ตัวจริงอยู่ในบล็อก `lab` ของ `src/events/2026-08-26-rmutt.json`:
+**ตารางนี้เป็นสำเนาไว้อ่านเร็ว** — ตัวจริงอยู่ในบล็อก `lab` ของ `src/events/*.json` (ทั้งสองงานใช้ชุดเดียวกัน):
 
 ```json
 "lab": {
@@ -135,7 +159,7 @@ Pages ตั้งเป็น **Deploy from a branch · main · /(root)** เ�
 
 ```
 src/
-  courses/campus-network.json   หลักสูตร — ข้อความทั้งหมดในผังและในหน้าเว็บ
+  courses/*.json                หลักสูตร — ข้อความทั้งหมดในผังและในหน้าเว็บ
   events/*.json                 งานอบรมแต่ละครั้ง + อุปกรณ์จริง (บล็อก lab)
   lib/
     util.mjs                    escape, วันที่ไทย, ตัวแปร {{...}}
@@ -143,7 +167,8 @@ src/
     page.mjs                    โครงหน้า HTML + CSS + สคริปต์
     svg-overview.mjs            ผัง FIG.01
     svg-lab.mjs                 ผัง FIG.02
-    svg-switch-lab.mjs          ผัง FIG.03 (PNETLAB)
+    svg-switch-lab.mjs          ผัง FIG.03 — PNETLAB แบบ VSX (campus)
+    svg-switch-lab-basic.mjs    ผัง FIG.03 — PNETLAB แบบ LAG + SVI (campus-basic)
 build.mjs                       ตัว build
 tools/check-layout.mjs          จับกล่องทับกัน/หลุดขอบในผัง
 ```

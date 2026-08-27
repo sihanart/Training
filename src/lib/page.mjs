@@ -4,6 +4,7 @@
 import { esc, t, inlineCode } from './util.mjs';
 import { labPods, podConfig } from './lab-config.mjs';
 import { switchLabSvg } from './svg-switch-lab.mjs';
+import { basicSwitchLabSvg } from './svg-switch-lab-basic.mjs';
 import { overviewSvg } from './svg-overview.mjs';
 import { labSvg } from './svg-lab.mjs';
 import { cloudOverviewSvg } from './svg-cloud-overview.mjs';
@@ -13,8 +14,11 @@ import { cloudLabSvg } from './svg-cloud-lab.mjs';
 // much between courses to parameterise one drawing — an on-prem controller
 // topology and a cloud-managed one share geometry, not shapes.
 const DIAGRAM_SETS = {
-  campus: { overview: overviewSvg, lab: labSvg },
+  campus: { overview: overviewSvg, lab: labSvg, switchLab: switchLabSvg },
   cloud: { overview: cloudOverviewSvg, lab: cloudLabSvg },
+  // Same campus pair, but the simulator drawing stops short of VSX — this
+  // course teaches LAG and a single routing switch, nothing redundant.
+  'campus-basic': { overview: overviewSvg, lab: labSvg, switchLab: basicSwitchLabSvg },
 };
 
 /** The drawing pair a course uses. Also used by the build for standalone exports. */
@@ -365,10 +369,10 @@ ${captions(notes, vars)}
  * The step-by-step labs. Each one names the box it runs on, because half the
  * time lost in a lab is spent typing the right command at the wrong device.
  */
-const labsSection = (sec, guide, vars, course) => `
+const labsSection = (sec, guide, vars, course, draw) => `
 <section id="labs">
 ${sechead(sec, vars)}
-${course.switchLab ? figure(course.switchLab.figLabel, 'svg-switchlab', course.switchLab.fileName, switchLabSvg(course, vars)) : ''}
+${course.switchLab && draw.switchLab ? figure(course.switchLab.figLabel, 'svg-switchlab', course.switchLab.fileName, draw.switchLab(course, vars)) : ''}
   <p class="hint">${inlineCode(guide.intro, vars)}</p>
   <p class="hint">${inlineCode(guide.note, vars)}</p>
 ${guide.labs.map((l) => `  <article class="lab">
@@ -473,14 +477,14 @@ ${sechead(s.vlan, vars)}
     <table>
       <thead><tr><th>VLAN</th><th>ชื่อ / การใช้งาน</th><th>Subnet</th><th>หมายเหตุ</th></tr></thead>
       <tbody>
-${vlanRows.map(([vid, name, subnet, note]) => `<tr><td class="mono vid">${esc(vid)}</td><td>${t(name, vars)}</td><td class="mono">${esc(subnet)}</td><td class="note">${t(note, vars)}</td></tr>`).join('\n')}
+${vlanRows.map(([vid, name, subnet, note]) => `<tr><td class="mono vid">${t(vid, vars)}</td><td>${t(name, vars)}</td><td class="mono">${t(subnet, vars)}</td><td class="note">${t(note, vars)}</td></tr>`).join('\n')}
       </tbody>
     </table>
   </div>
   <p class="hint">${inlineCode(course.vlanHint, vars)}</p>
 </section>
 ${event.lab ? configSection(s.config, event.lab, course.configNotes, vars) : ''}
-${course.labGuide ? labsSection(s.labs, course.labGuide, vars, course) : ''}
+${course.labGuide ? labsSection(s.labs, course.labGuide, vars, course, draw) : ''}
 <section id="agenda">
 ${sechead(s.agenda, vars)}
   <ol class="agenda">

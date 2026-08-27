@@ -52,6 +52,8 @@ const stack = (cls, x, y0, step, list, vars) =>
 /** One box in the right-hand physical chain. */
 function chainBox(box, y, vars) {
   const c = ACCENT[box.accent];
+  // Named palette entry, not a colour — a hex value here silently drew nothing.
+  if (!c) throw new Error(`lab.chain: unknown accent "${box.accent}" (use ${Object.keys(ACCENT).join(', ')})`);
   return `<rect x="1040" y="${y}" width="340" height="118" rx="10" fill="${c.fill}" stroke="${c.line}" stroke-width="2.5"/>
 <rect x="1040" y="${y}" width="340" height="26" rx="10" fill="${c.line}"/>
 <text class="tag" x="1054" y="${y + 18}">${t(box.tag, vars)}</text>

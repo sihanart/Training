@@ -15,3 +15,6 @@ package-lock.json
 # ...except the trimmed deck the site links to. That one is the published
 # handout, so it belongs in the repo GitHub Pages serves from.
 !slides/*.pdf
+
+# เอกสารต้นฉบับหลักสูตร — เก็บไว้ที่ local
+*.docx

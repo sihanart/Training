@@ -1,0 +1,1232 @@
+{
+  "id": "cx-wlan-basic",
+  "title": "Aruba CX Switch + WLAN Basic",
+  "subtitle": "Combined 1-Day — Wired ก่อน แล้วต่อด้วย Wireless",
+  "docTitle": "Aruba CX Switch + WLAN Basic — Network Diagram & Lab",
+  "courseName": "Aruba CX Switch + WLAN Basic (Combined 1-Day)",
+  "description": "เอกสารอ้างอิงหลักสูตร Aruba CX Switch + WLAN Basic รวม 1 วัน — ภาพรวมสถาปัตยกรรม, Lab topology, แผน VLAN/IP, Golden config และ Lab ทีละขั้น",
+  "lede": "หลักสูตรรวม Wired และ Wireless ไว้ในวันเดียว — ครึ่งเช้าวางโครง Infrastructure ด้วย {{simulator}} ครึ่งบ่ายต่อด้วย Controller และ AP หน้านี้เปิดจากมือถือได้ระหว่างทำแลบ",
+  "diagramSet": "campus-basic",
+  "pod": {
+    "size": "2–3 คน"
+  },
+  "infra": {},
+  "vlanPlan": [
+    {
+      "vid": "10",
+      "name": "PC-A (Switch lab)",
+      "subnet": "10.10.10.0/24",
+      "note": "PC1 = 10.10.10.11 · gateway 10.10.10.1 (SVI บน CX-SW-1)"
+    },
+    {
+      "vid": "20",
+      "name": "PC-B (Switch lab)",
+      "subnet": "10.10.20.0/24",
+      "note": "PC2 = 10.10.20.12 · gateway 10.10.20.1 (SVI บน CX-SW-1)"
+    },
+    {
+      "vid": "30",
+      "name": "PC-C (Switch lab)",
+      "subnet": "10.10.30.0/24",
+      "note": "PC3 = 10.10.30.13 · gateway 10.10.30.1 (SVI บน CX-SW-1)"
+    },
+    {
+      "vid": "2601–2607",
+      "name": "AP VLAN ของ POD 1–{{studentPods}}",
+      "subnet": "10.26.n.0/24",
+      "note": "n = หมายเลข Pod · gateway 10.26.n.1 บน controller ของชุดนั้น"
+    },
+    {
+      "vid": "2608",
+      "name": "AP VLAN ของชุดผู้สอน",
+      "subnet": "10.26.8.0/24",
+      "note": "ผู้สอนสาธิตก่อน แล้วให้แต่ละชุดทำตามบนของตัวเอง"
+    },
+    {
+      "vid": "MGMT",
+      "name": "Controller ของแต่ละชุด",
+      "subnet": "192.168.10.221–227",
+      "note": "Pod n » 192.168.10.(220+n) · ผู้สอน 192.168.10.133"
+    },
+    {
+      "vid": "DHCP",
+      "name": "ช่วงที่ controller แจกให้ AP",
+      "subnet": "10.26.n{{poolRange}}",
+      "note": "exclude .1–.10 และ .241–.254 · lease {{leaseHours}} ชม."
+    }
+  ],
+  "vlanHint": "VLAN 10 / 20 / 30 เป็นของ Switch lab ใน {{simulator}} — อยู่คนละโลกกับ AP VLAN ของ controller ไม่ชนกัน · Gateway ของ AP VLAN อยู่บน controller ของชุดนั้นเอง (`interface vlan 260n · ip address 10.26.n.1`) และ controller ทำ DHCP เอง จึงไม่ต้องใช้ relay",
+  "overview": {
+    "figLabel": "FIG.01 — SOLUTION OVERVIEW",
+    "fileName": "01_Overview_CX_WLAN",
+    "heading": "Aruba CX Switch + WLAN — ภาพรวมที่ประกอบขึ้นในวันเดียว",
+    "subhead": "Wired วางโครงก่อน · Wireless ต่อทับบนโครงนั้น",
+    "edge": {
+      "label": "Internet",
+      "note": "WAN / ISP"
+    },
+    "firewall": {
+      "label": "Firewall / Edge",
+      "note": "NAT · Security policy"
+    },
+    "core": {
+      "tag": "WIRED — ช่วงเช้า (AOS-CX)",
+      "label": "Aruba CX Switch (AOS-CX)",
+      "roles": [
+        "บทบาท: VLAN · Access / Trunk port · LAG (LACP)",
+        "Inter-VLAN routing ด้วย SVI — gateway ของทุก VLAN อยู่ตรงนี้",
+        "จัดการด้วย CLI และ Web UI · Checkpoint / Diff / Rollback"
+      ]
+    },
+    "controller": {
+      "tag": "WIRELESS — ช่วงบ่าย",
+      "label": "{{controller}} · {{controllerOsShort}}",
+      "roles": [
+        "บทบาท: จบ tunnel ของ AP · ถือ SSID, Role และ Policy",
+        "เป็น DHCP server ของ AP VLAN ตัวเอง",
+        "Authentication: PSK · Captive Portal · 802.1X · MAC"
+      ]
+    },
+    "cppm": {
+      "label": "Internal AAA (อยู่ในตัว Controller)",
+      "roles": [
+        "หลักสูตรนี้ใช้ฐานผู้ใช้ในตัว controller ไม่ต้องมี ClearPass",
+        "802.1X และ MAC Authentication ชี้มาที่ internal server"
+      ]
+    },
+    "services": {
+      "label": "Core Services",
+      "roles": [
+        "DHCP · DNS · NTP · Syslog — ตั้งบนสวิตช์ช่วงเช้า แล้วใช้ต่อทั้งวัน"
+      ]
+    },
+    "access": [
+      {
+        "label": "CX — Access port",
+        "roles": [
+          "PC เสียบตรง · vlan access <id>",
+          "หนึ่งพอร์ตหนึ่ง VLAN"
+        ]
+      },
+      {
+        "label": "CX — Trunk / LAG",
+        "roles": [
+          "สายระหว่างสวิตช์ · vlan trunk allowed",
+          "รวมสองเส้นเป็น LAG ด้วย LACP"
+        ]
+      }
+    ],
+    "aps": [
+      {
+        "label": "AP-515",
+        "note": "RAP — ผู้สอนคุม"
+      },
+      {
+        "label": "Campus AP",
+        "note": "ชุดละ 1 ตัว"
+      }
+    ],
+    "wirelessClients": {
+      "label": "Wireless Clients",
+      "note": "โน้ตบุ๊ก / มือถือ ของผู้เข้าอบรม"
+    },
+    "wiredClient": {
+      "label": "PC ใน {{simulator}}",
+      "note": "PC1 / PC2 / PC3 คนละ VLAN"
+    },
+    "flows": [
+      {
+        "n": "①",
+        "color": "#1E6BB8",
+        "lines": [
+          "Wired: PC » Access port (VLAN) » Trunk / LAG",
+          "» SVI บนสวิตช์ » VLAN ปลายทาง"
+        ]
+      },
+      {
+        "n": "②",
+        "color": "#FF8300",
+        "lines": [
+          "Wireless: Client » AP » tunnel » Controller",
+          "» ปล่อยลง AP VLAN » ออกเน็ต"
+        ]
+      }
+    ],
+    "tunnelLabel": "Tunnel: AP » {{controller}}",
+    "footnote": "หัวข้อ: Overview CX Switch (09:15) · Overview WLAN & MC (13:45)",
+    "captions": [
+      {
+        "title": "① ครึ่งเช้า — Wired",
+        "body": "VLAN » Access/Trunk » LAG » SVI · จบด้วย inter-VLAN routing ที่ ping ข้ามวงได้จริง"
+      },
+      {
+        "title": "② ครึ่งบ่าย — Wireless",
+        "body": "Controller » AP » SSID » Authentication (PSK / Captive Portal / 802.1X / MAC) » Role & Policy",
+        "accent": true
+      },
+      {
+        "title": "ทำไมเรียง Wired ก่อน",
+        "body": "AP ต้องเสียบสวิตช์และต้องมี VLAN กับ IP ให้เดิน — ถ้าโครงฝั่งสายยังไม่นิ่ง ฝั่ง Wireless จะไล่ปัญหาไม่จบ"
+      }
+    ]
+  },
+  "lab": {
+    "figLabel": "FIG.02 — LAB TOPOLOGY",
+    "fileName": "02_Lab_Topology",
+    "heading": "Aruba CX Switch + WLAN Basic — Lab Topology",
+    "subheadTail": "ครึ่งเช้าอยู่ใน {{simulator}} · ครึ่งบ่ายอยู่บน Controller VM ของชุด",
+    "host": {
+      "tag": "{{host}} — รัน VM ทั้งหมด",
+      "controllers": {
+        "title": "{{controller}} — 1 ตัวต่อ 1 ชุด",
+        "cols": [
+          "ชุด",
+          "MGMT",
+          "AP VLAN"
+        ],
+        "notes": [
+          "แต่ละตัวเป็น DHCP + NAT ของ AP VLAN ตัวเอง (10.26.n.0/24)",
+          "ใช้ในช่วงบ่ายทั้งหมด — LAB 8 ถึง LAB 14"
+        ]
+      },
+      "simulator": {
+        "title": "{{simulator}} — Switch simulator",
+        "rows": [
+          "• ห้องแลบของแต่ละชุดมีสวิตช์จำลอง 3 ตัว",
+          "• PC 3 เครื่อง อยู่คนละ VLAN คนละวง",
+          "• ใช้ในช่วงเช้าทั้งหมด — LAB 1 ถึง LAB 7",
+          "• พัง reset ใหม่ได้ ไม่กระทบชุดอื่น"
+        ],
+        "whyTitle": "ทำไมไม่ฝึกบนสวิตช์จริง",
+        "why": [
+          "{{switch}} มี {{switchPorts}} พอร์ตและเป็นทางผ่านของทุกชุด",
+          "ถ้าให้ทุกคนแตะ VLAN บนตัวเดียวกัน ทั้งห้องหลุดพร้อมกัน"
+        ]
+      }
+    },
+    "rapHead": {
+      "tag": "CONTROLLER — หัวสาย RAP",
+      "label": "{{rapHead}}",
+      "roles": [
+        "ตัวจริง · จบ IPsec tunnel ของ {{rap}}",
+        "พาทั้งห้องออกเน็ต",
+        "ผู้สอนคุม — ไม่มีใน LAB ของผู้เข้าอบรม"
+      ]
+    },
+    "chainTitle": "อุปกรณ์จริงที่หน้างาน",
+    "chain": [
+      {
+        "tag": "REMOTE AP",
+        "label": "{{rap}}",
+        "accent": "rap",
+        "roles": [
+          "ตัวเดียวใช้ร่วมทั้งห้อง",
+          "IPsec กลับไปที่ {{rapHead}}"
+        ]
+      },
+      {
+        "tag": "SWITCH กลาง",
+        "label": "{{switch}} · {{switchPorts}} พอร์ต",
+        "accent": "switch",
+        "roles": [
+          "พอร์ต 1 ถึง {{studentPods}} = Campus AP ของแต่ละชุด",
+          "Uplink {{switchUplink}} ขึ้น {{rap}}"
+        ]
+      },
+      {
+        "tag": "CAMPUS AP",
+        "label": "Campus AP — ชุดละ 1 ตัว",
+        "accent": "ap",
+        "roles": [
+          "ผู้เข้าอบรม onboard เอง (LAB 10)",
+          "Tunnel กลับ Controller VM ของชุดตัวเอง"
+        ]
+      }
+    ],
+    "clients": {
+      "label": "Wireless clients",
+      "note": "โน้ตบุ๊ก / มือถือ ของผู้เข้าอบรม"
+    },
+    "wireLabel": "สายจริง",
+    "ipsecLabel": "IPsec",
+    "greLabel": "Tunnel — Campus AP » Controller VM ของชุดตัวเอง",
+    "legend": {
+      "title": "Legend",
+      "rows": [
+        "สายจริง",
+        "IPsec",
+        "Tunnel",
+        "VM"
+      ],
+      "note": "แดง = {{rapHead}} (ตัวจริง) · ส้ม = Controller VM · น้ำเงิน = สวิตช์กลาง"
+    },
+    "plan": {
+      "title": "แผน VLAN / IP ที่ใช้จริง",
+      "cols": [
+        "รายการ",
+        "ค่า"
+      ],
+      "rows": [
+        [
+          "Management network",
+          "{{mgmtNet}}"
+        ],
+        [
+          "Controller ของผู้เข้าอบรม",
+          "192.168.10.221–227"
+        ],
+        [
+          "Controller ผู้สอน",
+          "192.168.10.133"
+        ],
+        [
+          "AP VLAN",
+          "2601–2608 (10.26.n.0/24)"
+        ],
+        [
+          "Switch lab ({{simulator}})",
+          "VLAN 10 / 20 / 30"
+        ]
+      ]
+    },
+    "topicMap": {
+      "title": "หัวข้อในหลักสูตร » ทำที่ไหน",
+      "rows": [
+        "09:45 Initial setup » {{simulator}} ของชุดตัวเอง",
+        "10:45 Clock / DNS / SNMP / Checkpoint » {{simulator}}",
+        "11:30 VLAN / Trunk / LAG » {{simulator}}",
+        "13:00 SVI / Inter-VLAN routing » {{simulator}}",
+        "14:15 Initial MC + AP Provisioning » Controller VM",
+        "15:15 Authentication (PSK/Portal/802.1X/MAC) » Controller VM",
+        "16:15 Role & Policy + Dashboard » Controller VM"
+      ]
+    },
+    "captions": [
+      {
+        "title": "ช่วงเช้า — ทำบน {{simulator}}",
+        "body": "VLAN, Access/Trunk, LAG, SVI, Checkpoint — สวิตช์จำลองคนละชุด พังได้ไม่กระทบใคร"
+      },
+      {
+        "title": "ช่วงบ่าย — ทำบน Controller VM ของชุด",
+        "body": "Initial setup, AP onboarding, SSID ทั้งสี่แบบ, Role & Policy, Dashboard",
+        "accent": true
+      },
+      {
+        "title": "ที่ผู้สอนคุมไว้",
+        "body": "{{rapHead}} (หัวสาย RAP), {{rap}} และ {{switch}} — เป็นทางผ่านของทุกชุด ถ้าล้มคือล้มทั้งห้อง"
+      }
+    ]
+  },
+  "switchLab": {
+    "figLabel": "FIG.03 — PNETLAB SWITCH LAB",
+    "fileName": "03_Lab_Switch_PNETLAB",
+    "heading": "Switch Lab บน {{simulator}}",
+    "subTail": "VLAN + Trunk + LAG · PC คนละ VLAN เพื่อทดสอบ inter-VLAN routing",
+    "access": {
+      "title": "เข้าใช้งาน {{simulator}}",
+      "rows": [
+        [
+          "URL",
+          "http://10.69.11.10/"
+        ],
+        [
+          "ผู้ใช้",
+          "pod1 – pod{{studentPods}}"
+        ],
+        [
+          "รหัสผ่าน",
+          "P@ssw0rd"
+        ]
+      ],
+      "note": "ทุกคนในชุดใช้ล็อกอินเดียวกัน — ตกลงกันก่อนว่าใครกดอะไร"
+    },
+    "nodes": {
+      "sw1": {
+        "name": "CX-SW-1",
+        "ip": "192.168.0.2/24"
+      },
+      "sw2": {
+        "name": "CX-SW-2",
+        "ip": "192.168.0.3/24"
+      },
+      "sw3": {
+        "name": "CX-SW-3",
+        "ip": "192.168.0.4/24"
+      },
+      "pc1": {
+        "name": "PC1",
+        "detail": "VLAN 10 · .11"
+      },
+      "pc2": {
+        "name": "PC2",
+        "detail": "VLAN 20 · .12"
+      },
+      "pc3": {
+        "name": "PC3",
+        "detail": "VLAN 30 · .13"
+      }
+    },
+    "lagLabel": "LAG 1 · LACP active",
+    "lagSub": "vlan trunk allowed 10,20,30",
+    "trunkLabel": "Trunk",
+    "agLabel": "Inter-VLAN routing — SVI อยู่บน CX-SW-1 ตัวเดียว",
+    "agIp": "VLAN 10 / 20 / 30 · gateway .1 ของแต่ละวง",
+    "plan": {
+      "title": "ค่าที่ใช้ในผังนี้",
+      "cols": [
+        "รายการ",
+        "ค่า"
+      ],
+      "rows": [
+        [
+          "CX-SW-1 (L3)",
+          "192.168.0.2 · ถือ SVI ทั้งสามวง"
+        ],
+        [
+          "CX-SW-2 · CX-SW-3",
+          "192.168.0.3 · 192.168.0.4 (L2)"
+        ],
+        [
+          "PC1 · VLAN 10",
+          "10.10.10.11 » gw 10.10.10.1"
+        ],
+        [
+          "PC2 · VLAN 20",
+          "10.10.20.12 » gw 10.10.20.1"
+        ],
+        [
+          "PC3 · VLAN 30",
+          "10.10.30.13 » gw 10.10.30.1"
+        ],
+        [
+          "LAG 1 (SW1–SW2)",
+          "1/1/1 + 1/1/2 · LACP active"
+        ],
+        [
+          "Trunk (SW1–SW3)",
+          "SW1 1/1/4 » SW3 1/1/1"
+        ]
+      ]
+    },
+    "notes": [
+      "สวิตช์สามตัวเป็น VM คนละชุดกับเพื่อน — พังได้ reset ใหม่ได้",
+      "SVI อยู่บน CX-SW-1 ตัวเดียว อีกสองตัวเป็น L2 ล้วน ๆ",
+      "LAG กับ Trunk ต่างกันแค่จำนวนสาย — allowed VLAN ต้องตรงกันสองฝั่ง",
+      "หลักสูตรนี้ยังไม่แตะ VSX / Active Gateway — อยู่ในหลักสูตร Advance"
+    ]
+  },
+  "sections": {
+    "overview": {
+      "num": "01",
+      "nav": "Overview",
+      "title": "ภาพรวมโซลูชัน",
+      "sub": "ใช้คู่กับหัวข้อ Overview Aruba CX Switch (09:15) และ Overview Aruba WLAN Solution (13:45)"
+    },
+    "lab": {
+      "num": "02",
+      "nav": "Lab topology",
+      "title": "Lab topology (แบ่งตาม Pod)",
+      "sub": "Controller 1 ตัวต่อ 1 ชุด — ผู้เข้าอบรม Pod 1–{{studentPods}} และชุดผู้สอนอีก 1 ชุด"
+    },
+    "vlan": {
+      "num": "03",
+      "nav": "VLAN / IP",
+      "title": "แผน VLAN / IP",
+      "sub": "VLAN 10/20/30 เป็นของ Switch lab · 2601–2608 เป็น AP VLAN ของแต่ละชุด"
+    },
+    "config": {
+      "num": "04",
+      "nav": "Config",
+      "title": "Golden config รายชุด",
+      "sub": "ค่าจริงของแต่ละชุดแทนไว้แล้ว — เลือกชุดของตัวเอง กดคัดลอก แล้ววางลง CLI ได้เลย"
+    },
+    "labs": {
+      "num": "05",
+      "nav": "Labs",
+      "title": "Lab ทีละขั้น",
+      "sub": "{{studentPods}} ชุดทำพร้อมกันได้ — LAB 1–7 บน {{simulator}} · LAB 8–14 บน Controller VM ของชุด"
+    },
+    "agenda": {
+      "num": "06",
+      "nav": "Agenda",
+      "title": "กำหนดการอบรม",
+      "sub": "{{dateLong}} · 09:00–17:00 — ช่วงที่มี LAB ให้เปิดหน้า Labs คู่กันไว้"
+    }
+  },
+  "agenda": [
+    {
+      "time": "09:00",
+      "title": "ลงทะเบียน / แนะนำหลักสูตรและสภาพแวดล้อม LAB",
+      "detail": "Registration & Course Introduction — แจกชุด Pod และรหัสเข้า {{simulator}}"
+    },
+    {
+      "time": "09:15",
+      "title": "Overview Aruba CX Switch",
+      "detail": "สถาปัตยกรรม AOS-CX · การใช้งาน CLI / Web UI เบื้องต้น"
+    },
+    {
+      "time": "09:45",
+      "title": "Access LAB & Initial Setup + LAB",
+      "detail": "{{simulator}} · Admin account, Hostname, สร้าง User เพิ่ม, เปิด Remote Management (SSH/HTTPS) — LAB 1–2"
+    },
+    {
+      "time": "10:30",
+      "title": "พักเบรก",
+      "break": true
+    },
+    {
+      "time": "10:45",
+      "title": "System Config & Configuration Management + LAB",
+      "detail": "Clock, Time Zone, DNS, SNMP · Checkpoint, Diff, Auto Rollback — LAB 3–4"
+    },
+    {
+      "time": "11:30",
+      "title": "L2 Fundamentals + LAB",
+      "detail": "VLAN · Access / Trunk Port · LAG (LACP) — LAB 5–6"
+    },
+    {
+      "time": "12:00",
+      "title": "พักรับประทานอาหารกลางวัน",
+      "break": true
+    },
+    {
+      "time": "13:00",
+      "title": "L3 Fundamentals + LAB · สรุปฝั่ง Switch & Q&A",
+      "detail": "SVI / Inter-VLAN Routing · ตรวจสอบและ Troubleshoot เบื้องต้น — LAB 7"
+    },
+    {
+      "time": "13:45",
+      "title": "Overview Aruba WLAN Solution & Mobility Controller",
+      "detail": "องค์ประกอบของโซลูชัน · บทบาทของ Controller และ AP"
+    },
+    {
+      "time": "14:15",
+      "title": "Initial Setup MC & Network Setup · AP Provisioning + LAB",
+      "detail": "Controller VM ของชุด · Full-setup, Hierarchy, Time · VLAN / Interface · Convert AP เป็น Campus mode — LAB 8–10"
+    },
+    {
+      "time": "15:00",
+      "title": "พักเบรก",
+      "break": true
+    },
+    {
+      "time": "15:15",
+      "title": "Authentication + LAB",
+      "detail": "PSK · Captive Portal · 802.1X · MAC Authentication — LAB 11–13"
+    },
+    {
+      "time": "16:15",
+      "title": "Application Control (Policy) & Dashboard Overview + LAB",
+      "detail": "Network alias · Policy · User Role · Dashboard — LAB 14"
+    },
+    {
+      "time": "16:45",
+      "title": "สรุปหลักสูตร & ถาม-ตอบ",
+      "break": true
+    }
+  ],
+  "configNotes": [
+    {
+      "title": "ก่อนวาง config",
+      "body": "เช็คว่าต่อ console/SSH ถูก controller ของชุดตัวเอง ด้วย `show running-config | include vlan` ก่อนเสมอ"
+    },
+    {
+      "title": "เช็คหลังวาง",
+      "body": "`show ip dhcp binding` ต้องมี AP ขึ้น · `show ap active` ต้องเห็น AP ของชุดตัวเอง · ping ออกเน็ตจาก client ต้องผ่าน",
+      "accent": true
+    },
+    {
+      "title": "ถ้า config ผิดชุด",
+      "body": "ลบ VLAN ที่สร้างผิดด้วย `no interface vlan <id>` และ `no ip dhcp pool <name>` แล้วค่อยวางชุดที่ถูกใหม่"
+    }
+  ],
+  "labGuide": {
+    "intro": "LAB 1–7 ฝึกบน {{simulator}} — ห้องแลบของชุดตัวเองมีสวิตช์จำลอง 3 ตัวและ PC 3 เครื่อง พังได้ reset ใหม่ได้ · LAB 8–14 ทำบน Controller VM ของชุดตัวเอง ค่าที่ต้องแทนอยู่ในหัวข้อ Config ด้านบน (n = หมายเลข Pod)",
+    "note": "อุปกรณ์จริงที่ใช้ร่วมกัน — {{rapHead}} (หัวสาย RAP), {{rap}} และ {{switch}} — ผู้สอนเป็นคนคุม เพราะเป็นทางผ่านของทุกชุด · หลักสูตรนี้ไม่แตะ VSX, Spanning-tree และ OSPF ตามที่ course outline ระบุว่าเป็นเนื้อหาหลักสูตร Advance",
+    "labs": [
+      {
+        "id": "lab1",
+        "num": "LAB 1",
+        "title": "เข้า PNETLAB และตั้งค่าเริ่มต้นให้สวิตช์",
+        "where": "PNETLAB (สวิตช์จำลอง)",
+        "goal": "เข้าห้องแลบของชุดตัวเองได้ เห็นสวิตช์ครบสามตัว ตั้งรหัส admin และ hostname ให้ครบทุกตัว",
+        "steps": [
+          {
+            "text": "เปิด http://10.69.11.10/ แล้วล็อกอินด้วยผู้ใช้ของชุดตัวเอง — POD 1 ใช้ pod1 รหัส P@ssw0rd"
+          },
+          {
+            "text": "เปิด lab ของชุดตัวเอง กด START แล้วรอให้สวิตช์ทั้งสามตัวขึ้นครบ"
+          },
+          {
+            "text": "คลิกที่สวิตช์ตัวแรกเพื่อเปิด console — ครั้งแรกล็อกอินด้วย admin แล้วเคาะ Enter ผ่านช่องรหัส จากนั้นระบบจะบังคับให้ตั้งรหัสใหม่ ตั้งเป็น Aruba123! ให้เหมือนกันทั้งชุดจะได้ไม่ลืม"
+          },
+          {
+            "text": "ตั้ง hostname ให้ตรงกับผัง FIG.03",
+            "cli": [
+              "configure terminal",
+              "hostname CX-SW-1",
+              "exit",
+              "write memory"
+            ]
+          },
+          {
+            "text": "ทำซ้ำข้อ 3–4 กับอีกสองตัว ตั้งชื่อเป็น CX-SW-2 และ CX-SW-3"
+          },
+          {
+            "text": "จดไว้ใช้ทั้งวัน: สวิตช์ 192.168.0.2 / .3 / .4 · VLAN 10 / 20 / 30 · Controller ของชุดคือ 192.168.10.22n"
+          }
+        ],
+        "verify": [
+          "show version",
+          "show running-config | include hostname",
+          "show interface brief"
+        ],
+        "gotcha": "ทุกคนในชุดใช้ล็อกอิน PNETLAB เดียวกัน — ถ้าสองคนกดพร้อมกันจะแย่ง console ตกลงกันก่อนว่าใครทำสวิตช์ตัวไหน"
+      },
+      {
+        "id": "lab2",
+        "num": "LAB 2",
+        "title": "สร้าง User เพิ่ม และเปิด Remote Management",
+        "where": "PNETLAB (สวิตช์จำลอง)",
+        "goal": "เข้าสวิตช์ได้โดยไม่ต้องผ่าน console อีก — SSH และ Web UI ใช้ได้จริงจาก PC ในแลบ",
+        "steps": [
+          {
+            "text": "ที่ CX-SW-1 สร้างผู้ใช้เพิ่มอีกหนึ่งคน แยกจาก admin",
+            "cli": [
+              "configure terminal",
+              "user netadmin group administrators password plaintext Aruba123!"
+            ]
+          },
+          {
+            "text": "เปิด SSH server — เปิดทั้ง VRF default (ฝั่งข้อมูล) และ mgmt (ฝั่งพอร์ตจัดการ)",
+            "cli": [
+              "ssh server vrf default",
+              "ssh server vrf mgmt"
+            ]
+          },
+          {
+            "text": "เปิด Web UI ด้วย HTTPS — หัวข้อ CLI / Web UI ตอนเช้าใช้หน้านี้",
+            "cli": [
+              "https-server vrf default",
+              "https-server vrf mgmt"
+            ]
+          },
+          {
+            "text": "ให้ SVI ของ VLAN 1 มี IP ไว้ก่อน จะได้ ping และ SSH เข้ามาได้",
+            "cli": [
+              "vlan 1",
+              "interface vlan 1",
+              "    ip address 192.168.0.2/24",
+              "exit",
+              "write memory"
+            ]
+          },
+          {
+            "text": "จาก PC ในแลบลอง ssh netadmin@192.168.0.2 และเปิด https://192.168.0.2 ต้องเข้าได้ทั้งคู่"
+          },
+          {
+            "text": "ทำซ้ำกับ CX-SW-2 (192.168.0.3) และ CX-SW-3 (192.168.0.4)"
+          }
+        ],
+        "verify": [
+          "show ssh server vrf default",
+          "show https-server vrf default",
+          "show ip interface brief"
+        ],
+        "gotcha": "SSH เข้าไม่ได้ให้ดูก่อนว่าเปิดถูก VRF หรือเปล่า — เปิดแต่ vrf mgmt แล้วนั่ง ssh มาทาง VLAN 1 ยังไงก็ไม่ติด"
+      },
+      {
+        "id": "lab3",
+        "num": "LAB 3",
+        "title": "Clock, Timezone, DNS และ SNMP",
+        "where": "PNETLAB (สวิตช์จำลอง)",
+        "goal": "ให้เวลาบนสวิตช์ตรง และตั้งค่าที่ระบบ monitoring ต้องใช้ — log ที่เวลาผิดคือ log ที่ไล่ปัญหาไม่ได้",
+        "steps": [
+          {
+            "text": "ตั้ง timezone แล้วค่อยตั้งเวลา — สลับลำดับกันเมื่อไหร่เวลาจะเพี้ยนไปตามโซนเดิม",
+            "cli": [
+              "configure terminal",
+              "clock timezone asia/bangkok",
+              "clock date 2026-09-03",
+              "clock time 09:00:00"
+            ]
+          },
+          {
+            "text": "ชี้ NTP ไว้ด้วย จะได้ไม่ต้องมาตั้งมือทุกครั้งที่ reset",
+            "cli": [
+              "ntp server pool.ntp.org",
+              "ntp enable"
+            ]
+          },
+          {
+            "text": "ตั้ง DNS",
+            "cli": [
+              "ip dns server-address 8.8.8.8",
+              "ip dns server-address 1.1.1.1",
+              "ip dns domain-name lab.local"
+            ]
+          },
+          {
+            "text": "ตั้ง SNMP สำหรับอ่านค่า",
+            "cli": [
+              "snmp-server community public",
+              "snmp-server system-location \"Training Room\"",
+              "snmp-server system-contact \"IT Green\"",
+              "exit",
+              "write memory"
+            ]
+          },
+          {
+            "text": "เช็คว่าเวลาขยับจริง — เคาะ show clock สองครั้งห่างกันสักครู่ ตัวเลขต้องเดิน"
+          }
+        ],
+        "verify": [
+          "show clock",
+          "show ntp status",
+          "show ip dns",
+          "show snmp-server"
+        ],
+        "gotcha": "clock timezone ต้องพิมพ์เป็นตัวเล็กทั้งหมดแบบ asia/bangkok — พิมพ์ Asia/Bangkok สวิตช์จะไม่รู้จัก"
+      },
+      {
+        "id": "lab4",
+        "num": "LAB 4",
+        "title": "Checkpoint, Diff และ Rollback",
+        "where": "PNETLAB (สวิตช์จำลอง)",
+        "goal": "เซฟจุดที่ config ยังดีอยู่ แล้วย้อนกลับมาได้เมื่อพังในแลบถัดไป — นี่คือตาข่ายรองของทั้งวัน",
+        "steps": [
+          {
+            "text": "เซฟ checkpoint ก่อนเริ่มแตะ VLAN ตั้งชื่อให้รู้เรื่อง",
+            "cli": [
+              "configure terminal",
+              "exit",
+              "copy running-config checkpoint BEFORE-VLAN"
+            ]
+          },
+          {
+            "text": "ลองแก้อะไรสักอย่างให้ต่างจากเดิม",
+            "cli": [
+              "configure terminal",
+              "vlan 99",
+              "    name TEST-DIFF",
+              "exit"
+            ]
+          },
+          {
+            "text": "เทียบดูว่าต่างจากจุดที่เซฟไว้ตรงไหน — ต้องเห็นแค่ VLAN 99 ที่เพิ่งเพิ่ม",
+            "cli": [
+              "checkpoint diff BEFORE-VLAN running-config"
+            ]
+          },
+          {
+            "text": "ย้อนกลับไปจุดเดิม แล้ว diff ซ้ำ คราวนี้ต้องไม่มีอะไรต่าง",
+            "cli": [
+              "checkpoint rollback BEFORE-VLAN",
+              "checkpoint diff BEFORE-VLAN running-config"
+            ]
+          },
+          {
+            "text": "ลองโหมด auto rollback — สั่งแล้วมีเวลานับถอยหลัง ถ้าไม่ confirm ทันจะย้อนกลับเอง เหมาะกับตอนแก้ config ผ่าน SSH ที่อาจตัดตัวเองหลุด",
+            "cli": [
+              "configure terminal",
+              "checkpoint auto 5",
+              "exit"
+            ]
+          },
+          {
+            "text": "ยืนยันว่ายังคุยกันได้อยู่ ให้ config ที่แก้อยู่ต่อ",
+            "cli": [
+              "checkpoint auto confirm"
+            ]
+          }
+        ],
+        "verify": [
+          "show checkpoint",
+          "show checkpoint BEFORE-VLAN",
+          "show checkpoint auto"
+        ],
+        "gotcha": "checkpoint auto ที่ลืม confirm จะย้อน config กลับเงียบ ๆ ตอนหมดเวลา — ถ้าอยู่ ๆ ของที่เพิ่งตั้งหายไป ให้สงสัยข้อนี้ก่อน"
+      },
+      {
+        "id": "lab5",
+        "num": "LAB 5",
+        "title": "VLAN, Access port และ Trunk port",
+        "where": "PNETLAB (สวิตช์จำลอง)",
+        "goal": "ให้ PC ทั้งสามเครื่องอยู่คนละ VLAN คนละวง และให้ VLAN เดินข้ามสวิตช์ได้",
+        "steps": [
+          {
+            "text": "สร้าง VLAN ทั้งสามวงให้เหมือนกันทั้งสามตัว — เริ่มที่ CX-SW-1",
+            "cli": [
+              "configure terminal",
+              "vlan 10",
+              "    name PC-A",
+              "vlan 20",
+              "    name PC-B",
+              "vlan 30",
+              "    name PC-C"
+            ]
+          },
+          {
+            "text": "ที่ CX-SW-1 ตั้งพอร์ตที่ PC1 เสียบให้เป็น access VLAN 10",
+            "cli": [
+              "interface 1/1/3",
+              "    no shutdown",
+              "    no routing",
+              "    vlan access 10"
+            ]
+          },
+          {
+            "text": "ที่ CX-SW-1 ตั้งพอร์ตที่ลงไป CX-SW-3 ให้เป็น trunk",
+            "cli": [
+              "interface 1/1/4",
+              "    no shutdown",
+              "    no routing",
+              "    vlan trunk native 1",
+              "    vlan trunk allowed 10,20,30",
+              "exit",
+              "write memory"
+            ]
+          },
+          {
+            "text": "ที่ CX-SW-2 สร้าง VLAN ทั้งสามวงเหมือนกัน แล้วตั้งพอร์ตของ PC2 เป็น access VLAN 20",
+            "cli": [
+              "configure terminal",
+              "vlan 10",
+              "vlan 20",
+              "vlan 30",
+              "interface 1/1/3",
+              "    no shutdown",
+              "    no routing",
+              "    vlan access 20",
+              "exit",
+              "write memory"
+            ]
+          },
+          {
+            "text": "ที่ CX-SW-3 สร้าง VLAN ทั้งสามวง ตั้งพอร์ตของ PC3 เป็น access VLAN 30 และตั้งพอร์ตขึ้น CX-SW-1 เป็น trunk",
+            "cli": [
+              "configure terminal",
+              "vlan 10",
+              "vlan 20",
+              "vlan 30",
+              "interface 1/1/3",
+              "    no shutdown",
+              "    no routing",
+              "    vlan access 30",
+              "interface 1/1/1",
+              "    no shutdown",
+              "    no routing",
+              "    vlan trunk native 1",
+              "    vlan trunk allowed 10,20,30",
+              "exit",
+              "write memory"
+            ]
+          },
+          {
+            "text": "ตั้ง IP ให้ PC — PC1 10.10.10.11/24 · PC2 10.10.20.12/24 · PC3 10.10.30.13/24 gateway ของแต่ละเครื่องคือ .1 ของวงตัวเอง"
+          }
+        ],
+        "verify": [
+          "show vlan",
+          "show interface brief",
+          "show vlan port 1/1/3",
+          "show mac-address-table"
+        ],
+        "gotcha": "ตอนนี้ PC ทั้งสามยัง ping ข้ามกันไม่ได้ และ ping gateway ตัวเองก็ยังไม่ได้ เพราะยังไม่มี SVI — เป็นเรื่องปกติ เดี๋ยวได้เห็นความต่างชัดใน LAB 7"
+      },
+      {
+        "id": "lab6",
+        "num": "LAB 6",
+        "title": "LAG ระหว่างสวิตช์ด้วย LACP",
+        "where": "PNETLAB (สวิตช์จำลอง)",
+        "goal": "รวมสองสายระหว่าง CX-SW-1 กับ CX-SW-2 ให้เป็นเส้นเดียวที่เร็วขึ้นและขาดได้หนึ่งเส้น",
+        "steps": [
+          {
+            "text": "ที่ CX-SW-1 สร้าง LAG 1 เป็น trunk แล้วเปิด LACP",
+            "cli": [
+              "configure terminal",
+              "interface lag 1",
+              "    no shutdown",
+              "    no routing",
+              "    vlan trunk native 1",
+              "    vlan trunk allowed 10,20,30",
+              "    lacp mode active"
+            ]
+          },
+          {
+            "text": "ใส่พอร์ต 1/1/1 และ 1/1/2 เข้า LAG",
+            "cli": [
+              "interface 1/1/1-1/1/2",
+              "    no shutdown",
+              "    lag 1",
+              "exit",
+              "write memory"
+            ]
+          },
+          {
+            "text": "ที่ CX-SW-2 ทำเหมือนกันทุกบรรทัด — LACP จะจับคู่กันเองก็ต่อเมื่อสองฝั่งตรงกัน",
+            "cli": [
+              "configure terminal",
+              "interface lag 1",
+              "    no shutdown",
+              "    no routing",
+              "    vlan trunk native 1",
+              "    vlan trunk allowed 10,20,30",
+              "    lacp mode active",
+              "interface 1/1/1-1/1/2",
+              "    no shutdown",
+              "    lag 1",
+              "exit",
+              "write memory"
+            ]
+          },
+          {
+            "text": "ดูว่า LAG ขึ้นจริง — ต้องเห็นสมาชิกสองพอร์ตอยู่ในสถานะ up ทั้งคู่",
+            "cli": [
+              "show lacp interfaces"
+            ]
+          },
+          {
+            "text": "ทดสอบว่าขาดหนึ่งเส้นแล้วยังใช้ได้ — shutdown 1/1/1 แล้วดูว่า LAG ยังอยู่ เหลือสมาชิกหนึ่งพอร์ต",
+            "cli": [
+              "interface 1/1/1",
+              "    shutdown",
+              "    no shutdown"
+            ]
+          }
+        ],
+        "verify": [
+          "show lacp interfaces",
+          "show lacp aggregates",
+          "show interface lag 1",
+          "show vlan"
+        ],
+        "gotcha": "LAG ไม่ขึ้นเกือบทุกครั้งเพราะสองฝั่งตั้งไม่ตรงกัน — เช็คสามอย่าง: lacp mode ต้อง active ทั้งคู่, vlan trunk allowed ต้องเหมือนกัน, native VLAN ต้องเท่ากัน"
+      },
+      {
+        "id": "lab7",
+        "num": "LAB 7",
+        "title": "SVI และ Inter-VLAN routing",
+        "where": "PNETLAB (สวิตช์จำลอง)",
+        "goal": "ให้ทั้งสาม VLAN มี gateway อยู่บน CX-SW-1 แล้วทำให้ PC ทั้งสามเครื่อง ping ข้าม VLAN หากันได้",
+        "steps": [
+          {
+            "text": "ที่ CX-SW-1 สร้าง SVI ของทั้งสาม VLAN — เลข .1 คือ gateway ที่ PC ตั้งไว้แล้ว",
+            "cli": [
+              "configure terminal",
+              "interface vlan 10",
+              "    ip address 10.10.10.1/24",
+              "    no shutdown",
+              "interface vlan 20",
+              "    ip address 10.10.20.1/24",
+              "    no shutdown",
+              "interface vlan 30",
+              "    ip address 10.10.30.1/24",
+              "    no shutdown",
+              "exit",
+              "write memory"
+            ]
+          },
+          {
+            "text": "ดูตาราง routing — ต้องเห็นทั้งสามวงเป็น connected ถ้าขาดวงไหนแปลว่า SVI วงนั้นยังไม่ up",
+            "cli": [
+              "show ip route"
+            ]
+          },
+          {
+            "text": "ที่ PC1 ping gateway ตัวเองก่อน (10.10.10.1) ต้องผ่าน — ถ้าข้อนี้ไม่ผ่าน อย่าเพิ่งไปข้อถัดไป"
+          },
+          {
+            "text": "ทดสอบ inter-VLAN routing จริง: PC1 ping PC2 (10.10.20.12) และ ping PC3 (10.10.30.13) ต้องผ่านทั้งคู่"
+          },
+          {
+            "text": "ไล่ปัญหาตามลำดับนี้เมื่อ ping ไม่ผ่าน — PC ping gateway ตัวเองได้ไหม → show ip route เห็นวงปลายทางหรือยัง → show mac-address-table เห็น MAC ของ PC ปลายทางไหม → VLAN นั้นอยู่ใน vlan trunk allowed ของ LAG และ trunk หรือเปล่า",
+            "cli": [
+              "show ip route",
+              "show arp",
+              "show mac-address-table",
+              "show vlan"
+            ]
+          },
+          {
+            "text": "เซฟ checkpoint ปิดท้ายฝั่งสวิตช์ไว้ก่อนพักเที่ยง",
+            "cli": [
+              "copy running-config checkpoint END-OF-SWITCH"
+            ]
+          }
+        ],
+        "verify": [
+          "show ip interface brief",
+          "show ip route",
+          "show arp",
+          "show vlan"
+        ],
+        "gotcha": "ping ข้าม VLAN ไม่ผ่านทั้งที่ SVI ขึ้นครบ ให้ดูที่ PC ก่อน — gateway ที่ตั้งไว้ในเครื่องต้องเป็น .1 ของวงตัวเอง ไม่ใช่ .1 ของวงอื่น"
+      },
+      {
+        "id": "lab8",
+        "num": "LAB 8",
+        "title": "Initial Setup Mobility Controller",
+        "where": "Controller VM ของชุด",
+        "goal": "ตั้ง controller ของชุดตัวเองให้ขึ้นมาพร้อมใช้ — ชื่อ, IP, country code, เวลา และ hierarchy",
+        "steps": [
+          {
+            "text": "ต่อ console เข้า Controller VM ของชุดตัวเอง แล้วเรียกตัวช่วยตั้งค่าครั้งแรก",
+            "cli": [
+              "full-setup"
+            ]
+          },
+          {
+            "text": "ตอบ wizard ตามนี้ — System name = MC-POD-n · Role = standalone · Country code = TH"
+          },
+          {
+            "text": "ตั้ง IP ของ controller ตามชุดตัวเอง — POD n ใช้ 192.168.10.(220+n) netmask 255.255.255.0 gateway ตาม management network {{mgmtNet}} · DNS 8.8.8.8"
+          },
+          {
+            "text": "ตั้งรหัส admin แล้วให้ระบบ reboot รอจนขึ้นมาใหม่"
+          },
+          {
+            "text": "เข้าเว็บ https://192.168.10.22n:4343 ด้วย admin ที่เพิ่งตั้ง — จากนี้ทำผ่าน Web UI เป็นหลัก"
+          },
+          {
+            "text": "ตั้งเวลาให้ตรงก่อนทำอย่างอื่น — Configuration » System » General » Clock ถ้าเวลาเพี้ยน certificate ของ AP จะไม่ผ่านแล้วจะไปติดตอน onboard",
+            "cli": [
+              "clock timezone ICT +07:00",
+              "ntp server pool.ntp.org"
+            ]
+          },
+          {
+            "text": "ดูโครง hierarchy ที่ Configuration » Network — จำไว้ว่า config ที่วางไว้ระดับบนจะไหลลงระดับล่าง"
+          }
+        ],
+        "verify": [
+          "show switches",
+          "show clock",
+          "show ip interface brief",
+          "show license"
+        ],
+        "gotcha": "ตั้ง country code ผิดเป็นเรื่องใหญ่ — ช่องสัญญาณที่ใช้ได้จะไม่ตรงกับที่ กสทช. อนุญาต และแก้ทีหลังต้องรื้อ AP ใหม่ทั้งหมด ต้องเป็น TH เท่านั้น"
+      },
+      {
+        "id": "lab9",
+        "num": "LAB 9",
+        "title": "VLAN และ Interface บน Controller",
+        "where": "Controller VM ของชุด",
+        "goal": "สร้าง AP VLAN ของชุดตัวเอง ให้มี IP, DHCP และ NAT ครบ — เตรียมที่ให้ AP มาลง",
+        "steps": [
+          {
+            "text": "Configuration » Interfaces » VLANs » + สร้าง VLAN 260n (n = หมายเลขชุด) ตั้งชื่อ AP-POD-n"
+          },
+          {
+            "text": "ใส่ IP ให้ VLAN นั้น — 10.26.n.1/24 คือ gateway ของ AP ในชุดตัวเอง"
+          },
+          {
+            "text": "สร้าง DHCP pool ของ VLAN นี้ แจก .{{poolRange}} เว้น .1–.10 และ .241–.254 lease {{leaseHours}} ชั่วโมง"
+          },
+          {
+            "text": "เปิด NAT ขาเข้าให้ VLAN นี้ ออกเน็ตผ่าน uplink ของ controller"
+          },
+          {
+            "text": "เอา config ที่พิมพ์แล้วจากหัวข้อ Config ด้านบนมาวางแทนก็ได้ — เลือกแท็บชุดตัวเอง กดคัดลอก แล้ววางลง CLI"
+          },
+          {
+            "text": "Configuration » Interfaces » Ports — ให้พอร์ตที่ AP จะเข้ามาผ่าน VLAN 260n ได้"
+          }
+        ],
+        "verify": [
+          "show vlan",
+          "show ip interface brief",
+          "show ip dhcp database",
+          "show running-config | include nat"
+        ],
+        "gotcha": "ทั้งห้องใช้เลข VLAN คนละเบอร์กันด้วยเหตุผลเดียว — วาง VLAN ของชุดอื่นลงเครื่องตัวเองแล้วจะไล่หาไม่เจอว่าทำไม AP ไม่ขึ้น เช็ค n ของตัวเองก่อนวางทุกครั้ง"
+      },
+      {
+        "id": "lab10",
+        "num": "LAB 10",
+        "title": "AP Provisioning — เอา AP ของชุดเข้ามา",
+        "where": "Controller VM ของชุด",
+        "goal": "แปลง Campus AP ของชุดให้มาจบที่ controller ตัวเอง แล้วจัดเข้า AP group ของชุด",
+        "steps": [
+          {
+            "text": "ดู LED ของ AP ก่อน — สีและจังหวะกะพริบบอกได้ว่าค้างอยู่ขั้นไหน ยังไม่ได้ IP หรือหา controller ไม่เจอ"
+          },
+          {
+            "text": "ถ้า AP เคยถูกตั้งค่ามาก่อน ให้ reset ด้วยปุ่ม reset ค้างไว้ตอนจ่ายไฟ จนไฟกะพริบแล้วปล่อย"
+          },
+          {
+            "text": "เข้าเว็บ AP ครั้งแรก เปลี่ยนรหัสผ่าน แล้วเลือก Country code = TH ให้ตรงกับ controller"
+          },
+          {
+            "text": "แปลง AP เป็น Campus mode ให้ชี้มาที่ controller ของชุดตัวเอง — จาก CLI ของ AP",
+            "cli": [
+              "convert-aos-ap campus-ap 192.168.10.22n"
+            ]
+          },
+          {
+            "text": "AP จะ reboot แล้วมาขอเข้า controller — ที่ controller ไปที่ Configuration » Access Points » Allowlist แล้วกด Approve ตัวของชุดตัวเอง"
+          },
+          {
+            "text": "สร้าง AP group ของชุด — Configuration » AP Groups » + ตั้งชื่อ AP-GROUP-POD-n"
+          },
+          {
+            "text": "ย้าย AP ที่เพิ่งเข้ามาไปอยู่ group นั้น แล้วรอ AP reboot อีกรอบ"
+          }
+        ],
+        "verify": [
+          "show ap database",
+          "show ap active",
+          "show ap-group",
+          "show ip dhcp binding"
+        ],
+        "gotcha": "AP ไม่ขึ้นสักที ให้ไล่จากล่างขึ้นบน — show ip dhcp binding เห็น AP ได้ IP ไหม → ถ้าไม่ได้ปัญหาอยู่ที่ VLAN/DHCP ใน LAB 9 ไม่ใช่ที่ตัว AP"
+      },
+      {
+        "id": "lab11",
+        "num": "LAB 11",
+        "title": "WLAN แบบ PSK และเพิ่ม MAC Authentication",
+        "where": "Controller VM ของชุด",
+        "goal": "ปล่อย SSID แรกของชุดด้วยรหัสผ่านร่วม แล้วเพิ่มการเช็ค MAC ซ้อนเข้าไปอีกชั้น",
+        "steps": [
+          {
+            "text": "Configuration » WLANs » + สร้าง SSID ชื่อ POD-n-PSK ผูกกับ AP group ของชุด"
+          },
+          {
+            "text": "เลือก Security = Personal · Key management = WPA2/WPA3 Personal · ตั้ง passphrase ที่ตกลงกันในชุด"
+          },
+          {
+            "text": "เลือก VLAN ปลายทางเป็น 260n ของชุดตัวเอง แล้วกด Submit และ Deploy changes"
+          },
+          {
+            "text": "เอามือถือหรือโน้ตบุ๊กเชื่อม SSID นี้ ต้องได้ IP ในวง 10.26.n.x และออกเน็ตได้"
+          },
+          {
+            "text": "เพิ่มผู้ใช้แบบ MAC เข้าฐานข้อมูลในตัว controller — ใช้ MAC ของเครื่องที่เพิ่งต่อ โดยใส่ MAC เป็นทั้งชื่อผู้ใช้และรหัสผ่าน (Configuration » Authentication » Local users)"
+          },
+          {
+            "text": "กลับไปที่ SSID เดิม เปิด MAC Authentication แล้วชี้ auth server เป็น Internal"
+          },
+          {
+            "text": "ทดสอบสองทาง — เครื่องที่ MAC อยู่ในฐานต้องต่อได้ เครื่องที่ไม่อยู่ต้องโดนปฏิเสธ ทั้งที่รู้ passphrase"
+          }
+        ],
+        "verify": [
+          "show wlan ssid-profile",
+          "show user-table",
+          "show local-userdb",
+          "show ap active"
+        ],
+        "gotcha": "MAC address ต้องใส่แบบไม่มีขีดไม่มีจุดคั่น และเป็นตัวพิมพ์เล็กทั้งหมด — ใส่ผิดรูปแบบจะไม่ error แต่จะไม่แมตช์อะไรเลย"
+      },
+      {
+        "id": "lab12",
+        "num": "LAB 12",
+        "title": "WLAN แบบ 802.1X",
+        "where": "Controller VM ของชุด",
+        "goal": "ปล่อย SSID ที่ต้องล็อกอินรายคน โดยใช้ฐานผู้ใช้ในตัว controller เป็น RADIUS",
+        "steps": [
+          {
+            "text": "Configuration » WLANs » + สร้าง SSID ชื่อ POD-n-DOT1X ผูกกับ AP group ของชุด"
+          },
+          {
+            "text": "เลือก Security = Enterprise · Key management = WPA2/WPA3 Enterprise"
+          },
+          {
+            "text": "ตั้ง Authentication server เป็น Internal — หลักสูตรนี้ไม่มี ClearPass จึงใช้ฐานในตัว"
+          },
+          {
+            "text": "เลือก VLAN ปลายทาง 260n แล้ว Submit และ Deploy changes"
+          },
+          {
+            "text": "สร้างผู้ใช้สำหรับทดสอบ — Configuration » Authentication » Local users เพิ่ม user1 รหัส Aruba123!"
+          },
+          {
+            "text": "ต่อจากเครื่องลูกข่าย ใส่ user1 กับรหัส แล้วเช็คว่าได้ IP ในวง 10.26.n.x"
+          },
+          {
+            "text": "เทียบให้เห็นความต่าง — show user-table จะบอกว่าแต่ละเครื่องเข้ามาด้วยวิธีไหน SSID PSK จะไม่มีชื่อผู้ใช้ แต่ SSID นี้มี"
+          }
+        ],
+        "verify": [
+          "show user-table",
+          "show aaa authentication-server internal",
+          "show wlan ssid-profile"
+        ],
+        "gotcha": "เครื่องลูกข่ายมักไม่ยอมต่อเพราะไม่เชื่อ certificate ของ controller — ในแลบให้เลือกยอมรับต่อไป แต่ของจริงต้องเอา CA ไปติดตั้งที่เครื่องลูกข่ายก่อน"
+      },
+      {
+        "id": "lab13",
+        "num": "LAB 13",
+        "title": "WLAN แบบ Guest ผ่าน Captive Portal",
+        "where": "Controller VM ของชุด",
+        "goal": "ปล่อย SSID เปิดที่บังคับเด้งหน้าล็อกอินก่อนใช้เน็ต — แบบที่ใช้กับผู้มาติดต่อ",
+        "steps": [
+          {
+            "text": "Configuration » WLANs » + สร้าง SSID ชื่อ POD-n-GUEST ผูกกับ AP group ของชุด"
+          },
+          {
+            "text": "เลือก Security = Captive portal (Guest) — ตัว SSID เองเปิดโล่ง ไม่มี passphrase"
+          },
+          {
+            "text": "เลือก Captive portal profile แบบ Internal และ Authentication server = Internal"
+          },
+          {
+            "text": "เลือก VLAN ปลายทาง 260n แล้ว Submit และ Deploy changes"
+          },
+          {
+            "text": "สร้างผู้ใช้ guest — Configuration » Authentication » Local users เพิ่ม guest1 รหัส Guest123!"
+          },
+          {
+            "text": "ต่อจากมือถือ ต้องได้ IP ก่อน แล้วเปิดเบราว์เซอร์ต้องเด้งหน้าล็อกอิน ใส่ guest1 จึงจะออกเน็ตได้"
+          },
+          {
+            "text": "ดูใน show user-table ว่าก่อนล็อกอินเครื่องอยู่ใน role logon และหลังล็อกอินเปลี่ยนเป็น guest"
+          }
+        ],
+        "verify": [
+          "show user-table",
+          "show aaa authentication captive-portal",
+          "show rights"
+        ],
+        "gotcha": "หน้า portal ไม่เด้งเกือบทุกครั้งเพราะเครื่องลูกข่ายยัง resolve DNS ไม่ได้ — ต้องปล่อยให้ role logon ยิง DNS ออกไปได้ ไม่งั้นเบราว์เซอร์ไม่มีอะไรให้ redirect"
+      },
+      {
+        "id": "lab14",
+        "num": "LAB 14",
+        "title": "Role, Policy และ Dashboard",
+        "where": "Controller VM ของชุด",
+        "goal": "จำกัดว่าใครไปไหนได้บ้างด้วย Role กับ Policy แล้วดูผลจริงบน Dashboard",
+        "steps": [
+          {
+            "text": "สร้าง network alias ของปลายทางที่จะคุม — Configuration » Advanced » Aliases ตั้งชื่อ INTERNAL-NET ชี้ไปที่ 192.168.10.0/24"
+          },
+          {
+            "text": "สร้าง policy ใหม่ — Configuration » Roles & Policies » Policies » + ใส่กฎ deny ไปที่ INTERNAL-NET ไว้บนสุด แล้วต่อด้วยกฎ permit any"
+          },
+          {
+            "text": "ลำดับของกฎสำคัญกว่าตัวกฎ — กฎแรกที่แมตช์คือกฎที่ใช้ ถ้าเอา permit any ไว้บน กฎ deny ข้างล่างจะไม่มีวันทำงาน"
+          },
+          {
+            "text": "สร้าง Role ชื่อ guest-restricted แล้วผูก policy นี้เข้าไป"
+          },
+          {
+            "text": "เอา role ไปผูกกับ SSID POD-n-GUEST เป็น initial role หลังล็อกอิน แล้ว Deploy changes"
+          },
+          {
+            "text": "ทดสอบจากเครื่อง guest — ออกเน็ตได้ แต่ ping 192.168.10.x ต้องไม่ผ่าน"
+          },
+          {
+            "text": "เปิด Dashboard » Overview ดูจำนวน client และ AP · Dashboard » Clients ดูรายเครื่องว่าอยู่ role ไหน · Dashboard » Applications ดูว่า traffic เป็นแอปอะไรบ้าง"
+          }
+        ],
+        "verify": [
+          "show rights",
+          "show netdestination",
+          "show acl brief",
+          "show user-table verbose"
+        ],
+        "gotcha": "แก้ policy แล้วเครื่องที่ต่ออยู่ไม่เปลี่ยนพฤติกรรม เป็นเรื่องปกติ — role ผูกกับ session ที่ยังค้างอยู่ ต้องตัดเครื่องออกแล้วต่อใหม่ถึงจะได้ role ใหม่"
+      }
+    ]
+  }
+}
