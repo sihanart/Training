@@ -1,18 +1,18 @@
 {
   "_comment": "ยังไม่ทราบสถานที่จัด — แก้ venue บรรทัดเดียวแล้ว build ใหม่ ทุกที่ที่อ้างถึงจะเปลี่ยนตาม · ชุดอุปกรณ์ใช้ชุดเดียวกับงาน RMUTT (PNETLAB 10.69.11.10 + Controller VM 192.168.10.221–227)",
-
   "slug": "itgreen-2026-09",
   "course": "cx-wlan-basic",
   "date": "2026-09-03",
-
   "organizer": "IT Green Public Company Limited",
   "customer": "Public Class",
   "attendees": "ผู้เข้าอบรมหลักสูตร Aruba CX Switch + WLAN Basic",
   "partnerLine": "IT Green — Authorized Aruba (HPE) Networking Training",
   "venue": "ยังไม่ระบุ",
-
   "podsDrawn": 7,
-
+  "slides": {
+    "file": "slides/itgreen-2026-09.pdf",
+    "pages": 161
+  },
   "lab": {
     "controller": "Mobility Controller (VM)",
     "controllerOs": "ArubaOS 8.7.1.2",
