@@ -64,6 +64,7 @@ node build.mjs
 |---|---|---|
 | `campus-network` | `campus` | Aruba Campus Network — Switch lab ทำ **VSX pair + Active Gateway + multi-chassis LAG** |
 | `cx-wlan-basic` | `campus-basic` | Aruba CX Switch + WLAN Basic รวม 1 วัน — Switch lab หยุดที่ **VLAN + Trunk + LAG + SVI** ไม่มี VSX |
+| `wlan-basic` | `campus` | Aruba WLAN Basic เต็มวัน — **ไม่มีเนื้อหาสวิตช์เลย** ทั้งวันอยู่บน Controller VM · ยังเป็นหน้าตัวอย่าง |
 | `central-wireless` | `cloud` | Aruba Central (cloud-managed) — ยังเป็นหน้าตัวอย่าง |
 
 `diagramSet` เลือกชุดฟังก์ชันวาดผังใน `src/lib/page.mjs` — สถาปัตยกรรมต่างกันเกินกว่าจะวาดด้วยผังเดียวกันได้
