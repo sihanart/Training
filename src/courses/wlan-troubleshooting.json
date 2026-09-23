@@ -1,0 +1,506 @@
+{
+  "id": "wlan-troubleshooting",
+  "title": "Aruba WLAN Troubleshooting",
+  "subtitle": "Half-Day Workshop — 13:00–16:00 · DEMO + Lab วินิจฉัยปัญหา",
+  "docTitle": "Aruba WLAN Troubleshooting Workshop — Network Diagram & Lab",
+  "courseName": "Aruba WLAN Troubleshooting Workshop",
+  "description": "เอกสารอ้างอิง Workshop ครึ่งวัน Aruba WLAN Troubleshooting — ภาพรวมโซลูชัน, Lab topology, แผน VLAN/IP, Golden config และสถานการณ์ปัญหาที่ฝึกวินิจฉัยทีละขั้น",
+  "lede": "Workshop ครึ่งวันเน้นวินิจฉัยปัญหาล้วน ๆ ไม่มีการตั้งค่าเริ่มต้น — ผู้สอนสาธิตกรณี AP ไม่ขึ้นระบบก่อน แล้วผู้เรียนลงมือไล่ปัญหา Client และ Role/Policy เอง หน้านี้เปิดจากมือถือได้ระหว่าง Workshop",
+  "diagramSet": "campus",
+  "pod": {
+    "size": "2–3 คน"
+  },
+  "infra": {},
+  "vlanPlan": [
+    {
+      "vid": "2601–2607",
+      "name": "AP VLAN ของ POD 1–{{studentPods}}",
+      "subnet": "10.26.n.0/24",
+      "note": "n = หมายเลข Pod · gateway 10.26.n.1 บน controller ของชุดนั้น"
+    },
+    {
+      "vid": "2608",
+      "name": "AP VLAN ของชุดผู้สอน",
+      "subnet": "10.26.8.0/24",
+      "note": "ผู้สอนสาธิตก่อน แล้วให้แต่ละชุดทำตามบนของตัวเอง"
+    },
+    {
+      "vid": "MGMT",
+      "name": "Controller ของแต่ละชุด",
+      "subnet": "192.168.10.221–227",
+      "note": "Pod n » 192.168.10.(220+n) · ผู้สอน 192.168.10.133"
+    },
+    {
+      "vid": "DHCP",
+      "name": "ช่วงที่ controller แจกให้ AP",
+      "subnet": "10.26.n{{poolRange}}",
+      "note": "exclude .1–.10 และ .241–.254 · lease {{leaseHours}} ชม."
+    }
+  ],
+  "vlanHint": "หลักสูตรนี้มีแค่ VLAN ฝั่ง AP วงเดียว — ไม่มี VLAN ของแลบสวิตช์เพราะไม่มีเนื้อหาสวิตช์ · Gateway ของ AP VLAN อยู่บน controller ของชุดนั้นเอง (`interface vlan 260n · ip address 10.26.n.1`) และ controller ทำ DHCP เอง จึงไม่ต้องใช้ relay",
+  "overview": {
+    "figLabel": "FIG.01 — SOLUTION OVERVIEW",
+    "fileName": "01_Overview_WLAN",
+    "heading": "Aruba WLAN — ภาพรวมโซลูชันไร้สาย",
+    "subhead": "Controller + AP คือสิ่งที่วินิจฉัยปัญหาทั้ง Workshop",
+    "edge": {
+      "label": "Internet",
+      "note": "WAN / ISP"
+    },
+    "firewall": {
+      "label": "Firewall / Edge",
+      "note": "NAT · Security policy"
+    },
+    "core": {
+      "tag": "โครงข่ายที่มีอยู่แล้ว — ไม่ได้สอนในคอร์สนี้",
+      "label": "Aruba CX Switch (จัดเตรียมไว้ให้)",
+      "roles": [
+        "ผู้ดูแลระบบตั้งค่า VLAN และเส้นทางไว้ล่วงหน้าแล้ว",
+        "หลักสูตรนี้ไม่ครอบคลุมการตั้งค่าสวิตช์เลย",
+        "สนใจฝั่งสวิตช์ ดูหลักสูตร Aruba CX Switch แยกต่างหาก"
+      ]
+    },
+    "controller": {
+      "tag": "หัวใจของคอร์สนี้",
+      "label": "{{controller}} · {{controllerOsShort}}",
+      "roles": [
+        "บทบาท: จบ tunnel ของ AP · ถือ SSID, Role และ Policy",
+        "เป็น DHCP server ของ AP VLAN ตัวเอง",
+        "Authentication: PSK · Captive Portal · 802.1X · MAC"
+      ]
+    },
+    "cppm": {
+      "label": "Internal AAA (อยู่ในตัว Controller)",
+      "roles": [
+        "หลักสูตรนี้ใช้ฐานผู้ใช้ในตัว controller ไม่ต้องมี ClearPass",
+        "802.1X และ MAC Authentication ชี้มาที่ internal server"
+      ]
+    },
+    "services": {
+      "label": "Core Services",
+      "roles": [
+        "DHCP · DNS · NTP · Syslog — มาจากเครือข่ายที่มีอยู่แล้ว ไม่ได้ตั้งเองในคอร์สนี้"
+      ]
+    },
+    "access": [
+      {
+        "label": "พอร์ตสำหรับ AP",
+        "roles": [
+          "เสียบ Campus AP ตรง ๆ",
+          "ตั้งค่าไว้ล่วงหน้าแล้ว ไม่ต้องแตะ"
+        ]
+      },
+      {
+        "label": "Uplink / Trunk",
+        "roles": [
+          "ขึ้น Core ผ่าน LAG",
+          "อยู่นอกขอบเขตของคอร์สนี้"
+        ]
+      }
+    ],
+    "aps": [
+      {
+        "label": "AP-515",
+        "note": "RAP — ผู้สอนคุม"
+      },
+      {
+        "label": "Campus AP",
+        "note": "ชุดละ 1 ตัว"
+      }
+    ],
+    "wirelessClients": {
+      "label": "Wireless Clients",
+      "note": "โน้ตบุ๊ก / มือถือ ของผู้เข้าอบรม"
+    },
+    "wiredClient": {
+      "label": "PC ทดสอบ",
+      "note": "ใช้ ping ทดสอบเส้นทางเท่านั้น"
+    },
+    "flows": [
+      {
+        "n": "①",
+        "color": "#FF8300",
+        "lines": [
+          "Client » AP » tunnel » Controller",
+          "» ปล่อยลง AP VLAN » ออกเน็ต"
+        ]
+      },
+      {
+        "n": "②",
+        "color": "#6B4EA8",
+        "lines": [
+          "Authentication: PSK / Captive Portal",
+          "802.1X / MAC » Internal AAA บน Controller"
+        ]
+      }
+    ],
+    "tunnelLabel": "Tunnel: AP » {{controller}}",
+    "footnote": "หัวข้อ: DEMO AP ไม่ขึ้นระบบ (13:15) · LAB Troubleshooting (14:15, 15:00)",
+    "captions": [
+      {
+        "title": "① DEMO — AP ไม่ขึ้นระบบ",
+        "body": "ผู้สอนสาธิตให้ดู — จดลำดับการวินิจฉัยไว้เป็นเช็คลิสต์"
+      },
+      {
+        "title": "② LAB — Client & Role/Policy",
+        "body": "ลงมือไล่ปัญหาเอง 4 รูปแบบ Authentication และ Policy ที่ไม่ทำงานตามที่ตั้ง",
+        "accent": true
+      },
+      {
+        "title": "ทำไมไม่มีการตั้งค่าเริ่มต้น",
+        "body": "Workshop นี้สมมติว่าผู้เรียนตั้งค่าพื้นฐานเป็นแล้ว — Controller/AP เตรียมสถานการณ์ปัญหาไว้ล่วงหน้า"
+      }
+    ]
+  },
+  "lab": {
+    "figLabel": "FIG.02 — LAB TOPOLOGY",
+    "fileName": "02_Lab_Topology",
+    "heading": "Aruba WLAN Troubleshooting — Lab Topology",
+    "subheadTail": "Workshop ครึ่งวันอยู่บน Controller VM ของชุด — ไม่มีสวิตช์ให้ตั้งค่า",
+    "host": {
+      "tag": "{{host}} — รัน VM ทั้งหมด",
+      "controllers": {
+        "title": "{{controller}} — 1 ตัวต่อ 1 ชุด",
+        "cols": [
+          "ชุด",
+          "MGMT",
+          "AP VLAN"
+        ],
+        "notes": [
+          "แต่ละตัวเป็น DHCP + NAT ของ AP VLAN ตัวเอง (10.26.n.0/24)",
+          "ใช้ตลอด Workshop — DEMO และ LAB 1–2 อยู่บนเครื่องนี้เครื่องเดียว"
+        ]
+      },
+      "simulator": {
+        "title": "Controller VM ของชุด — ข้อควรรู้",
+        "rows": [
+          "• แยก VM ต่อชุด — ทำอะไรก็ไม่กระทบชุดอื่น",
+          "• เข้าได้ทั้ง CLI (console) และ Web UI (HTTPS)",
+          "• พัง reset ใหม่ได้ ไม่กระทบชุดอื่น",
+          "• เป็นเครื่องเดียวที่ใช้ตลอด Workshop ไม่มีสวิตช์จำลองให้ฝึก"
+        ],
+        "whyTitle": "ทำไมแยก Controller VM ต่อชุด",
+        "why": [
+          "แต่ละชุดมีสิทธิ์ admin เต็มบนเครื่องตัวเอง ไม่ต้องรอคิว",
+          "AP onboarding ของจริง ไม่ใช่ demo ร่วมกันทั้งห้อง"
+        ]
+      }
+    },
+    "rapHead": {
+      "tag": "CONTROLLER — หัวสาย RAP",
+      "label": "{{rapHead}}",
+      "roles": [
+        "ตัวจริง · จบ IPsec tunnel ของ {{rap}}",
+        "พาทั้งห้องออกเน็ต",
+        "ผู้สอนคุม — ไม่มีใน LAB ของผู้เข้าอบรม"
+      ]
+    },
+    "chainTitle": "อุปกรณ์จริงที่หน้างาน",
+    "chain": [
+      {
+        "tag": "REMOTE AP",
+        "label": "{{rap}}",
+        "accent": "rap",
+        "roles": [
+          "ตัวเดียวใช้ร่วมทั้งห้อง",
+          "IPsec กลับไปที่ {{rapHead}}"
+        ]
+      },
+      {
+        "tag": "SWITCH กลาง",
+        "label": "{{switch}} · {{switchPorts}} พอร์ต",
+        "accent": "switch",
+        "roles": [
+          "พอร์ต 1 ถึง {{studentPods}} = Campus AP ของแต่ละชุด",
+          "ผู้สอนตั้งไว้ให้แล้ว ไม่ได้สอนในคอร์สนี้"
+        ]
+      },
+      {
+        "tag": "CAMPUS AP",
+        "label": "Campus AP — ชุดละ 1 ตัว",
+        "accent": "ap",
+        "roles": [
+          "AP ของแต่ละชุด — สถานการณ์ปัญหาเตรียมไว้ล่วงหน้าแล้ว",
+          "Tunnel กลับ Controller VM ของชุดตัวเอง"
+        ]
+      }
+    ],
+    "clients": {
+      "label": "Wireless clients",
+      "note": "โน้ตบุ๊ก / มือถือ ของผู้เข้าอบรม"
+    },
+    "wireLabel": "สายจริง",
+    "ipsecLabel": "IPsec",
+    "greLabel": "Tunnel — Campus AP » Controller VM ของชุดตัวเอง",
+    "legend": {
+      "title": "Legend",
+      "rows": [
+        "สายจริง",
+        "IPsec",
+        "Tunnel",
+        "VM"
+      ],
+      "note": "แดง = {{rapHead}} (ตัวจริง) · ส้ม = Controller VM · น้ำเงิน = สวิตช์กลาง"
+    },
+    "plan": {
+      "title": "แผน VLAN / IP ที่ใช้จริง",
+      "cols": [
+        "รายการ",
+        "ค่า"
+      ],
+      "rows": [
+        [
+          "Management network",
+          "{{mgmtNet}}"
+        ],
+        [
+          "Controller ของผู้เข้าอบรม",
+          "192.168.10.221–227"
+        ],
+        [
+          "Controller ผู้สอน",
+          "192.168.10.133"
+        ],
+        [
+          "AP VLAN",
+          "2601–2608 (10.26.n.0/24)"
+        ]
+      ]
+    },
+    "topicMap": {
+      "title": "หัวข้อใน Workshop » ทำที่ไหน",
+      "rows": [
+        "13:00 Troubleshooting Methodology » บรรยาย",
+        "13:15 DEMO — AP ไม่ขึ้นระบบ » ผู้สอนสาธิตบน Controller VM",
+        "14:15 LAB 1 — Client ต่อ WLAN ไม่ได้ » Controller VM ของชุด",
+        "15:00 LAB 2 — Role/Policy & Dashboard » Controller VM ของชุด"
+      ]
+    },
+    "captions": [
+      {
+        "title": "DEMO — AP ไม่ขึ้นระบบ",
+        "body": "ผู้สอนสาธิตให้ดูก่อน — จดลำดับการวินิจฉัยไว้เป็นเช็คลิสต์"
+      },
+      {
+        "title": "LAB — ลงมือบน Controller VM ของชุด",
+        "body": "ไล่ปัญหา Client ต่อ WLAN ไม่ได้ทั้งสี่แบบ Authentication และ Role/Policy ที่ไม่ทำงาน",
+        "accent": true
+      },
+      {
+        "title": "ที่ผู้สอนคุมไว้",
+        "body": "{{rapHead}} (หัวสาย RAP), {{rap}} และ {{switch}} — เป็นทางผ่านของทุกชุด ถ้าล้มคือล้มทั้งห้อง"
+      }
+    ]
+  },
+  "sections": {
+    "overview": {
+      "num": "01",
+      "nav": "Overview",
+      "title": "ภาพรวมโซลูชัน",
+      "sub": "ใช้คู่กับหัวข้อ Troubleshooting Methodology (13:00)"
+    },
+    "lab": {
+      "num": "02",
+      "nav": "Lab topology",
+      "title": "Lab topology (แบ่งตาม Pod)",
+      "sub": "Controller 1 ตัวต่อ 1 ชุด — ผู้เข้าอบรม Pod 1–{{studentPods}} และชุดผู้สอนอีก 1 ชุด"
+    },
+    "vlan": {
+      "num": "03",
+      "nav": "VLAN / IP",
+      "title": "แผน VLAN / IP",
+      "sub": "2601–2608 เป็น AP VLAN ของแต่ละชุด — ไม่มี VLAN สวิตช์เพราะคอร์สนี้ไม่มีเนื้อหาสวิตช์"
+    },
+    "config": {
+      "num": "04",
+      "nav": "Config",
+      "title": "Golden config รายชุด",
+      "sub": "ค่าจริงของแต่ละชุดแทนไว้แล้ว — เลือกชุดของตัวเอง กดคัดลอก แล้ววางลง CLI ได้เลย"
+    },
+    "labs": {
+      "num": "05",
+      "nav": "Labs",
+      "title": "Lab ทีละขั้น",
+      "sub": "DEMO 1 ช่วง + LAB 2 ช่วง — ทุกช่วงอยู่บน Controller VM ของชุด (DEMO ผู้สอนทำให้ดู)"
+    },
+    "agenda": {
+      "num": "06",
+      "nav": "Agenda",
+      "title": "กำหนดการอบรม",
+      "sub": "{{dateLong}} · 13:00–16:00 — Workshop ครึ่งวัน เน้น Troubleshooting ล้วน"
+    }
+  },
+  "agenda": [
+    {
+      "time": "13:00",
+      "title": "ลงทะเบียน / แนะนำ Troubleshooting Methodology",
+      "detail": "แนวทางไล่ปัญหาอย่างเป็นระบบ (bottom-up) และเครื่องมือที่ใช้ทั้ง Workshop — LED, Dashboard, show commands"
+    },
+    {
+      "time": "13:15",
+      "title": "DEMO — AP ไม่ขึ้นระบบ",
+      "detail": "ผู้สอนสาธิตสองสถานการณ์: ค้างที่ searching และได้ IP แล้วแต่ไม่ active"
+    },
+    {
+      "time": "14:00",
+      "title": "พักเบรก",
+      "break": true
+    },
+    {
+      "time": "14:15",
+      "title": "LAB 1 — Client ต่อ WLAN ไม่ได้",
+      "detail": "ไล่ปัญหา PSK, MAC Authentication, 802.1X และ Captive Portal ทีละแบบ"
+    },
+    {
+      "time": "15:00",
+      "title": "LAB 2 — Role/Policy และ Dashboard",
+      "detail": "Policy ไม่ทำงานตามที่ตั้ง, session ค้าง role เดิม, ใช้ Dashboard/AppRF วินิจฉัยปัญหา"
+    },
+    {
+      "time": "15:45",
+      "title": "สรุป Workshop & ถาม-ตอบ",
+      "break": true
+    }
+  ],
+  "configNotes": [
+    {
+      "title": "ก่อนเริ่มไล่ปัญหา",
+      "body": "เช็คก่อนว่าต่อ console/SSH ถูก controller ของชุดตัวเอง ด้วย `show running-config | include vlan`"
+    },
+    {
+      "title": "เช็คว่าแก้ถูกจุด",
+      "body": "`show user-table` ต้องเห็นเครื่องที่ทดสอบเปลี่ยนสถานะหลังแก้ · ping ผ่านตามที่ policy กำหนดไว้",
+      "accent": true
+    },
+    {
+      "title": "ถ้าหลงไปแก้ผิดชุด",
+      "body": "ทุกชุดมีสถานการณ์ปัญหาต่างกัน — ยืนยันเลขชุด (n) ของตัวเองก่อนแก้ config ทุกครั้ง"
+    }
+  ],
+  "labGuide": {
+    "intro": "Workshop นี้ไม่มีการตั้งค่าเริ่มต้น — Controller และ AP ของแต่ละชุดถูกเตรียมสถานการณ์ปัญหาไว้ล่วงหน้าแล้ว DEMO ให้ดูก่อน จากนั้น LAB 1–2 ลงมือไล่ปัญหาเอง",
+    "note": "อุปกรณ์จริงที่ใช้ร่วมกัน — {{rapHead}} (หัวสาย RAP), {{rap}} และ {{switch}} — ผู้สอนเป็นคนคุม · Workshop นี้ไม่มี ClearPass จึงทำ 802.1X และ MAC Authentication ด้วยฐานผู้ใช้ในตัว controller เอง",
+    "labs": [
+      {
+        "id": "demo",
+        "num": "DEMO",
+        "title": "AP ไม่ขึ้นระบบ",
+        "where": "ผู้สอนสาธิต (Demo — ไม่ต้องลงมือเอง)",
+        "goal": "ดูผู้สอนไล่หาสาเหตุที่ AP ไม่ขึ้นระบบสองสถานการณ์ จดลำดับการวินิจฉัยไว้ใช้เป็นเช็คลิสต์",
+        "steps": [
+          {
+            "text": "อ่านสถานะจาก AP LED ก่อนเปิดคอมพิวเตอร์ — กะพริบเขียวช้า ๆ = กำลัง boot, กะพริบเขียว-เหลืองสลับ = หา DHCP/controller ไม่เจอ, เขียวติดค้าง = เชื่อมสำเร็จแล้ว"
+          },
+          {
+            "text": "สถานการณ์ที่ 1 — AP ค้างที่ \"searching\": เช็คว่า AP ขอ IP มาหรือยัง ถ้าไม่มีในลิสต์ แปลว่าปัญหาอยู่ที่ VLAN/DHCP ไม่ใช่ตัว AP",
+            "cli": [
+              "show ip dhcp binding",
+              "show vlan",
+              "show ip interface brief"
+            ]
+          },
+          {
+            "text": "สาเหตุที่พบบ่อยของสถานการณ์ที่ 1: AP เสียบผิดพอร์ตเข้า VLAN ของชุดอื่น, DHCP pool เต็มหรือถูกปิดไว้"
+          },
+          {
+            "text": "สถานการณ์ที่ 2 — AP ได้ IP แล้วแต่ไม่ขึ้น Active: เช็คว่ายังค้างใน Allowlist รอ Approve อยู่ไหม",
+            "cli": [
+              "show ap database",
+              "show ap allowlist"
+            ]
+          },
+          {
+            "text": "สาเหตุที่พบบ่อยของสถานการณ์ที่ 2: ลืม Approve ใน Allowlist, Country code ไม่ตรงกับ Controller, เวลาเครื่อง (clock) เพี้ยนกันมากจน certificate ตรวจสอบไม่ผ่าน"
+          }
+        ],
+        "verify": [
+          "show ip dhcp binding",
+          "show ap database",
+          "show ap allowlist"
+        ],
+        "gotcha": "จำไว้แค่ลำดับเดียว: LED → show ip dhcp binding → show ap database → show ap allowlist แยกให้ออกว่าปัญหาอยู่ก่อนหรือหลัง AP ได้ IP เพราะสองช่วงใช้คำสั่งคนละชุด"
+      },
+      {
+        "id": "lab1",
+        "num": "LAB 1",
+        "title": "Client ต่อ WLAN ไม่ได้",
+        "where": "Controller VM ของชุด",
+        "goal": "Controller มี SSID สี่แบบตั้งไว้แล้ว (PSK, MAC, 802.1X, Captive Portal) แต่ละตัวถูกใส่ปัญหาไว้หนึ่งอย่าง — หาให้เจอแล้วแก้ให้ client ต่อผ่าน",
+        "steps": [
+          {
+            "text": "SSID แบบ PSK: เช็ค Key management ตรงกับ client ไหม (WPA2 vs WPA3-only) และเทียบ passphrase ในเครื่องกับใน config",
+            "cli": [
+              "show wlan ssid-profile",
+              "show ap active"
+            ]
+          },
+          {
+            "text": "SSID แบบ MAC Authentication: เช็ครูปแบบ MAC ในฐานข้อมูล — ต้องเป็นตัวพิมพ์เล็กไม่มีขีด/จุดคั่น (aabbccddeeff)",
+            "cli": [
+              "show local-userdb",
+              "show user-table"
+            ]
+          },
+          {
+            "text": "SSID แบบ 802.1X: เช็คว่า Authentication server ชี้เป็น Internal และผู้ใช้ทดสอบมีอยู่จริงพร้อมรหัสตรงกัน",
+            "cli": [
+              "show aaa authentication-server internal",
+              "show user-table"
+            ]
+          },
+          {
+            "text": "SSID แบบ Captive Portal: ถ้าหน้า Login ไม่เด้ง ให้เช็คว่า role ก่อนล็อกอิน (logon) อนุญาต DNS ออกไปได้ไหมก่อน",
+            "cli": [
+              "show user-table",
+              "show aaa authentication captive-portal"
+            ]
+          }
+        ],
+        "verify": [
+          "show wlan ssid-profile",
+          "show user-table",
+          "show local-userdb"
+        ],
+        "gotcha": "MAC ใส่ผิดรูปแบบ (มีขีดหรือจุดคั่น) จะไม่ error แต่ไม่แมตช์อะไรเลย — และ role ก่อนล็อกอินที่ปิด DNS คือสาเหตุอันดับหนึ่งที่หน้า Captive Portal ไม่เด้ง"
+      },
+      {
+        "id": "lab2",
+        "num": "LAB 2",
+        "title": "Role/Policy และ Dashboard",
+        "where": "Controller VM ของชุด",
+        "goal": "ปัญหาที่ authentication ผ่านแล้วแต่พฤติกรรมเครือข่ายยังไม่ถูกต้อง — ต้องอ่านผลจาก Dashboard และ show command แทน error",
+        "steps": [
+          {
+            "text": "Policy ไม่ทำงานตามที่ตั้งไว้: เช็คลำดับกฎ — กฎแรกที่แมตช์คือกฎที่ใช้จริง permit any ที่อยู่เหนือ deny จะทำให้ deny ไม่มีวันทำงาน",
+            "cli": [
+              "show rights",
+              "show netdestination",
+              "show acl brief"
+            ]
+          },
+          {
+            "text": "แก้ policy แล้วเครื่องเดิมยังไม่เปลี่ยนพฤติกรรม เพราะ role ผูกกับ session ที่ค้างอยู่แล้ว — ต้องตัดแล้วต่อใหม่"
+          },
+          {
+            "text": "ไล่ปัญหาด้วย Dashboard: Overview (ภาพรวม) → Access Points (AP ตัวเอง active ไหม) → Clients (SSID/role/RSSI ของเครื่องที่ต่ออยู่) → Applications/AppRF (ใช้แอปอะไรอยู่ เทียบกับ policy)"
+          },
+          {
+            "text": "เช็คลิสต์วินิจฉัยครบวงจร: AP active? → Client เห็น SSID? → Authentication ผ่านหรือติดขั้นไหน? → ได้ IP ไหม? → Role ตรงไหม?",
+            "cli": [
+              "show ap active",
+              "show user-table verbose",
+              "show ip dhcp binding",
+              "show ap debug client-table"
+            ]
+          }
+        ],
+        "verify": [
+          "show rights",
+          "show user-table verbose",
+          "show ap active"
+        ],
+        "gotcha": "Dashboard รีเฟรชเป็นรอบ ไม่ใช่ real-time เป๊ะ — เพิ่งแก้ config แล้ว Dashboard ยังไม่อัปเดต ให้รอสักครู่ก่อนสรุปว่าค้าง"
+      }
+    ]
+  }
+}
