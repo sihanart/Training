@@ -10,6 +10,10 @@
   "partnerLine": "ตัวอย่าง × Commserv Siam",
   "venue": "ยังไม่ระบุ",
   "podsDrawn": 7,
+  "slides": {
+    "file": "slides/wlan-troubleshooting-preview.pdf",
+    "pages": 17
+  },
   "lab": {
     "controller": "Mobility Controller (VM)",
     "controllerOs": "ArubaOS 8.7.1.2",

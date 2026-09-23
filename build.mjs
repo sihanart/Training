@@ -100,7 +100,11 @@ function validate(event, course, file) {
 function slidesFor(event) {
   if (!event.slides) return null;
   const bytes = statSync(join(ROOT, event.slides.file)).size;
-  return { ...event.slides, mb: Math.round(bytes / 1e6) };
+  // Every deck published so far has run tens of MB, where a whole number reads
+  // fine — but round() on a deck under 1 MB (a short handout, say) prints "0 MB",
+  // which is worse than useless. One decimal below 10 MB keeps both honest.
+  const mb = bytes / 1e6;
+  return { ...event.slides, mb: mb < 10 ? Math.round(mb * 10) / 10 : Math.round(mb) };
 }
 
 async function main() {
