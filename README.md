@@ -9,7 +9,7 @@
 
 หน้าแรกของเว็บคือ **งานที่ใกล้ถึงที่สุดที่ยังไม่ผ่าน** — build เลือกให้เอง ไม่ต้องแก้อะไร
 
-เว็บไซต์: **https://sihanart.github.io/Training/**
+เว็บไซต์: **https://training.fontect.com/** (custom domain ผ่าน Cloudflare — ตั้งค่า DNS ที่ฝั่ง Cloudflare แล้ว โปรดดู "Custom domain" ด้านล่าง)
 
 > ### ⚠️ อย่าแก้ `index.html`, `diagrams/*.svg` หรือ `configs/*.txt` โดยตรง
 >
