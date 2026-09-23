@@ -1,7 +1,7 @@
 {
   "id": "wlan-troubleshooting",
   "title": "Aruba WLAN Troubleshooting",
-  "subtitle": "Half-Day Workshop — 13:00–16:00 · DEMO + Lab วินิจฉัยปัญหา",
+  "subtitle": "Half-Day Workshop — 09:00–12:00 · DEMO + Lab วินิจฉัยปัญหา",
   "docTitle": "Aruba WLAN Troubleshooting Workshop — Network Diagram & Lab",
   "courseName": "Aruba WLAN Troubleshooting Workshop",
   "description": "เอกสารอ้างอิง Workshop ครึ่งวัน Aruba WLAN Troubleshooting — ภาพรวมโซลูชัน, Lab topology, แผน VLAN/IP, Golden config และสถานการณ์ปัญหาที่ฝึกวินิจฉัยทีละขั้น",
@@ -135,7 +135,7 @@
       }
     ],
     "tunnelLabel": "Tunnel: AP » {{controller}}",
-    "footnote": "หัวข้อ: DEMO AP ไม่ขึ้นระบบ (13:15) · LAB Troubleshooting (14:15, 15:00)",
+    "footnote": "หัวข้อ: DEMO AP ไม่ขึ้นระบบ (09:15) · LAB Troubleshooting (10:15, 11:00)",
     "captions": [
       {
         "title": "① DEMO — AP ไม่ขึ้นระบบ",
@@ -270,10 +270,10 @@
     "topicMap": {
       "title": "หัวข้อใน Workshop » ทำที่ไหน",
       "rows": [
-        "13:00 Troubleshooting Methodology » บรรยาย",
-        "13:15 DEMO — AP ไม่ขึ้นระบบ » ผู้สอนสาธิตบน Controller VM",
-        "14:15 LAB 1 — Client ต่อ WLAN ไม่ได้ » Controller VM ของชุด",
-        "15:00 LAB 2 — Role/Policy & Dashboard » Controller VM ของชุด"
+        "09:00 Troubleshooting Methodology » บรรยาย",
+        "09:15 DEMO — AP ไม่ขึ้นระบบ » ผู้สอนสาธิตบน Controller VM",
+        "10:15 LAB 1 — Client ต่อ WLAN ไม่ได้ » Controller VM ของชุด",
+        "11:00 LAB 2 — Role/Policy & Dashboard » Controller VM ของชุด"
       ]
     },
     "captions": [
@@ -297,7 +297,7 @@
       "num": "01",
       "nav": "Overview",
       "title": "ภาพรวมโซลูชัน",
-      "sub": "ใช้คู่กับหัวข้อ Troubleshooting Methodology (13:00)"
+      "sub": "ใช้คู่กับหัวข้อ Troubleshooting Methodology (09:00)"
     },
     "lab": {
       "num": "02",
@@ -327,37 +327,37 @@
       "num": "06",
       "nav": "Agenda",
       "title": "กำหนดการอบรม",
-      "sub": "{{dateLong}} · 13:00–16:00 — Workshop ครึ่งวัน เน้น Troubleshooting ล้วน"
+      "sub": "{{dateLong}} · 09:00–12:00 — Workshop ครึ่งวัน เน้น Troubleshooting ล้วน"
     }
   },
   "agenda": [
     {
-      "time": "13:00",
+      "time": "09:00",
       "title": "ลงทะเบียน / แนะนำ Troubleshooting Methodology",
       "detail": "แนวทางไล่ปัญหาอย่างเป็นระบบ (bottom-up) และเครื่องมือที่ใช้ทั้ง Workshop — LED, Dashboard, show commands"
     },
     {
-      "time": "13:15",
+      "time": "09:15",
       "title": "DEMO — AP ไม่ขึ้นระบบ",
       "detail": "ผู้สอนสาธิตสองสถานการณ์: ค้างที่ searching และได้ IP แล้วแต่ไม่ active"
     },
     {
-      "time": "14:00",
+      "time": "10:00",
       "title": "พักเบรก",
       "break": true
     },
     {
-      "time": "14:15",
+      "time": "10:15",
       "title": "LAB 1 — Client ต่อ WLAN ไม่ได้",
       "detail": "ไล่ปัญหา PSK, MAC Authentication, 802.1X และ Captive Portal ทีละแบบ"
     },
     {
-      "time": "15:00",
+      "time": "11:00",
       "title": "LAB 2 — Role/Policy และ Dashboard",
       "detail": "Policy ไม่ทำงานตามที่ตั้ง, session ค้าง role เดิม, ใช้ Dashboard/AppRF วินิจฉัยปัญหา"
     },
     {
-      "time": "15:45",
+      "time": "11:45",
       "title": "สรุป Workshop & ถาม-ตอบ",
       "break": true
     }

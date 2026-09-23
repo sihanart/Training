@@ -10,8 +10,8 @@
 </defs>
 
 <rect width="1400" height="830" fill="#FFFFFF"/>
-<text class="h1" x="40" y="48">Aruba CX Switch + WLAN — ภาพรวมที่ประกอบขึ้นในวันเดียว</text>
-<text class="sub" x="40" y="72">Wired วางโครงก่อน · Wireless ต่อทับบนโครงนั้น — Public Class / IT Green Public Company Limited · 3 ก.ย. 2569</text>
+<text class="h1" x="40" y="48">Aruba WLAN — ภาพรวมโซลูชันไร้สาย</text>
+<text class="sub" x="40" y="72">Controller + AP คือสิ่งที่วินิจฉัยปัญหาทั้ง Workshop — RMUTSB / TorqueIT · 3 ก.ย. 2569</text>
 <line x1="40" y1="88" x2="1360" y2="88" stroke="#E1E9EF" stroke-width="2"/>
 
 <!-- Internet -->
@@ -28,17 +28,17 @@
 <!-- Core -->
 <rect x="430" y="205" width="360" height="126" rx="10" fill="#E8F1F8" stroke="#1E6BB8" stroke-width="2.5"/>
 <rect x="430" y="205" width="360" height="26" rx="10" fill="#1E6BB8"/>
-<text class="tag" x="444" y="223">WIRED — ช่วงเช้า (AOS-CX)</text>
-<text class="lbl" x="444" y="253">Aruba CX Switch (AOS-CX)</text>
-<text class="role" x="444" y="275">บทบาท: VLAN · Access / Trunk port · LAG (LACP)</text>
-<text class="role" x="444" y="295">Inter-VLAN routing ด้วย SVI — gateway ของทุก VLAN อยู่ตรงนี้</text>
-<text class="role" x="444" y="315">จัดการด้วย CLI และ Web UI · Checkpoint / Diff / Rollback</text>
+<text class="tag" x="444" y="223">โครงข่ายที่มีอยู่แล้ว — ไม่ได้สอนในคอร์สนี้</text>
+<text class="lbl" x="444" y="253">Aruba CX Switch (จัดเตรียมไว้ให้)</text>
+<text class="role" x="444" y="275">ผู้ดูแลระบบตั้งค่า VLAN และเส้นทางไว้ล่วงหน้าแล้ว</text>
+<text class="role" x="444" y="295">หลักสูตรนี้ไม่ครอบคลุมการตั้งค่าสวิตช์เลย</text>
+<text class="role" x="444" y="315">สนใจฝั่งสวิตช์ ดูหลักสูตร Aruba CX Switch แยกต่างหาก</text>
 <line class="link" x1="290" y1="261" x2="430" y2="261"/>
 
 <!-- Mobility Controller -->
 <rect x="950" y="180" width="400" height="118" rx="10" fill="#FFF3E6" stroke="#FF8300" stroke-width="2.5"/>
 <rect x="950" y="180" width="400" height="26" rx="10" fill="#FF8300"/>
-<text class="tag" x="964" y="198">WIRELESS — ช่วงบ่าย</text>
+<text class="tag" x="964" y="198">หัวใจของคอร์สนี้</text>
 <text class="lbl" x="964" y="228">Mobility Controller (VM) · AOS 8.7.1.2</text>
 <text class="role" x="964" y="248">บทบาท: จบ tunnel ของ AP · ถือ SSID, Role และ Policy</text>
 <text class="role" x="964" y="266">เป็น DHCP server ของ AP VLAN ตัวเอง</text>
@@ -57,7 +57,7 @@
 <!-- Services -->
 <rect x="950" y="446" width="400" height="72" rx="10" fill="#EFF6F1" stroke="#4B8F6E" stroke-width="2"/>
 <text class="lbl" x="964" y="472">Core Services</text>
-<text class="role" x="964" y="492">DHCP · DNS · NTP · Syslog — ตั้งบนสวิตช์ช่วงเช้า แล้วใช้ต่อทั้งวัน</text>
+<text class="role" x="964" y="492">DHCP · DNS · NTP · Syslog — มาจากเครือข่ายที่มีอยู่แล้ว ไม่ได้ตั้งเองในคอร์สนี้</text>
 <path class="link" d="M950 482 H 880 V 331"/>
 
 <!-- Access layer group -->
@@ -65,13 +65,13 @@
 <text class="tiny" x="196" y="410">ACCESS LAYER</text>
 
 <rect x="230" y="420" width="250" height="80" rx="9" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl" x="246" y="446">CX — Access port</text>
-<text class="role" x="246" y="466">PC เสียบตรง · vlan access &lt;id&gt;</text>
-<text class="role" x="246" y="484">หนึ่งพอร์ตหนึ่ง VLAN</text>
+<text class="lbl" x="246" y="446">พอร์ตสำหรับ AP</text>
+<text class="role" x="246" y="466">เสียบ Campus AP ตรง ๆ</text>
+<text class="role" x="246" y="484">ตั้งค่าไว้ล่วงหน้าแล้ว ไม่ต้องแตะ</text>
 <rect x="520" y="420" width="250" height="80" rx="9" fill="#E9F2FA" stroke="#1E6BB8" stroke-width="2"/>
-<text class="lbl" x="536" y="446">CX — Trunk / LAG</text>
-<text class="role" x="536" y="466">สายระหว่างสวิตช์ · vlan trunk allowed</text>
-<text class="role" x="536" y="484">รวมสองเส้นเป็น LAG ด้วย LACP</text>
+<text class="lbl" x="536" y="446">Uplink / Trunk</text>
+<text class="role" x="536" y="466">ขึ้น Core ผ่าน LAG</text>
+<text class="role" x="536" y="484">อยู่นอกขอบเขตของคอร์สนี้</text>
 
 <path class="link10" d="M540 331 L 380 420"/>
 <path class="link10" d="M660 331 L 645 420"/>
@@ -98,18 +98,18 @@
 
 <!-- wired client -->
 <rect x="620" y="580" width="180" height="62" rx="9" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
-<text class="lbl" x="636" y="606">PC ใน PNETLAB</text>
-<text class="role" x="636" y="626">PC1 / PC2 / PC3 คนละ VLAN</text>
+<text class="lbl" x="636" y="606">PC ทดสอบ</text>
+<text class="role" x="636" y="626">ใช้ ping ทดสอบเส้นทางเท่านั้น</text>
 <line class="link" x1="690" y1="500" x2="690" y2="580"/>
 
 <!-- Traffic flows -->
-<circle cx="880" cy="600" r="13" fill="#1E6BB8"/><text class="tag" x="875" y="605">①</text>
-<text class="role" x="900" y="592" font-size="12.5">Wired: PC » Access port (VLAN) » Trunk / LAG</text>
-<text class="role" x="900" y="610" font-size="12.5">» SVI บนสวิตช์ » VLAN ปลายทาง</text>
+<circle cx="880" cy="600" r="13" fill="#FF8300"/><text class="tag" x="875" y="605">①</text>
+<text class="role" x="900" y="592" font-size="12.5">Client » AP » tunnel » Controller</text>
+<text class="role" x="900" y="610" font-size="12.5">» ปล่อยลง AP VLAN » ออกเน็ต</text>
 
-<circle cx="880" cy="656" r="13" fill="#FF8300"/><text class="tag" x="875" y="661">②</text>
-<text class="role" x="900" y="648" font-size="12.5">Wireless: Client » AP » tunnel » Controller</text>
-<text class="role" x="900" y="666" font-size="12.5">» ปล่อยลง AP VLAN » ออกเน็ต</text>
+<circle cx="880" cy="656" r="13" fill="#6B4EA8"/><text class="tag" x="875" y="661">②</text>
+<text class="role" x="900" y="648" font-size="12.5">Authentication: PSK / Captive Portal</text>
+<text class="role" x="900" y="666" font-size="12.5">802.1X / MAC » Internal AAA บน Controller</text>
 
 <path class="tunnel" marker-end="url(#ar-svg-overview)" d="M500 612 C 700 604 850 500 952 306"/>
 <text class="tiny" x="516" y="552" fill="#C4620A" font-size="12.5" font-weight="700">Tunnel: AP » Mobility Controller (VM)</text>
@@ -121,5 +121,5 @@
 <path class="tunnel" d="M400 792 H 450"/><text class="tiny" x="458" y="796">GRE Tunnel (AP — MC)</text>
 <path class="radius" d="M620 792 H 670"/><text class="tiny" x="678" y="796">RADIUS (802.1X / MAC Auth)</text>
 <path class="air" d="M840 796 a26 26 0 0 1 34 0"/><text class="tiny" x="884" y="796">Wireless (SSID)</text>
-<text class="tiny" x="1010" y="796">หัวข้อ: Overview CX Switch (09:15) · Overview WLAN &amp; MC (13:45)</text>
+<text class="tiny" x="1010" y="796">หัวข้อ: DEMO AP ไม่ขึ้นระบบ (09:15) · LAB Troubleshooting (10:15, 11:00)</text>
 </svg>

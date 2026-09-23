@@ -113,8 +113,8 @@
 
 <rect x="960" y="780" width="420" height="178" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
 <text class="lbl2" x="978" y="806">หัวข้อใน Workshop » ทำที่ไหน</text>
-<text class="td" x="978" y="830">13:00 Troubleshooting Methodology » บรรยาย</text>
-<text class="td" x="978" y="850">13:15 DEMO — AP ไม่ขึ้นระบบ » ผู้สอนสาธิตบน Controller VM</text>
-<text class="td" x="978" y="870">14:15 LAB 1 — Client ต่อ WLAN ไม่ได้ » Controller VM ของชุด</text>
-<text class="td" x="978" y="890">15:00 LAB 2 — Role/Policy &amp; Dashboard » Controller VM ของชุด</text>
+<text class="td" x="978" y="830">09:00 Troubleshooting Methodology » บรรยาย</text>
+<text class="td" x="978" y="850">09:15 DEMO — AP ไม่ขึ้นระบบ » ผู้สอนสาธิตบน Controller VM</text>
+<text class="td" x="978" y="870">10:15 LAB 1 — Client ต่อ WLAN ไม่ได้ » Controller VM ของชุด</text>
+<text class="td" x="978" y="890">11:00 LAB 2 — Role/Policy &amp; Dashboard » Controller VM ของชุด</text>
 </svg>

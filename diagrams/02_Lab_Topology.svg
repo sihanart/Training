@@ -11,8 +11,8 @@
 </defs>
 
 <rect width="1440" height="1000" fill="#FFFFFF"/>
-<text class="h1" x="40" y="48">Aruba CX Switch + WLAN Basic — Lab Topology</text>
-<text class="sub" x="40" y="74">IT Green — Authorized Aruba (HPE) Networking Training · 3 ก.ย. 2569 · ครึ่งเช้าอยู่ใน PNETLAB · ครึ่งบ่ายอยู่บน Controller VM ของชุด</text>
+<text class="h1" x="40" y="48">Aruba WLAN Troubleshooting — Lab Topology</text>
+<text class="sub" x="40" y="74">RMUTSB × TorqueIT · 3 ก.ย. 2569 · Workshop ครึ่งวันอยู่บน Controller VM ของชุด — ไม่มีสวิตช์ให้ตั้งค่า</text>
 <line x1="40" y1="90" x2="1400" y2="90" stroke="#E1E9EF" stroke-width="2"/>
 
 <!-- everything virtual lives on the one host -->
@@ -33,18 +33,18 @@
 <rect x="102" y="379" width="476" height="24" fill="#FFFAF4"/><text class="td" x="112" y="396">POD 7</text><text class="td mono2" x="212" y="396">192.168.10.227</text><text class="td mono2" x="376" y="396">VLAN 2607</text>
 <rect x="102" y="403" width="476" height="24" fill="#FFE8CC"/><text class="td tteach" x="112" y="420">TEACHER</text><text class="td mono2" x="212" y="420">192.168.10.133</text><text class="td mono2" x="376" y="420">VLAN 2608</text>
 <text class="tiny" x="102" y="446">แต่ละตัวเป็น DHCP + NAT ของ AP VLAN ตัวเอง (10.26.n.0/24)</text>
-<text class="tiny" x="102" y="464">ใช้ในช่วงบ่ายทั้งหมด — LAB 8 ถึง LAB 14</text>
+<text class="tiny" x="102" y="464">ใช้ตลอด Workshop — DEMO และ LAB 1–2 อยู่บนเครื่องนี้เครื่องเดียว</text>
 
 <rect x="84" y="500" width="512" height="226" rx="10" fill="#F3F7FA" stroke="#4A6274" stroke-width="2.5"/>
-<text class="lbl2" x="102" y="526">PNETLAB — Switch simulator</text>
-<text class="role" x="102" y="552">• ห้องแลบของแต่ละชุดมีสวิตช์จำลอง 3 ตัว</text>
-<text class="role" x="102" y="574">• PC 3 เครื่อง อยู่คนละ VLAN คนละวง</text>
-<text class="role" x="102" y="596">• ใช้ในช่วงเช้าทั้งหมด — LAB 1 ถึง LAB 7</text>
-<text class="role" x="102" y="618">• พัง reset ใหม่ได้ ไม่กระทบชุดอื่น</text>
+<text class="lbl2" x="102" y="526">Controller VM ของชุด — ข้อควรรู้</text>
+<text class="role" x="102" y="552">• แยก VM ต่อชุด — ทำอะไรก็ไม่กระทบชุดอื่น</text>
+<text class="role" x="102" y="574">• เข้าได้ทั้ง CLI (console) และ Web UI (HTTPS)</text>
+<text class="role" x="102" y="596">• พัง reset ใหม่ได้ ไม่กระทบชุดอื่น</text>
+<text class="role" x="102" y="618">• เป็นเครื่องเดียวที่ใช้ตลอด Workshop ไม่มีสวิตช์จำลองให้ฝึก</text>
 <line x1="102" y1="640" x2="578" y2="640" stroke="#CBD8E2"/>
-<text class="lbl2" x="102" y="664">ทำไมไม่ฝึกบนสวิตช์จริง</text>
-<text class="role" x="102" y="688">Aruba CX 6100 มี 12 พอร์ตและเป็นทางผ่านของทุกชุด</text>
-<text class="role" x="102" y="708">ถ้าให้ทุกคนแตะ VLAN บนตัวเดียวกัน ทั้งห้องหลุดพร้อมกัน</text>
+<text class="lbl2" x="102" y="664">ทำไมแยก Controller VM ต่อชุด</text>
+<text class="role" x="102" y="688">แต่ละชุดมีสิทธิ์ admin เต็มบนเครื่องตัวเอง ไม่ต้องรอคิว</text>
+<text class="role" x="102" y="708">AP onboarding ของจริง ไม่ใช่ demo ร่วมกันทั้งห้อง</text>
 
 <!-- the only box the remote AP tunnels to -->
 <rect x="672" y="150" width="316" height="130" rx="10" fill="#FDECEC" stroke="#C0504D" stroke-width="2.5"/>
@@ -71,12 +71,12 @@
 <text class="tag" x="1054" y="338">SWITCH กลาง</text>
 <text class="lbl2" x="1054" y="370">Aruba CX 6100 · 12 พอร์ต</text>
 <text class="role" x="1054" y="392">พอร์ต 1 ถึง 7 = Campus AP ของแต่ละชุด</text>
-<text class="role" x="1054" y="412">Uplink 1/1/12 ขึ้น AP-515</text>
+<text class="role" x="1054" y="412">ผู้สอนตั้งไว้ให้แล้ว ไม่ได้สอนในคอร์สนี้</text>
 <rect x="1040" y="490" width="340" height="118" rx="10" fill="#E9F7F1" stroke="#14996B" stroke-width="2.5"/>
 <rect x="1040" y="490" width="340" height="26" rx="10" fill="#14996B"/>
 <text class="tag" x="1054" y="508">CAMPUS AP</text>
 <text class="lbl2" x="1054" y="540">Campus AP — ชุดละ 1 ตัว</text>
-<text class="role" x="1054" y="562">ผู้เข้าอบรม onboard เอง (LAB 10)</text>
+<text class="role" x="1054" y="562">AP ของแต่ละชุด — สถานการณ์ปัญหาเตรียมไว้ล่วงหน้าแล้ว</text>
 <text class="role" x="1054" y="582">Tunnel กลับ Controller VM ของชุดตัวเอง</text>
 
 <rect x="1040" y="660" width="340" height="76" rx="10" fill="#F5F7F8" stroke="#8FA6B6" stroke-width="2"/>
@@ -110,15 +110,11 @@
 <text class="td" x="518" y="872">Controller ของผู้เข้าอบรม</text><text class="td mono2" x="740" y="872">192.168.10.221–227</text>
 <text class="td" x="518" y="892">Controller ผู้สอน</text><text class="td mono2" x="740" y="892">192.168.10.133</text>
 <text class="td" x="518" y="912">AP VLAN</text><text class="td mono2" x="740" y="912">2601–2608 (10.26.n.0/24)</text>
-<text class="td" x="518" y="932">Switch lab (PNETLAB)</text><text class="td mono2" x="740" y="932">VLAN 10 / 20 / 30</text>
 
 <rect x="960" y="780" width="420" height="178" rx="10" fill="#F7FAFC" stroke="#E1E9EF" stroke-width="1.5"/>
-<text class="lbl2" x="978" y="806">หัวข้อในหลักสูตร » ทำที่ไหน</text>
-<text class="td" x="978" y="830">09:45 Initial setup » PNETLAB ของชุดตัวเอง</text>
-<text class="td" x="978" y="850">10:45 Clock / DNS / SNMP / Checkpoint » PNETLAB</text>
-<text class="td" x="978" y="870">11:30 VLAN / Trunk / LAG » PNETLAB</text>
-<text class="td" x="978" y="890">13:00 SVI / Inter-VLAN routing » PNETLAB</text>
-<text class="td" x="978" y="910">14:15 Initial MC + AP Provisioning » Controller VM</text>
-<text class="td" x="978" y="930">15:15 Authentication (PSK/Portal/802.1X/MAC) » Controller VM</text>
-<text class="td" x="978" y="950">16:15 Role &amp; Policy + Dashboard » Controller VM</text>
+<text class="lbl2" x="978" y="806">หัวข้อใน Workshop » ทำที่ไหน</text>
+<text class="td" x="978" y="830">09:00 Troubleshooting Methodology » บรรยาย</text>
+<text class="td" x="978" y="850">09:15 DEMO — AP ไม่ขึ้นระบบ » ผู้สอนสาธิตบน Controller VM</text>
+<text class="td" x="978" y="870">10:15 LAB 1 — Client ต่อ WLAN ไม่ได้ » Controller VM ของชุด</text>
+<text class="td" x="978" y="890">11:00 LAB 2 — Role/Policy &amp; Dashboard » Controller VM ของชุด</text>
 </svg>

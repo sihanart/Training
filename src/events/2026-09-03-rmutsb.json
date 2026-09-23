@@ -1,18 +1,23 @@
 {
-  "_comment": "ยังไม่ทราบสถานที่จัด — แก้ venue บรรทัดเดียวแล้ว build ใหม่ ทุกที่ที่อ้างถึงจะเปลี่ยนตาม · ชุดอุปกรณ์ใช้ชุดเดียวกับงาน RMUTT (PNETLAB 10.69.11.10 + Controller VM 192.168.10.221–227)",
-  "slug": "itgreen-2026-09",
-  "course": "cx-wlan-basic",
+  "_comment": "แทนที่งาน itgreen-2026-09 เดิม — ลูกค้าจริงคือ RMUTSB ผ่านพาร์ทเนอร์ TorqueIT ไม่ใช่ IT Green และเป็น Workshop เช้า 09:00-12:00 (ไม่ใช่คอร์สเต็มวัน) ยังไม่ทราบสถานที่จัด — แก้ venue บรรทัดเดียวแล้ว build ใหม่ ทุกที่ที่อ้างถึงจะเปลี่ยนตาม · ชุดอุปกรณ์ใช้ชุดเดียวกับงาน RMUTT/IT Green เดิม (PNETLAB ไม่ได้ใช้ในคอร์สนี้เพราะไม่มีเนื้อหาสวิตช์)",
+
+  "slug": "rmutsb-2026-09",
+  "course": "wlan-troubleshooting",
   "date": "2026-09-03",
-  "organizer": "IT Green Public Company Limited",
-  "customer": "Public Class",
-  "attendees": "ผู้เข้าอบรมหลักสูตร Aruba CX Switch + WLAN Basic",
-  "partnerLine": "IT Green — Authorized Aruba (HPE) Networking Training",
+
+  "organizer": "TorqueIT",
+  "customer": "RMUTSB",
+  "attendees": "ผู้เข้าอบรม Training Aruba — Project RMUTSB",
+  "partnerLine": "RMUTSB × TorqueIT",
   "venue": "ยังไม่ระบุ",
+
   "podsDrawn": 7,
+
   "slides": {
-    "file": "slides/itgreen-2026-09.pdf",
-    "pages": 158
+    "file": "slides/rmutsb-2026-09.pdf",
+    "pages": 17
   },
+
   "lab": {
     "controller": "Mobility Controller (VM)",
     "controllerOs": "ArubaOS 8.7.1.2",
@@ -22,7 +27,6 @@
     "switch": "Aruba CX 6100",
     "switchPorts": 12,
     "switchUplink": "1/1/12",
-    "simulator": "PNETLAB",
     "mgmtNet": "192.168.10.0/24",
     "dns": "8.8.8.8 1.1.1.1",
     "domain": "lab.local",
